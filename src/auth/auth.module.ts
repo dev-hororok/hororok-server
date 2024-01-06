@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Account, AccountSchema } from './entities/accounts.model';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { UsersModule } from 'src/users/users.module';
-import { AuthController } from './auth.controller';
+import { AuthController } from './controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -16,8 +19,9 @@ import { jwtConstants } from './constants';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '7d' },
     }),
+    PassportModule,
   ],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

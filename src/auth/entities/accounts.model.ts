@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Document } from 'mongoose';
+import { Role } from './role.enum';
 
 @Schema({
   timestamps: true,
@@ -21,6 +22,13 @@ export class Account extends Document {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @Prop({
+    required: true,
+    enum: Role,
+    default: Role.User,
+  })
+  role: Role;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
