@@ -12,7 +12,7 @@ export class User {
     required: true,
   })
   @IsNotEmpty()
-  accountId: Types.ObjectId;
+  account_id: Types.ObjectId;
 
   @Prop({
     required: true,

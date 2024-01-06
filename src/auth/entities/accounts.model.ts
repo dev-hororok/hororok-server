@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { HydratedDocument } from 'mongoose';
+import { Document } from 'mongoose';
 
-export type AccountDocument = HydratedDocument<Account>;
-
-@Schema({ timestamps: true, collection: 'accounts' })
-export class Account {
+@Schema({
+  timestamps: true,
+  collection: 'accounts',
+})
+export class Account extends Document {
   @Prop({
     required: true,
     unique: true,
