@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RolesGuard } from './auth/guard/roles.guard';
@@ -17,7 +16,6 @@ import { SuccessInterceptor } from './common/interceptors/success/success.interc
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL),
-    UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
