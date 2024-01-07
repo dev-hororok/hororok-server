@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account } from '../entities/accounts.model';
 import { JWTPayload } from '../entities/jwt.payload';
+import { CreateAccountDto } from '../dtos/create-account.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +16,8 @@ export class AuthService {
 
   async validateAccount(email: string, pass: string): Promise<any> {
     const account = await this.findOneByEmail(email);
-    if (account && account.password === pass) {
+
+    if (account && bcrypt.compareSync(pass, account.password)) {
       // eslint-disable-next-line
       const { password: _, ...result } = account;
       return result;
@@ -33,8 +36,23 @@ export class AuthService {
     };
   }
 
-  async findOneByEmail(email: string): Promise<any | null> {
+  async findOneByEmail(email: string): Promise<Account | null> {
     const account = await this.accountModel.findOne({ email });
-    return account;
+    return account ? account.toJSON() : null;
+  }
+
+  async registerAccount({ email, password }: CreateAccountDto) {
+    const exist = await this.accountModel.exists({ email });
+
+    if (exist) {
+      throw new BadRequestException('이미 가입된 이메일입니다.');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await this.accountModel.create({
+      email,
+      password: hashedPassword,
+    });
   }
 }
