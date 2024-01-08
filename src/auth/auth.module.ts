@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Account, AccountSchema } from './entities/accounts.model';
 import { AuthService } from './services/auth.service';
-import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
@@ -13,7 +12,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }]),
-    UsersModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

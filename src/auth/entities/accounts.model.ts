@@ -25,6 +25,14 @@ export class Account extends Document {
   password: string;
 
   @Prop({
+    required: true,
+    default: '',
+  })
+  @IsString()
+  @IsNotEmpty()
+  profile_url: string;
+
+  @Prop({
     default: () => crypto.randomBytes(10).toString('hex'),
     required: true,
   })
