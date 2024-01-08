@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth.service';
 import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { Public } from '../decorators/public.decorator';
 import { CreateAccountDto } from '../dtos/create-account.dto';
+import { JwtRefreshGuard } from '../guard/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -33,5 +34,12 @@ export class AuthController {
   getProfile(@Request() req) {
     console.log(req.user);
     return req.user;
+  }
+
+  @Public()
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  async refreshToken(@Request() req) {
+    return this.authService.refreshToken(req.user);
   }
 }

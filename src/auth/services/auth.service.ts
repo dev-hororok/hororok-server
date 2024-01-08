@@ -6,11 +6,13 @@ import { Account } from '../entities/accounts.model';
 import { JWTPayload } from '../entities/jwt.payload';
 import { CreateAccountDto } from '../dtos/create-account.dto';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
     @InjectModel(Account.name) private accountModel: Model<Account>,
   ) {}
 
@@ -25,6 +27,22 @@ export class AuthService {
     return null;
   }
 
+  async refreshToken(account: any) {
+    const payload: JWTPayload = {
+      sub: account.sub,
+      email: account.email,
+      role: account.role,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+      refresh_token: this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION'),
+      }),
+    };
+  }
+
   async login(account: any) {
     const payload: JWTPayload = {
       sub: account._id,
@@ -33,6 +51,10 @@ export class AuthService {
     };
     return {
       access_token: this.jwtService.sign(payload),
+      refresh_token: this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION'),
+      }),
     };
   }
 
