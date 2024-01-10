@@ -57,10 +57,13 @@ export class AuthService {
       }),
     };
   }
-
+  async findOneById(id: string): Promise<Account | null> {
+    const account = await this.accountModel.findById(id);
+    return account;
+  }
   async findOneByEmail(email: string): Promise<Account | null> {
     const account = await this.accountModel.findOne({ email });
-    return account ? account.toJSON() : null;
+    return account;
   }
 
   async registerAccount({ email, password }: CreateAccountDto) {

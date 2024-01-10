@@ -31,9 +31,9 @@ export class AuthController {
   }
 
   @Get('profile')
-  getProfile(@Request() req) {
-    console.log(req.user);
-    return req.user;
+  async getProfile(@Request() req) {
+    const account = await this.authService.findOneById(req.user.sub);
+    return account.readOnlyData;
   }
 
   @Public()
