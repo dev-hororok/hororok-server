@@ -8,6 +8,8 @@ import { CreateAccountDto } from '../dtos/create-account.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
+const EXPIRE_TIME = 20 * 1000;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,11 +20,8 @@ export class AuthService {
 
   async validateAccount(email: string, pass: string): Promise<any> {
     const account = await this.findOneByEmail(email);
-
     if (account && bcrypt.compareSync(pass, account.password)) {
-      // eslint-disable-next-line
-      const { password: _, ...result } = account;
-      return result;
+      return account.readOnlyData;
     }
     return null;
   }
@@ -35,11 +34,15 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: '20s',
+      }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION'),
+        expiresIn: '7d',
       }),
+      expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
   }
 
@@ -50,11 +53,16 @@ export class AuthService {
       role: account.role,
     };
     return {
-      access_token: this.jwtService.sign(payload),
+      user: account,
+      access_token: this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: '20s',
+      }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION'),
+        expiresIn: '7d',
       }),
+      expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
   }
   async findOneById(id: string): Promise<Account | null> {
