@@ -33,7 +33,7 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: '20s',
+        expiresIn: '1d',
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
@@ -45,7 +45,7 @@ export class AuthService {
 
   async login(account: any) {
     const payload: JWTPayload = {
-      sub: account._id,
+      sub: account.id,
       email: account.email,
       role: account.role,
     };
@@ -53,7 +53,7 @@ export class AuthService {
       user: account,
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: '20s',
+        expiresIn: '1d',
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),

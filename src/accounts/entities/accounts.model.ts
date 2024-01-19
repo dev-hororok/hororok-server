@@ -57,7 +57,7 @@ AccountSchema.virtual('readOnlyData').get(function (
 ): ReadOnlyAccountDto {
   return {
     profile_url: this.profile_url,
-    id: this._id,
+    id: this.id,
     email: this.email,
     role: this.role,
     name: this.name,
