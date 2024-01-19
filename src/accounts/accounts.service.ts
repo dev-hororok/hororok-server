@@ -4,6 +4,7 @@ import { Account } from './entities/accounts.model';
 import { Model } from 'mongoose';
 import { CreateAccountDto } from './dtos/create-account.dto';
 import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @Injectable()
 export class AccountsService {
@@ -33,5 +34,20 @@ export class AccountsService {
       email,
       password: hashedPassword,
     });
+  }
+
+  async changePassword(account_id: string, { password }: ChangePasswordDto) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedAccount = await this.accountModel.findByIdAndUpdate(
+      account_id,
+      { password: hashedPassword },
+      { new: true },
+    );
+
+    if (!updatedAccount) {
+      throw new BadRequestException('계정이 존재하지 않습니다.');
+    }
+
+    return updatedAccount;
   }
 }
