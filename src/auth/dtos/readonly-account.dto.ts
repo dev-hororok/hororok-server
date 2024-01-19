@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { Role } from '../entities/role.enum';
+import { Role } from '../../accounts/entities/role.enum';
 
 export class ReadOnlyAccountDto {
   @IsUUID()

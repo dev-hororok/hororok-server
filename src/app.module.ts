@@ -9,6 +9,7 @@ import { RolesGuard } from './auth/guard/roles.guard';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { HttpExceptionFilter } from './common/exceptions/http-exception/http-exception.filter';
 import { SuccessInterceptor } from './common/interceptors/success/success.interceptor';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SuccessInterceptor } from './common/interceptors/success/success.interc
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL),
     AuthModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [

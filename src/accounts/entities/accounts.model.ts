@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Document } from 'mongoose';
 import { Role } from './role.enum';
 import * as crypto from 'crypto';
-import { ReadOnlyAccountDto } from '../dtos/readonly-account.dto';
+import { ReadOnlyAccountDto } from '../../auth/dtos/readonly-account.dto';
 
 @Schema({
   timestamps: true,

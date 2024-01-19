@@ -1,12 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Account } from '../entities/accounts.model';
 import { JWTPayload } from '../entities/jwt.payload';
-import { CreateAccountDto } from '../dtos/create-account.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { AccountsService } from 'src/accounts/accounts.service';
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -15,11 +12,11 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    @InjectModel(Account.name) private accountModel: Model<Account>,
+    private readonly accountsService: AccountsService,
   ) {}
 
   async validateAccount(email: string, pass: string): Promise<any> {
-    const account = await this.findOneByEmail(email);
+    const account = await this.accountsService.findOneByEmail(email);
     if (account && bcrypt.compareSync(pass, account.password)) {
       return account.readOnlyData;
     }
@@ -64,28 +61,5 @@ export class AuthService {
       }),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
-  }
-  async findOneById(id: string): Promise<Account | null> {
-    const account = await this.accountModel.findById(id);
-    return account;
-  }
-  async findOneByEmail(email: string): Promise<Account | null> {
-    const account = await this.accountModel.findOne({ email });
-    return account;
-  }
-
-  async registerAccount({ email, password }: CreateAccountDto) {
-    const exist = await this.accountModel.exists({ email });
-
-    if (exist) {
-      throw new BadRequestException('이미 가입된 이메일입니다.');
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await this.accountModel.create({
-      email,
-      password: hashedPassword,
-    });
   }
 }
