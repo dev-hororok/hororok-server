@@ -30,11 +30,11 @@ export class AccountsService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    await this.accountModel.create({
+    const newAccount = new this.accountModel({
       email,
       password: hashedPassword,
     });
+    await newAccount.save();
   }
 
   async changePassword(account_id: string, { password }: ChangePasswordDto) {

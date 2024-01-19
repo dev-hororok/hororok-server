@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { AccountsService } from 'src/accounts/accounts.service';
 
-const EXPIRE_TIME = 20 * 1000;
+const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 
 @Injectable()
 export class AuthService {
@@ -33,11 +33,11 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: '1d',
+        expiresIn: '20m',
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
-        expiresIn: '7d',
+        expiresIn: '30d',
       }),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
@@ -53,11 +53,11 @@ export class AuthService {
       user: account,
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: '1d',
+        expiresIn: '20m',
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
-        expiresIn: '7d',
+        expiresIn: '30d',
       }),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };

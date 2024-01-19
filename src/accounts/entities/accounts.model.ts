@@ -26,7 +26,6 @@ export class Account extends Document {
   password: string;
 
   @Prop({
-    required: true,
     default: '',
   })
   @IsString()

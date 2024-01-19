@@ -1,4 +1,11 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { Role } from '../../accounts/entities/role.enum';
 
 export class ReadOnlyAccountDto {
@@ -11,7 +18,7 @@ export class ReadOnlyAccountDto {
   email: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   profile_url: string;
 
   @IsString()
