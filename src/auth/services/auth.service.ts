@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from '../entities/jwt.payload';
 import * as bcrypt from 'bcrypt';
@@ -24,6 +24,10 @@ export class AuthService {
   }
 
   async refreshToken(account: any) {
+    if (!account || !account.sub || !account.email || !account.role) {
+      throw new BadRequestException();
+    }
+
     const payload: JWTPayload = {
       sub: account.sub,
       email: account.email,
@@ -44,6 +48,9 @@ export class AuthService {
   }
 
   async login(account: any) {
+    if (!account || !account.sub || !account.email || !account.role) {
+      throw new BadRequestException();
+    }
     const payload: JWTPayload = {
       sub: account.id,
       email: account.email,
