@@ -2,25 +2,23 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Login Dockerhub
-      env:
-        DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
-        DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
-      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD      
+      - uses: actions/checkout@v3
+      - name: Login Dockerhub
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-    - name: Build the Docker image
-      run: docker build -t hororok-api .
-    - name: taging
-      run: docker tag hororok-api:latest changwoot/hororok-api:latest
-    - name: Push to Dockerhub
-      run: docker push changwoot/hororok-api:latest
+      - name: Build the Docker image
+        run: docker build -t hororok-api .
+      - name: taging
+        run: docker tag hororok-api:latest changwoot/hororok-api:latest
+      - name: Push to Dockerhub
+        run: docker push changwoot/hororok-api:latest

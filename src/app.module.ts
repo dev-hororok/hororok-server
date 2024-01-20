@@ -8,7 +8,6 @@ import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { HttpExceptionFilter } from './common/exceptions/http-exception/http-exception.filter';
 import { SuccessInterceptor } from './common/interceptors/success/success.interceptor';
 import { AccountsModule } from './accounts/accounts.module';
-import { TestService } from './test/test.service';
 
 @Module({
   imports: [
@@ -37,7 +36,6 @@ import { TestService } from './test/test.service';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    TestService,
   ],
 })
 export class AppModule {}
