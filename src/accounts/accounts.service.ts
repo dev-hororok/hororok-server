@@ -13,11 +13,11 @@ export class AccountsService {
     @InjectModel(Account.name) private accountModel: Model<Account>,
   ) {}
 
-  async findOneById(id: string): Promise<Account | null> {
+  async findOneById(id: string) {
     const account = await this.accountModel.findById(id);
     return account;
   }
-  async findOneByEmail(email: string): Promise<Account | null> {
+  async findOneByEmail(email: string) {
     const account = await this.accountModel.findOne({ email });
     return account;
   }

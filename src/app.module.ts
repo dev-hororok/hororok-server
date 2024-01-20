@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -20,9 +18,7 @@ import { AccountsModule } from './accounts/accounts.module';
     AuthModule,
     AccountsModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     // 실험결과 APP_GUARD도 위부터 아래로 순서가 보장됨
     {
       provide: APP_GUARD,
