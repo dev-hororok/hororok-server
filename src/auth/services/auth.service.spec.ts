@@ -99,7 +99,14 @@ describe('AuthService', () => {
     expect(service.login({})).rejects.toThrow(BadRequestException);
   });
   it('login 성공', async () => {
-    const result = await service.login(validPayload);
+    const mockAccount = {
+      id: '1',
+      email: 'test@test.com',
+      profile_url: '',
+      name: 'test',
+      role: Role.User,
+    };
+    const result = await service.login(mockAccount);
     expect(result.access_token).toBe('test_jwt_token');
     expect(result.refresh_token).toBe('test_jwt_token');
     expect(typeof result.expiresIn).toBe('number');

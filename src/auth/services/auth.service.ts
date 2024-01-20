@@ -23,15 +23,15 @@ export class AuthService {
     return null;
   }
 
-  async refreshToken(account: any) {
-    if (!account || !account.sub || !account.email || !account.role) {
+  async refreshToken(_payload: any) {
+    if (!_payload || !_payload.sub || !_payload.email || !_payload.role) {
       throw new BadRequestException();
     }
 
     const payload: JWTPayload = {
-      sub: account.sub,
-      email: account.email,
-      role: account.role,
+      sub: _payload.sub,
+      email: _payload.email,
+      role: _payload.role,
     };
 
     return {
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async login(account: any) {
-    if (!account || !account.sub || !account.email || !account.role) {
+    if (!account || !account.id || !account.email || !account.role) {
       throw new BadRequestException();
     }
     const payload: JWTPayload = {
