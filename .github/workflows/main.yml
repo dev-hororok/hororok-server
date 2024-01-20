@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -37,3 +37,22 @@ jobs:
         run: docker tag hororok-api:latest changwoot/hororok-api:latest
       - name: Push to Dockerhub
         run: docker push changwoot/hororok-api:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker image
+        run: sudo docker pull changwoot/hororok-api:latest
+      - name: Delete Old docker container
+        run: sudo docker rm -f hororok-api-container || true
+      - name: Run Docker Container
+        run: |
+          sudo docker run -d -p 80:${{ secrets.PORT }} \
+          -e MONGODB_URL=${{ secrets.MONGODB_URL }} \
+          -e MONGODB_PORT=${{ secrets.MONGODB_PORT }} \
+          -e PORT=${{ secrets.PORT }} \
+          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
+          --name hororok-api-container changwoot/hororok-api
