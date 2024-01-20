@@ -2,9 +2,9 @@ import { Controller, Post, Request, UseGuards, Body } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { Public } from '../decorators/public.decorator';
-import { CreateAccountDto } from '../../accounts/dtos/create-account.dto';
 import { JwtRefreshGuard } from '../guard/jwt-refresh.guard';
-import { AccountsService } from 'src/accounts/accounts.service';
+import { AccountsService } from '@src/accounts/accounts.service';
+import { CreateAccountDto } from '@src/accounts/dtos/create-account.dto';
 
 @Controller('auth')
 export class AuthController {

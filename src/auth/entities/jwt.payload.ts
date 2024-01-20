@@ -1,4 +1,4 @@
-import { Role } from '../../accounts/entities/role.enum';
+import { Role } from '@src/accounts/entities/role.enum';
 
 export type JWTPayload = {
   sub: string;

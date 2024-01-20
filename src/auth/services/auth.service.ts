@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from '../entities/jwt.payload';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { AccountsService } from 'src/accounts/accounts.service';
+import { AccountsService } from '@src/accounts/accounts.service';
 
 const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 
