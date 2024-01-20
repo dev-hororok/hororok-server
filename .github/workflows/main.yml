@@ -17,7 +17,7 @@ jobs:
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
       - name: Build the Docker image
-        run: docker build -t hororok-api .
+        run: docker build -t hororok-api -f ./DockerFile .
       - name: taging
         run: docker tag hororok-api:latest changwoot/hororok-api:latest
       - name: Push to Dockerhub
