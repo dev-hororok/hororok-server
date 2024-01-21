@@ -18,7 +18,7 @@ export class AccountsController {
   @Get('me')
   async getLoggedInAccount(@Request() req) {
     const account = await this.accountsService.findOneById(req.user.sub);
-    return account.readOnlyData;
+    return account;
   }
 
   @Patch(':account_id')
@@ -38,7 +38,7 @@ export class AccountsController {
       account_id,
       editAccountDto,
     );
-    return account.readOnlyData;
+    return account;
   }
 
   @Patch(':account_id/change-password')
@@ -54,6 +54,6 @@ export class AccountsController {
       account_id,
       changePasswordDto,
     );
-    return account.readOnlyData;
+    return account;
   }
 }

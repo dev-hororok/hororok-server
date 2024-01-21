@@ -1,15 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { Document } from 'mongoose';
 import { Role } from './role.enum';
+import { v4 as uuid } from 'uuid';
 import * as crypto from 'crypto';
-import { ReadOnlyAccountDto } from '@src/auth/dtos/readonly-account.dto';
+
+export type AccountDocument = Account & Document;
 
 @Schema({
   timestamps: true,
   collection: 'accounts',
 })
-export class Account extends Document {
+export class Account {
+  @Prop({
+    type: String,
+    unique: true,
+    default: function genUUID() {
+      return uuid();
+    },
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  account_id: string;
+
   @Prop({
     required: true,
     unique: true,
@@ -44,21 +57,8 @@ export class Account extends Document {
     enum: Role,
     default: Role.User,
   })
+  @IsNotEmpty()
   role: Role;
-
-  readonly readOnlyData: ReadOnlyAccountDto;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
-
-AccountSchema.virtual('readOnlyData').get(function (
-  this: Account,
-): ReadOnlyAccountDto {
-  return {
-    profile_url: this.profile_url,
-    id: this.id,
-    email: this.email,
-    role: this.role,
-    name: this.name,
-  };
-});
