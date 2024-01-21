@@ -1,5 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Account } from './entities/account.model';
 import { Model } from 'mongoose';
 import { CreateAccountDto } from './dtos/create-account.dto';
@@ -9,9 +8,7 @@ import { EditAccountDto } from './dtos/edit-account.dto';
 
 @Injectable()
 export class AccountsService {
-  constructor(
-    @InjectModel(Account.name) private accountModel: Model<Account>,
-  ) {}
+  constructor(@Inject('ACCOUNT_MODEL') private accountModel: Model<Account>) {}
 
   async findOneById(id: string) {
     const account = await this.accountModel.findById(id);
