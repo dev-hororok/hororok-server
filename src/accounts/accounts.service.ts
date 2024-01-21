@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Account } from './entities/accounts.model';
+import { Account } from './entities/account.model';
 import { Model } from 'mongoose';
 import { CreateAccountDto } from './dtos/create-account.dto';
 import * as bcrypt from 'bcrypt';
