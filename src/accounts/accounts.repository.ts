@@ -32,6 +32,8 @@ export class AccountsRepository {
     accountFilterQuery: FilterQuery<Account>,
     account: Partial<Account>,
   ): Promise<Account> {
-    return this.accountModel.findOneAndUpdate(accountFilterQuery, account);
+    return this.accountModel.findOneAndUpdate(accountFilterQuery, account, {
+      new: true,
+    });
   }
 }
