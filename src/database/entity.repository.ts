@@ -3,15 +3,21 @@ import { Document, FilterQuery, Model, UpdateQuery } from 'mongoose';
 export abstract class EntityRepository<T extends Document> {
   constructor(protected readonly entityModel: Model<T>) {}
 
+  async exists(filterQuery: FilterQuery<T>): Promise<{ _id: any } | null> {
+    return this.entityModel.exists(filterQuery);
+  }
+
   async findOne(
     filterQuery: FilterQuery<T>,
     projection?: Record<string, unknown>,
   ): Promise<T | null> {
-    return this.entityModel.findOne(filterQuery, {
-      _id: 0,
-      __v: 0,
-      ...projection,
-    });
+    return this.entityModel
+      .findOne(filterQuery, {
+        _id: 0,
+        __v: 0,
+        ...projection,
+      })
+      .exec();
   }
 
   async find(filterQuery: FilterQuery<T>): Promise<T[] | null> {
@@ -20,7 +26,7 @@ export abstract class EntityRepository<T extends Document> {
 
   async create(createEntityData: unknown): Promise<T> {
     const newEntity = new this.entityModel(createEntityData);
-    return newEntity.save();
+    return newEntity.save() as Promise<T>;
   }
 
   async findOneAndUpdate(
