@@ -18,7 +18,7 @@ export class AuthService {
   async validateAccount(email: string, pass: string): Promise<any> {
     const account = await this.accountsService.findOneByEmail(email);
     if (account && bcrypt.compareSync(pass, account.password)) {
-      return account.readOnlyData;
+      return account;
     }
     return null;
   }
@@ -48,11 +48,11 @@ export class AuthService {
   }
 
   async login(account: any) {
-    if (!account || !account.id || !account.email || !account.role) {
+    if (!account || !account.account_id || !account.email || !account.role) {
       throw new BadRequestException();
     }
     const payload: JWTPayload = {
-      sub: account.id,
+      sub: account.account_id,
       email: account.email,
       role: account.role,
     };
