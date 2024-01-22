@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async login(account: any) {
-    if (!account || !account.id || !account.email || !account.role) {
+    if (!account || !account.account_id || !account.email || !account.role) {
       throw new BadRequestException();
     }
     const payload: JWTPayload = {

@@ -1,39 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FilterQuery, Model } from 'mongoose';
 import { Account, AccountDocument } from './entities/account.model';
+import { EntityRepository } from '@src/database/entity.repository';
 
 @Injectable()
-export class AccountsRepository {
+export class AccountsRepository extends EntityRepository<AccountDocument> {
   constructor(
     @Inject('ACCOUNT_MODEL')
     private readonly accountModel: Model<AccountDocument>,
-  ) {}
+  ) {
+    super(accountModel);
+  }
 
   async exists(
     accountFilterQuery: FilterQuery<Account>,
   ): Promise<{ _id: any }> {
     return this.accountModel.exists(accountFilterQuery);
-  }
-
-  async findOne(accountFilterQuery: FilterQuery<Account>): Promise<Account> {
-    return this.accountModel.findOne(accountFilterQuery);
-  }
-
-  async find(accountsFilterQuery: FilterQuery<Account>): Promise<Account[]> {
-    return this.accountModel.find(accountsFilterQuery);
-  }
-
-  async create(account: Account): Promise<Account> {
-    const newAccount = new this.accountModel(account);
-    return newAccount.save();
-  }
-
-  async findOneAndUpdate(
-    accountFilterQuery: FilterQuery<Account>,
-    account: Partial<Account>,
-  ): Promise<Account> {
-    return this.accountModel.findOneAndUpdate(accountFilterQuery, account, {
-      new: true,
-    });
   }
 }
