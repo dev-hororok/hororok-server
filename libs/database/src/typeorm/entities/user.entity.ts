@@ -1,9 +1,9 @@
+import { CommonEntity } from '@app/database/typeorm/entities/common.entity';
 import { IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { DateEntity } from '../common/date.entity';
 
 @Entity()
-export class User extends DateEntity {
+export class User extends CommonEntity {
   @PrimaryGeneratedColumn('uuid')
   user_id: string;
 

@@ -13,7 +13,8 @@ export class SuccessResponse<T> {
   readonly data?: T;
 
   constructor(data: T) {
-    (this.result = 'SUCCESS'), (this.data = data);
+    this.result = 'SUCCESS';
+    this.data = data;
   }
 }
 

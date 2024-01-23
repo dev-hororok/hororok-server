@@ -42,7 +42,6 @@ export class Account {
     default: '',
   })
   @IsString()
-  @IsNotEmpty()
   profile_url: string;
 
   @Prop({
