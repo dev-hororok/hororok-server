@@ -8,7 +8,12 @@ async function bootstrap() {
 
   const PORT = process.env.PORT || 3000;
   app.enableCors({
-    origin: ['https://hororok-app.vercel.app', 'http://localhost:3000'],
+    origin: [
+      'https://hororok-app.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://monta-pwa.vercel.app',
+    ],
     credentials: true,
     exposedHeaders: ['Authorization'],
   });
