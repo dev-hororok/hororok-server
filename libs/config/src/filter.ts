@@ -24,7 +24,7 @@ export class FailResponse {
 export class CustomExceptionFilter implements ExceptionFilter {
   catch(error: any, host: ArgumentsHost) {
     const failRes: FailResponse = new FailResponse({
-      code: `${error.cotext as string}__${error.type as string}`,
+      code: `${error.context as string}__${error.type as string}`,
       description: error.message,
     });
 
