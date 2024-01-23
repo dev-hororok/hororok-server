@@ -1,7 +1,3 @@
-## Hororok SNS Server
+## Hororok Server
 
-### .env
-
-```
-
-```
+## TimerApp Server
