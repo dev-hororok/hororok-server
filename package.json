@@ -1,23 +1,27 @@
 {
-  "name": "hororok-sns-server",
+  "name": "hororok-server",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "yarn build:hororok-server && yarn build:timer-app ",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/hororok-sns-server/main",
+    "start:prod": "node dist/apps/hororok-server/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/hororok-sns-server/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/hororok-server/test/jest-e2e.json",
+    "start:hororok-server:local": "nest start hororok-server --debug --watch",
+    "start:timer-app:local": "nest start timer-app --debug --watch",
+    "build:hororok-server": "nest build hororok-server",
+    "build:timer-app": "nest build timer-app"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

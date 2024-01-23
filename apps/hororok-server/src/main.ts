@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.HOROROK_SERVER_PORT || 4000;
   app.enableCors({
     origin: [
       'https://hororok-app.vercel.app',
