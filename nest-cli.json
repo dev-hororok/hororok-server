@@ -1,22 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/hororok-sns-server/src",
+  "sourceRoot": "apps/hororok-server/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/hororok-sns-server/tsconfig.app.json"
+    "tsConfigPath": "apps/hororok-server/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/hororok-sns-server",
+  "root": "apps/hororok-server",
   "projects": {
-    "hororok-sns-server": {
+    "hororok-server": {
       "type": "application",
-      "root": "apps/hororok-sns-server",
+      "root": "apps/hororok-server",
       "entryFile": "main",
-      "sourceRoot": "apps/hororok-sns-server/src",
+      "sourceRoot": "apps/hororok-server/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/hororok-sns-server/tsconfig.app.json"
+        "tsConfigPath": "apps/hororok-server/tsconfig.app.json"
       }
     },
     "timer-app": {
