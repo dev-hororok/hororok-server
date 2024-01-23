@@ -81,7 +81,9 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "moduleNameMapper": {
-      "^@src/(.*)$": "<rootDir>/$1"
+      "^@src/(.*)$": "<rootDir>/$1",
+      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
@@ -89,7 +91,8 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
     ]
   }
 }

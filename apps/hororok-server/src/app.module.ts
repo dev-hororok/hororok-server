@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guard/roles.guard';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { HttpExceptionFilter } from './common/exceptions/http-exception/http-exception.filter';
-import { SuccessInterceptor } from './common/interceptors/success/success.interceptor';
 import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
@@ -25,10 +24,6 @@ import { AccountsModule } from './accounts/accounts.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: SuccessInterceptor,
     },
     {
       provide: APP_FILTER,
