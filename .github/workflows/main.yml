@@ -54,22 +54,17 @@ jobs:
   deploy:
     needs: build
     runs-on: [self-hosted, 'hororok']
-
     steps:
       - uses: actions/checkout@v3
-      - run: docker-compose down
-      - run: docker-compose pull
-      - name: Deploy with Docker Compose
+
+      - name: Login to DockerHub
         env:
-          HOROROK_SERVER_PORT: ${{ secrets.HOROROK_SERVER_PORT }}
-          TIMER_APP_PORT: ${{ secrets.TIMER_APP_PORT }}
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          MONGODB_PORT: ${{ secrets.MONGODB_PORT }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-        run: docker-compose up -d
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+      - name: Pull Updated Docker Images
+        run: docker-compose pull
+
+      - name: Restart Services with Updated Images
+        run: docker-compose up -d --remove-orphans
