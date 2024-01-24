@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { Document } from 'mongoose';
-import { Role } from './role.enum';
 import { v4 as uuid } from 'uuid';
 import * as crypto from 'crypto';
+import { AccountRole } from '@app/database/common/enums/account-role.enum';
 
 export type AccountDocument = Account & Document;
 
@@ -42,7 +42,6 @@ export class Account {
     default: '',
   })
   @IsString()
-  @IsNotEmpty()
   profile_url: string;
 
   @Prop({
@@ -54,12 +53,12 @@ export class Account {
 
   @Prop({
     required: true,
-    enum: Role,
-    default: Role.USER,
+    enum: AccountRole,
+    default: AccountRole.USER,
     type: String,
   })
   @IsNotEmpty()
-  role: Role;
+  role: AccountRole;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

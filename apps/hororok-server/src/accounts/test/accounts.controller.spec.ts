@@ -2,9 +2,9 @@ import { Test } from '@nestjs/testing';
 import { AccountsController } from '../accounts.controller';
 import { AccountsService } from '../accounts.service';
 import { accountStub } from './stubs/account.stub';
-import { Account } from '../entities/account.model';
 import { EditAccountDto } from '../dtos/edit-account.dto';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
+import { Account } from '@app/database/mongoose/entities/account.model';
 
 jest.mock('../accounts.service');
 

@@ -1,5 +1,5 @@
+import { AccountSchema } from '@app/database/mongoose/entities/account.model';
 import { Connection } from 'mongoose';
-import { AccountSchema } from './entities/account.model';
 
 export const accountsProviders = [
   {
