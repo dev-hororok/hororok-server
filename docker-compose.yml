@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: DockerFile.hororok
     ports:
-      - '4000:${HOROROK_SERVER_PORT}'
+      - '4000:${SERVER_PORT}'
     environment:
       MONGODB_URL: ${MONGODB_URL}
       MONGODB_PORT: ${MONGODB_PORT}
@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: DockerFile.timer-app
     ports:
-      - '4001:${TIMER_APP_PORT}'
+      - '4001:${SERVER_PORT}'
     environment:
       MONGODB_URL: ${MONGODB_URL}
       MONGODB_PORT: ${MONGODB_PORT}
