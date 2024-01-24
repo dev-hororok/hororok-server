@@ -5,6 +5,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guard/roles.guard';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { AccountsModule } from './accounts/accounts.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -25,5 +26,6 @@ import { AccountsModule } from './accounts/accounts.module';
       useClass: RolesGuard,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
