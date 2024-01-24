@@ -7,20 +7,22 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
+  app.setGlobalPrefix('hororok-api');
   app.useGlobalInterceptors(new Interceptor());
   app.useGlobalFilters(new CustomExceptionFilter());
 
-  const PORT = process.env.HOROROK_SERVER_PORT || 4000;
   app.enableCors({
     origin: [
       'https://hororok-app.vercel.app',
+      'https://monta-pwa.vercel.app',
       'http://localhost:3000',
       'http://localhost:5173',
-      'https://monta-pwa.vercel.app',
     ],
     credentials: true,
     exposedHeaders: ['Authorization'],
   });
+
+  const PORT = process.env.SERVER_PORT || 4000;
   await app.listen(PORT);
 }
 bootstrap();
