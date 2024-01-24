@@ -5,8 +5,6 @@ services:
     build:
       context: .
       dockerfile: DockerFile.hororok
-    ports:
-      - '4000:${HOROROK_SERVER_PORT}'
     environment:
       MONGODB_URL: ${MONGODB_URL}
       MONGODB_PORT: ${MONGODB_PORT}
@@ -17,16 +15,13 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
-    networks:
-      - hororok-network
+    restart: always
 
   timer-app:
     image: changwoot/timer-app:latest
     build:
       context: .
       dockerfile: DockerFile.timer-app
-    ports:
-      - '4001:${TIMER_APP_PORT}'
     environment:
       MONGODB_URL: ${MONGODB_URL}
       MONGODB_PORT: ${MONGODB_PORT}
@@ -37,9 +32,16 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
-    networks:
-      - hororok-network
+    restart: always
 
-networks:
-  hororok-network:
-    driver: bridge
+  nginx:
+    image: nginx:1.25.3-alpine
+    ports:
+      - 8080:8080
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    container_name: web.server.com
+    depends_on:
+      - hororok-api
+      - timer-app
+    restart: always

@@ -28,8 +28,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo HOROROK_SERVER_PORT=${{ secrets.HOROROK_SERVER_PORT }} >> .env
-          echo TIMER_APP_PORT=${{ secrets.TIMER_APP_PORT }} >> .env
+          echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
           echo MONGODB_URL=${{ secrets.MONGODB_URL }} >> .env
           echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
@@ -60,8 +59,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo HOROROK_SERVER_PORT=${{ secrets.HOROROK_SERVER_PORT }} >> .env
-          echo TIMER_APP_PORT=${{ secrets.TIMER_APP_PORT }} >> .env
+          echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
           echo MONGODB_URL=${{ secrets.MONGODB_URL }} >> .env
           echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
