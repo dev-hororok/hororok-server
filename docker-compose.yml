@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  hororok-api:
+    build:
+      context: .
+      dockerfile: DockerFile.hororok
+    ports:
+      - '4000:${HOROROK_SERVER_PORT}'
+    environment:
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_PORT: ${MONGODB_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+    networks:
+      - hororok-network
+
+  timer-app:
+    build:
+      context: .
+      dockerfile: DockerFile.timer-app
+    ports:
+      - '4001:${TIMER_APP_PORT}'
+    environment:
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_PORT: ${MONGODB_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+    networks:
+      - hororok-network
+
+networks:
+  hororok-network:
+    driver: bridge
