@@ -57,6 +57,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: docker-compose down
+      - run: docker-compose pull
       - name: Deploy with Docker Compose
         env:
           HOROROK_SERVER_PORT: ${{ secrets.HOROROK_SERVER_PORT }}
