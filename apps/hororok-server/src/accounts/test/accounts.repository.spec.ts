@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { AccountModel } from './support/account.model';
-import { Account } from '../entities/account.model';
 import { accountStub } from './stubs/account.stub';
 import { FilterQuery } from 'mongoose';
 import { AccountsRepository } from '../accounts.repository';
+import { Account } from '@app/database/mongoose/entities/account.model';
 
 describe('AccountsRepository', () => {
   let accountRepository: AccountsRepository;

@@ -1,5 +1,5 @@
-import { Account } from '../../entities/account.model';
-import { Role } from '../../entities/role.enum';
+import { AccountRole } from '@app/database/common/enums/account-role.enum';
+import { Account } from '@app/database/mongoose/entities/account.model';
 
 export const accountStub = (): Account => {
   return {
@@ -8,6 +8,6 @@ export const accountStub = (): Account => {
     password: '1234',
     profile_url: '',
     name: 'username',
-    role: Role.USER,
+    role: AccountRole.USER,
   };
 };

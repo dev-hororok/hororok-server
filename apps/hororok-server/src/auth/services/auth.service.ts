@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JWTPayload } from '../entities/jwt.payload';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { AccountsService } from '../../accounts/accounts.service';
+import { JWTPayload } from '../types/jwt.payload';
 
 const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 

@@ -7,8 +7,8 @@ import { EditAccountDto } from './dtos/edit-account.dto';
 import { AccountsRepository } from './accounts.repository';
 import { v4 as uuid } from 'uuid';
 import * as crypto from 'crypto';
-import { Role } from './entities/role.enum';
-import { Account } from './entities/account.model';
+import { Account } from '@app/database/mongoose/entities/account.model';
+import { AccountRole } from '@app/database/common/enums/account-role.enum';
 
 @Injectable()
 export class AccountsService {
@@ -36,7 +36,7 @@ export class AccountsService {
       password: hashedPassword,
       profile_url: '',
       name: crypto.randomBytes(10).toString('hex'),
-      role: Role.USER,
+      role: AccountRole.USER,
     });
   }
 

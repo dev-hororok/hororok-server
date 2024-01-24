@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { AccountDocument } from './entities/account.model';
-import { EntityRepository } from '../database/entity.repository';
+import { AccountDocument } from '@app/database/mongoose/entities/account.model';
+import { EntityRepository } from '@app/database/mongoose/entity.repository';
 
 @Injectable()
 export class AccountsRepository extends EntityRepository<AccountDocument> {
