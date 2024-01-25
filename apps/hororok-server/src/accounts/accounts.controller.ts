@@ -11,14 +11,16 @@ import {
 import { AccountsService } from './accounts.service';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { EditAccountDto } from './dtos/edit-account.dto';
+import { ReadOnlyAccountDto } from '@app/database/mongoose/dtos/readonly-account.dto';
+import { AccountMapper } from '@app/database/mongoose/mappers/account.mapper';
 
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
   @Get('me')
-  async getLoggedInAccount(@Request() req) {
+  async getLoggedInAccount(@Request() req): Promise<ReadOnlyAccountDto> {
     const account = await this.accountsService.findOneById(req.user.sub);
-    return account;
+    return AccountMapper.toDto(account);
   }
 
   @Patch(':account_id')
@@ -26,7 +28,7 @@ export class AccountsController {
     @Param('account_id') account_id: string,
     @Request() req,
     @Body() editAccountDto: EditAccountDto,
-  ) {
+  ): Promise<ReadOnlyAccountDto> {
     if (req.user.sub !== account_id) {
       throw new ForbiddenException();
     }
@@ -38,7 +40,7 @@ export class AccountsController {
       account_id,
       editAccountDto,
     );
-    return account;
+    return AccountMapper.toDto(account);
   }
 
   @Patch(':account_id/change-password')
@@ -46,7 +48,7 @@ export class AccountsController {
     @Param('account_id') account_id: string,
     @Request() req,
     @Body() changePasswordDto: ChangePasswordDto,
-  ) {
+  ): Promise<ReadOnlyAccountDto> {
     if (req.user.sub !== account_id) {
       throw new ForbiddenException();
     }
@@ -54,6 +56,6 @@ export class AccountsController {
       account_id,
       changePasswordDto,
     );
-    return account;
+    return AccountMapper.toDto(account);
   }
 }

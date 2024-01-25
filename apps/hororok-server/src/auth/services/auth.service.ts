@@ -49,7 +49,7 @@ export class AuthService {
     };
   }
 
-  async login(account: any) {
+  login(account: any) {
     if (!account || !account.account_id || !account.email || !account.role) {
       throw new BadRequestException();
     }
