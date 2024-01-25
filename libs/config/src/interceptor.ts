@@ -5,7 +5,6 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { instanceToPlain } from 'class-transformer';
 import { Observable, map } from 'rxjs';
 
 export class SuccessResponse<T> {
@@ -30,8 +29,6 @@ export class Interceptor implements NestInterceptor {
     next: CallHandler,
   ): Observable<SuccessResponse<unknown>> {
     context.switchToHttp().getResponse().status(HttpStatus.OK);
-    return next
-      .handle()
-      .pipe(map((data) => new SuccessResponse(instanceToPlain(data))));
+    return next.handle().pipe(map((data) => new SuccessResponse(data)));
   }
 }

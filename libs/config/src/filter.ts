@@ -1,4 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 
 export class FailResponse {
   readonly status: string;
@@ -15,11 +21,23 @@ export class FailResponse {
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
   catch(error: any, host: ArgumentsHost) {
-    const failRes: FailResponse = new FailResponse(
-      error.response.error,
-      error.response.message,
-    );
+    const status =
+      error instanceof HttpException
+        ? error.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    host.switchToHttp().getResponse().status(error.status).json(failRes);
+    if (error.response) {
+      host
+        .switchToHttp()
+        .getResponse()
+        .status(status)
+        .json(new FailResponse(error.response.error, error.response.message));
+    } else {
+      host
+        .switchToHttp()
+        .getResponse()
+        .status(status)
+        .json(new FailResponse(error.message, '서버에 문제가 발생했습니다.'));
+    }
   }
 }

@@ -1,24 +1,16 @@
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class ReadOnlyAccountDto {
   @IsUUID()
   @IsNotEmpty()
-  id: string;
+  account_id: string;
 
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @IsString()
-  @IsOptional()
   profile_url: string;
 
   @IsString()

@@ -4,7 +4,9 @@ import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { Public } from '../decorators/public.decorator';
 import { JwtRefreshGuard } from '../guard/jwt-refresh.guard';
 import { AccountsService } from '../../accounts/accounts.service';
-import { CreateAccountDto } from '../../accounts/dtos/create-account.dto';
+import { LoginOuputDto } from '../dtos/login.dto';
+import { RegisterInputDto, RegisterOutputDto } from '../dtos/register.dto';
+import { RefreshTokenOuputDto } from '../dtos/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,21 +18,24 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
+  login(@Request() req): LoginOuputDto {
     // node 관습상 인증된 정보는 request의 user에 담긴다
     return this.authService.login(req.user);
   }
 
   @Public()
   @Post('register')
-  async registerAccount(@Body() body: CreateAccountDto) {
-    return this.accountsService.create(body);
+  async registerAccount(
+    @Body() body: RegisterInputDto,
+  ): Promise<RegisterOutputDto> {
+    const result = await this.accountsService.create(body);
+    return { account_id: result.account_id };
   }
 
   @Public()
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
-  async refreshToken(@Request() req) {
+  refreshToken(@Request() req): RefreshTokenOuputDto {
     return this.authService.refreshToken(req.user);
   }
 }

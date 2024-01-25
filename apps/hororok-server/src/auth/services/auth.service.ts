@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { AccountsService } from '../../accounts/accounts.service';
 import { JWTPayload } from '../types/jwt.payload';
+import { AccountMapper } from '@app/database/mongoose/mappers/account.mapper';
+import { RefreshTokenOuputDto } from '../dtos/refresh-token.dto';
 
 const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 
@@ -23,7 +25,7 @@ export class AuthService {
     return null;
   }
 
-  async refreshToken(_payload: any) {
+  refreshToken(_payload: any): RefreshTokenOuputDto {
     if (!_payload || !_payload.sub || !_payload.email || !_payload.role) {
       throw new BadRequestException();
     }
@@ -47,7 +49,7 @@ export class AuthService {
     };
   }
 
-  async login(account: any) {
+  login(account: any) {
     if (!account || !account.account_id || !account.email || !account.role) {
       throw new BadRequestException();
     }
@@ -56,8 +58,9 @@ export class AuthService {
       email: account.email,
       role: account.role,
     };
+
     return {
-      user: account,
+      account: AccountMapper.toDto(account),
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
         expiresIn: '20m',

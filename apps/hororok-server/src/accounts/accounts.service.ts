@@ -15,12 +15,10 @@ export class AccountsService {
   constructor(private readonly accountsRepository: AccountsRepository) {}
 
   async findOneById(id: string): Promise<Account> {
-    const account = await this.accountsRepository.findOne({ account_id: id });
-    return account;
+    return this.accountsRepository.findOne({ account_id: id });
   }
   async findOneByEmail(email: string): Promise<Account> {
-    const account = await this.accountsRepository.findOne({ email });
-    return account;
+    return this.accountsRepository.findOne({ email });
   }
 
   async create({ email, password }: CreateAccountDto): Promise<Account> {
