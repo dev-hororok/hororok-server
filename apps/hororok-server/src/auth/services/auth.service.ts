@@ -6,6 +6,7 @@ import { AccountsService } from '../../accounts/accounts.service';
 import { JWTPayload } from '../types/jwt.payload';
 import { AccountMapper } from '@app/database/mongoose/mappers/account.mapper';
 import { RefreshTokenOuputDto } from '../dtos/refresh-token.dto';
+import { LoginOutputDto } from '../dtos/login.dto';
 
 const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 
@@ -25,7 +26,7 @@ export class AuthService {
     return null;
   }
 
-  refreshToken(_payload: any): RefreshTokenOuputDto {
+  async refreshToken(_payload: any): Promise<RefreshTokenOuputDto> {
     if (!_payload || !_payload.sub || !_payload.email || !_payload.role) {
       throw new BadRequestException();
     }
@@ -49,7 +50,7 @@ export class AuthService {
     };
   }
 
-  login(account: any) {
+  async login(account: any): Promise<LoginOutputDto> {
     if (!account || !account.account_id || !account.email || !account.role) {
       throw new BadRequestException();
     }
