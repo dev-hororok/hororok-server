@@ -2,7 +2,6 @@ version: '3.8'
 services:
   hororok-api:
     image: changwoot/hororok-api:latest
-    platform: linux/amd64
     build:
       context: .
       dockerfile: DockerFile.hororok
@@ -20,7 +19,6 @@ services:
 
   timer-app:
     image: changwoot/timer-app:latest
-    platform: linux/amd64
     build:
       context: .
       dockerfile: DockerFile.timer-app

@@ -73,8 +73,9 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-      - name: Pull Updated Docker Images
-        run: docker-compose pull
-
-      - name: Restart Services with Updated Images
-        run: docker-compose up -d --remove-orphans
+      - name: Deploy
+        run: |
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker-compose pull
+          docker-compose up -d
+          docker image prune -f
