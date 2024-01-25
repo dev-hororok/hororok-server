@@ -1,10 +1,12 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
   IsUUID,
 } from 'class-validator';
+import { TimerAppMemberRole } from '../enums/timer-app-member-role.enum';
 
 export class ReadOnlyMemberDto {
   @IsUUID()
@@ -19,12 +21,16 @@ export class ReadOnlyMemberDto {
   @IsNotEmpty()
   nickname: string;
 
-  @IsString()
-  image_url: string;
-
   @IsNumber()
   @IsNotEmpty()
   point: number;
+
+  @IsEnum(TimerAppMemberRole)
+  @IsNotEmpty()
+  role: TimerAppMemberRole;
+
+  @IsString()
+  image_url: string;
 
   @IsNumber()
   active_record_id: number;

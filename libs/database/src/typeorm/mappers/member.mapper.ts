@@ -11,6 +11,7 @@ export class MemberMapper {
     dto.nickname = member.nickname;
     dto.point = member.point;
     dto.active_record_id = member.active_record_id;
+    dto.role = member.role;
 
     return dto;
   }
