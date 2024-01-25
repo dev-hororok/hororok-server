@@ -13,13 +13,13 @@ export class SuccessResponse<T> {
   readonly data?: T;
 
   constructor(data: T) {
-    this.result = 'SUCCESS';
+    this.result = 'success';
     this.data = data;
   }
 }
 
 export class CommonResponse<T> {
-  readonly result: 'SUCCESS' | 'FAIL';
+  readonly result: 'success' | 'error';
   data: T;
 }
 
