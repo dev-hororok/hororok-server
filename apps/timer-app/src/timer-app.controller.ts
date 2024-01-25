@@ -20,6 +20,6 @@ export class TimerAppController {
 
   @Get('/2')
   getHello3(): string {
-    return this.timerAppService.getHello() + '!!!!!';
+    return this.timerAppService.getHello() + '@@@@';
   }
 }
