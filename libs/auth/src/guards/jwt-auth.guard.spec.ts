@@ -3,9 +3,9 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { Test } from '@nestjs/testing';
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from '../strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
+import { JwtStrategy } from '../strategies/jwt-strategy';
 
 describe('JwtAuthGuard', () => {
   let guard: JwtAuthGuard;

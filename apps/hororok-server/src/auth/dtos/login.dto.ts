@@ -1,5 +1,5 @@
+import { ReadOnlyAccountDto } from '@app/database/mongoose/dtos/readonly-account.dto';
 import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
-import { ReadOnlyAccountDto } from '../../../../../libs/database/src/mongoose/dtos/readonly-account.dto';
 
 export class LoginOutputDto {
   @IsString()

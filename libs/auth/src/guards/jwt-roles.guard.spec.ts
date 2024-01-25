@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
-import { RolesGuard } from './roles.guard';
 import { Reflector } from '@nestjs/core';
+import { RolesGuard } from './jwt-roles.guard';
 
-describe('LocalAuthGuard', () => {
+describe('LocalRolesGuard', () => {
   let guard: RolesGuard;
   let reflector: Reflector;
   let mockExecutionContext: ExecutionContext;

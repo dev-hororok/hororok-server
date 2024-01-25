@@ -8,18 +8,13 @@ import {
 import { Observable, map } from 'rxjs';
 
 export class SuccessResponse<T> {
-  readonly result: string;
+  readonly status: string;
   readonly data?: T;
 
   constructor(data: T) {
-    this.result = 'success';
+    this.status = 'success';
     this.data = data;
   }
-}
-
-export class CommonResponse<T> {
-  readonly result: 'success' | 'error';
-  data: T;
 }
 
 @Injectable()
