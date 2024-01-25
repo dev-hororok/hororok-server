@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { AccountsController } from '../accounts.controller';
 import { AccountsService } from '../accounts.service';
-import { accountStub } from './stubs/account.stub';
+import { readonlyAccountStub } from './stubs/account.stub';
 import { EditAccountDto } from '../dtos/edit-account.dto';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
-import { Account } from '@app/database/mongoose/entities/account.model';
+import { ReadOnlyAccountDto } from '@app/database/mongoose/dtos/readonly-account.dto';
 
 jest.mock('../accounts.service');
 
@@ -25,28 +25,28 @@ describe('AccountsController', () => {
 
   describe('getLoggedInAccount', () => {
     describe('getLoggedInAccount 호출 시', () => {
-      let account: Account;
+      let account: ReadOnlyAccountDto;
       beforeEach(async () => {
         account = await accountsController.getLoggedInAccount({
-          user: { sub: accountStub().account_id },
+          user: { sub: readonlyAccountStub().account_id },
         });
       });
 
       test('AccountService가 호출됨', () => {
         expect(accountsService.findOneById).toHaveBeenCalledWith(
-          accountStub().account_id,
+          readonlyAccountStub().account_id,
         );
       });
 
       test('Account를 반환', () => {
-        expect(account).toEqual(accountStub());
+        expect(account).toEqual(readonlyAccountStub());
       });
     });
   });
 
   describe('editAccount', () => {
     describe('editAccount 호출 시', () => {
-      let account: Account;
+      let account: ReadOnlyAccountDto;
       let editAccountDto: EditAccountDto;
       beforeEach(async () => {
         editAccountDto = {
@@ -54,49 +54,49 @@ describe('AccountsController', () => {
           profile_url: 'test.png',
         };
         account = await accountsController.editAccount(
-          accountStub().account_id,
-          { user: { sub: accountStub().account_id } },
+          readonlyAccountStub().account_id,
+          { user: { sub: readonlyAccountStub().account_id } },
           editAccountDto,
         );
       });
 
       test('AccountService가 호출됨', () => {
         expect(accountsService.update).toHaveBeenCalledWith(
-          accountStub().account_id,
+          readonlyAccountStub().account_id,
           editAccountDto,
         );
       });
 
       test('Account를 반환', () => {
-        expect(account).toEqual(accountStub());
+        expect(account).toEqual(readonlyAccountStub());
       });
     });
   });
 
   describe('changePassword', () => {
     describe('changePassword 호출 시', () => {
-      let account: Account;
+      let account: ReadOnlyAccountDto;
       let changePasswordDto: ChangePasswordDto;
       beforeEach(async () => {
         changePasswordDto = {
           password: 'changedPassword',
         };
         account = await accountsController.changePassword(
-          accountStub().account_id,
-          { user: { sub: accountStub().account_id } },
+          readonlyAccountStub().account_id,
+          { user: { sub: readonlyAccountStub().account_id } },
           changePasswordDto,
         );
       });
 
       test('AccountService가 호출됨', () => {
         expect(accountsService.changePassword).toHaveBeenCalledWith(
-          accountStub().account_id,
+          readonlyAccountStub().account_id,
           changePasswordDto,
         );
       });
 
       test('Account를 반환', () => {
-        expect(account).toEqual(accountStub());
+        expect(account).toEqual(readonlyAccountStub());
       });
     });
   });
