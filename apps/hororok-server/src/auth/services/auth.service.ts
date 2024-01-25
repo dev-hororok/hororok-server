@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { AccountsService } from '../../accounts/accounts.service';
 import { JWTPayload } from '../types/jwt.payload';
+import { Account } from '@app/database/mongoose/entities/account.model';
+import { AccountMapper } from '@app/database/mongoose/mappers/account.mapper';
 
 const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 
@@ -56,8 +58,9 @@ export class AuthService {
       email: account.email,
       role: account.role,
     };
+
     return {
-      user: account,
+      account: AccountMapper.toDto(account),
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
         expiresIn: '20m',

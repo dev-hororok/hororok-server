@@ -5,6 +5,7 @@ import { Public } from '../decorators/public.decorator';
 import { JwtRefreshGuard } from '../guard/jwt-refresh.guard';
 import { AccountsService } from '../../accounts/accounts.service';
 import { CreateAccountDto } from '../../accounts/dtos/create-account.dto';
+import { LoginOuputDto } from '../dtos/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +17,7 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
+  async login(@Request() req): Promise<LoginOuputDto> {
     // node 관습상 인증된 정보는 request의 user에 담긴다
     return this.authService.login(req.user);
   }
