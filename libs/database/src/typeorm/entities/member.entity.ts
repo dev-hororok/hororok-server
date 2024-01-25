@@ -48,8 +48,8 @@ export class Member extends CommonEntity {
     nullable: true,
     type: 'bigint',
   })
-  @IsString()
-  active_record_id: string;
+  @IsNumber()
+  active_record_id: number;
 
   @Column({
     nullable: true,

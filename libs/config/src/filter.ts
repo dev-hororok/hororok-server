@@ -25,7 +25,6 @@ export class CustomExceptionFilter implements ExceptionFilter {
       error instanceof HttpException
         ? error.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
     if (error.response) {
       host
         .switchToHttp()
