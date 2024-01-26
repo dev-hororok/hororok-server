@@ -1,13 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import { TimerAppService } from './timer-app.service';
 
 @Controller()
 export class TimerAppController {
-  constructor(private readonly timerAppService: TimerAppService) {}
+  constructor() {}
 
   @Get()
   getHello(): string {
-    return this.timerAppService.getHello();
+    return 'Timer App Ping';
   }
 
   @Get('me')
