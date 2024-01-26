@@ -18,7 +18,10 @@ export class StreaksService {
   }
 
   async findOneByMemberId(member_id: string): Promise<StudyStreak> {
-    return this.streakRepository.findOne({ where: { member: { member_id } } });
+    return this.streakRepository.findOne({
+      where: { member: { member_id } },
+      relations: ['palette'],
+    });
   }
 
   async create(member_id: string) {

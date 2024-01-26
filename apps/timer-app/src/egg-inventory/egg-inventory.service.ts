@@ -16,12 +16,14 @@ export class EggInventoryService {
   async findOne(id: string): Promise<EggInventory> {
     return this.eggInventoryRepository.findOne({
       where: { egg_inventory_id: id },
+      relations: ['egg'],
     });
   }
 
   async findByMemberId(member_id: string): Promise<EggInventory[]> {
     return this.eggInventoryRepository.find({
       where: { member: { member_id } },
+      relations: ['egg'],
     });
   }
 

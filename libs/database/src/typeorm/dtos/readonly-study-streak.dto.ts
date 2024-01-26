@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsObject } from 'class-validator';
+import { ReadOnlyPaletteDto } from './readonly-palette.dto';
 
 export class ReadOnlyStudyStreakDto {
   @IsNumber()
@@ -12,4 +13,15 @@ export class ReadOnlyStudyStreakDto {
   @IsNumber()
   @IsNotEmpty()
   longest_streak: number;
+
+  @IsDate()
+  @IsNotEmpty()
+  created_at: Date;
+
+  @IsDate()
+  @IsNotEmpty()
+  updated_at: Date;
+
+  @IsObject()
+  palette: ReadOnlyPaletteDto | null;
 }
