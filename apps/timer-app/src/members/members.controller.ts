@@ -19,6 +19,8 @@ import { StudyStreakMapper } from '@app/database/typeorm/mappers/study-streak.ma
 import { MemberExistsGuard } from './guards/exists.guard';
 import { EggInventoryService } from '../egg-inventory/egg-inventory.service';
 import { EggInventoryMapper } from '@app/database/typeorm/mappers/egg-inventory.mapper';
+import { StudyRecordsService } from '../study-records/study-records.service';
+import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
 
 @Controller('members')
 export class MembersController {
@@ -26,6 +28,7 @@ export class MembersController {
     private readonly membersService: MembersService,
     private readonly streaksService: StreaksService,
     private readonly eggInventoryService: EggInventoryService,
+    private readonly studyRecordsService: StudyRecordsService,
   ) {}
 
   @Roles(AccountRole.ADMIN)
@@ -87,6 +90,7 @@ export class MembersController {
     return StudyStreakMapper.toDto(streak);
   }
 
+  // 유저 알 인벤토리 조회
   @Get(':member_id/egg-inventory')
   @UseGuards(PermissionsGuard)
   async getMemberEggInventory(@Param('member_id') member_id: string) {
@@ -95,6 +99,18 @@ export class MembersController {
 
     return {
       egg_inventory: egg_inventory.map((ei) => EggInventoryMapper.toDto(ei)),
+    };
+  }
+
+  // 유저 공부 기록 조회
+  @Get(':member_id/study-records')
+  @UseGuards(MemberExistsGuard)
+  async getMemberStudyRecords(@Param('member_id') member_id: string) {
+    const study_records =
+      await this.studyRecordsService.findByMemberId(member_id);
+
+    return {
+      study_records: study_records.map((sr) => StudyRecordMapper.toDto(sr)),
     };
   }
 }
