@@ -4,9 +4,10 @@ import { AuthController } from './controllers/auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AccountsModule } from '../accounts/accounts.module';
 import { JwtModule } from '@nestjs/jwt';
+import { SharedAuthModule } from '@app/auth';
 
 @Module({
-  imports: [AccountsModule, JwtModule.register({})],
+  imports: [AccountsModule, SharedAuthModule, JwtModule.register({})],
   providers: [AuthService, LocalStrategy],
   controllers: [AuthController],
 })
