@@ -7,7 +7,7 @@ import { SharedAuthModule } from '@app/auth';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [AccountsModule, SharedAuthModule, JwtModule],
+  imports: [AccountsModule, SharedAuthModule, JwtModule.register({})],
   providers: [AuthService, LocalStrategy],
   controllers: [AuthController],
 })
