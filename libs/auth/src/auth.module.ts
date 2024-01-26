@@ -15,5 +15,6 @@ import { ConfigService } from '@nestjs/config';
     PassportModule,
   ],
   providers: [JwtStrategy],
+  exports: [PassportModule, JwtModule, JwtStrategy],
 })
 export class SharedAuthModule {}
