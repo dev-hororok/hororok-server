@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  # mysql:
+  #   image: mysql:8.0.34
+  #   container_name: mysql.service.com
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+  #     MYSQL_DATABASE: ${DB_NAME}
+  #   ports:
+  #     - '3306:3306'
+
   hororok-api:
     image: changwoot/hororok-api:latest
     build:
@@ -16,6 +25,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
     restart: always
+    # depends_on:
+    #   - mysql
 
   timer-app:
     image: changwoot/timer-app:latest
@@ -33,6 +44,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
     restart: always
+    # depends_on:
+    #   - mysql
 
   nginx:
     image: nginx:1.25.3-alpine
