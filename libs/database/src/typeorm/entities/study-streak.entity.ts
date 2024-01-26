@@ -36,7 +36,7 @@ export class StudyStreak extends CommonEntity {
     (palette) => {
       palette.study_streaks;
     },
-    { nullable: false },
+    { nullable: true },
   )
   @JoinColumn({ name: 'palette_id' })
   palette: Palette;
