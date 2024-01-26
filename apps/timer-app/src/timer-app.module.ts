@@ -11,6 +11,7 @@ import { EggInventoryModule } from './egg-inventory/egg-inventory.module';
 import { StudyRecordsModule } from './study-records/study-records.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { CharacterInventoryModule } from './character-inventory/character-inventory.module';
+import { StudyCategoriesModule } from './study-categories/study-categories.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CharacterInventoryModule } from './character-inventory/character-invent
     StudyRecordsModule,
     StatisticsModule,
     CharacterInventoryModule,
+    StudyCategoriesModule,
   ],
   controllers: [TimerAppController],
   providers: [

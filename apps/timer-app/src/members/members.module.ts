@@ -8,6 +8,8 @@ import { EggInventoryModule } from '../egg-inventory/egg-inventory.module';
 import { StudyRecordsModule } from '../study-records/study-records.module';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { CharacterInventoryModule } from '../character-inventory/character-inventory.module';
+import { StudyCategoriesModule } from '../study-categories/study-categories.module';
+import { MemberStudyCategoriesController } from './members-study-categories.controller';
 
 @Module({
   imports: [
@@ -17,8 +19,9 @@ import { CharacterInventoryModule } from '../character-inventory/character-inven
     CharacterInventoryModule,
     StudyRecordsModule,
     StatisticsModule,
+    StudyCategoriesModule,
   ],
   providers: [...MembersProviders, MembersService],
-  controllers: [MembersController],
+  controllers: [MembersController, MemberStudyCategoriesController],
 })
 export class MembersModule {}
