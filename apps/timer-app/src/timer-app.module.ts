@@ -7,6 +7,7 @@ import { JwtAuthGuard, RolesGuard } from '@app/auth';
 import { SharedAuthModule } from '@app/auth/auth.module';
 import { MembersModule } from './members/members.module';
 import { StreaksModule } from './streaks/streaks.module';
+import { EggInventoryModule } from './egg-inventory/egg-inventory.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { StreaksModule } from './streaks/streaks.module';
     SharedAuthModule,
     MembersModule,
     StreaksModule,
+    EggInventoryModule,
   ],
   controllers: [TimerAppController],
   providers: [

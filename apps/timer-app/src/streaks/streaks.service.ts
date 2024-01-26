@@ -25,9 +25,6 @@ export class StreaksService {
     const newStreak = this.streakRepository.create({
       longest_streak: 0,
       current_streak: 0,
-      palette: {
-        palette_id: 1,
-      },
       member: {
         member_id,
       },

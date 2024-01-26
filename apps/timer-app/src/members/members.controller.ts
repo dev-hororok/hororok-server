@@ -17,12 +17,15 @@ import { UpdateMemberInputDto } from './dtos/update-member.dto';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { StudyStreakMapper } from '@app/database/typeorm/mappers/study-streak.mapper';
 import { MemberExistsGuard } from './guards/exists.guard';
+import { EggInventoryService } from '../egg-inventory/egg-inventory.service';
+import { EggInventoryMapper } from '@app/database/typeorm/mappers/egg-inventory.mapper';
 
 @Controller('members')
 export class MembersController {
   constructor(
     private readonly membersService: MembersService,
     private readonly streaksService: StreaksService,
+    private readonly eggInventoryService: EggInventoryService,
   ) {}
 
   @Roles(AccountRole.ADMIN)
@@ -70,11 +73,28 @@ export class MembersController {
     return { member: MemberMapper.toDto(updatedMember) };
   }
 
-  // 유저 스트릭 정보 조회
+  // 유저 스트릭 정보 조회 (없으면 생성)
   @Get(':member_id/study-streak')
   @UseGuards(MemberExistsGuard)
   async getMemberStudyStreak(@Param('member_id') member_id: string) {
     const streak = await this.streaksService.findOneByMemberId(member_id);
+
+    if (!streak) {
+      const newStreak = await this.streaksService.create(member_id);
+      return StudyStreakMapper.toDto(newStreak);
+    }
+
     return StudyStreakMapper.toDto(streak);
+  }
+
+  @Get(':member_id/egg-inventory')
+  @UseGuards(PermissionsGuard)
+  async getMemberEggInventory(@Param('member_id') member_id: string) {
+    const egg_inventory =
+      await this.eggInventoryService.findByMemberId(member_id);
+
+    return {
+      egg_inventory: egg_inventory.map((ei) => EggInventoryMapper.toDto(ei)),
+    };
   }
 }
