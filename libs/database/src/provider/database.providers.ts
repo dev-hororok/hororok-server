@@ -43,7 +43,7 @@ export const databaseProviders = [
           TransactionRecord,
         ],
         synchronize: false,
-        logging: true,
+        logging: false,
       });
 
       return dataSource.initialize();
