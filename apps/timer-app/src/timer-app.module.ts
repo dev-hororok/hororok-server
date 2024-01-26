@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TimerAppController } from './timer-app.controller';
-import { TimerAppService } from './timer-app.service';
 import { DatabaseModule } from '@app/database';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
@@ -19,7 +18,6 @@ import { MembersModule } from './members/members.module';
   ],
   controllers: [TimerAppController],
   providers: [
-    TimerAppService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
