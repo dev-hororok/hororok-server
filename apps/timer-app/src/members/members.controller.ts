@@ -37,10 +37,6 @@ export class MembersController {
     private readonly statisticsService: StatisticsService,
   ) {}
 
-@Controller('members')
-export class MembersController {
-  constructor(private readonly membersService: MembersService) {}
-
   @Roles(AccountRole.ADMIN)
   @Get()
   async getAllMember() {
