@@ -8,6 +8,7 @@ import { SharedAuthModule } from '@app/auth/auth.module';
 import { MembersModule } from './members/members.module';
 import { StreaksModule } from './streaks/streaks.module';
 import { EggInventoryModule } from './egg-inventory/egg-inventory.module';
+import { StudyRecordsModule } from './study-records/study-records.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EggInventoryModule } from './egg-inventory/egg-inventory.module';
     MembersModule,
     StreaksModule,
     EggInventoryModule,
+    StudyRecordsModule,
   ],
   controllers: [TimerAppController],
   providers: [
