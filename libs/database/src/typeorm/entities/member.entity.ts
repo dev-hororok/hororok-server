@@ -65,7 +65,7 @@ export class Member extends CommonEntity {
   @IsNumber()
   point: number;
 
-  @Column({ type: 'varchar', length: 36 })
+  @Column({ type: 'varchar', length: 36, unique: true })
   @IsString()
   account_id: string;
 

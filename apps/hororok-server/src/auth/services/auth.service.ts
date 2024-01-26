@@ -40,7 +40,7 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: '20m',
+        expiresIn: '3d',
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
@@ -64,7 +64,7 @@ export class AuthService {
       account: AccountMapper.toDto(account),
       access_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: '20m',
+        expiresIn: '3d',
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
