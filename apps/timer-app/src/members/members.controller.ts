@@ -1,3 +1,4 @@
+import { StreaksService } from './../streaks/streaks.service';
 import { Roles } from '@app/auth';
 import {
   BadRequestException,
@@ -14,10 +15,15 @@ import { MemberMapper } from '@app/database/typeorm/mappers/member.mapper';
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
 import { UpdateMemberInputDto } from './dtos/update-member.dto';
 import { PermissionsGuard } from './guards/permissions.guard';
+import { StudyStreakMapper } from '@app/database/typeorm/mappers/study-streak.mapper';
+import { MemberExistsGuard } from './guards/exists.guard';
 
 @Controller('members')
 export class MembersController {
-  constructor(private readonly membersService: MembersService) {}
+  constructor(
+    private readonly membersService: MembersService,
+    private readonly streaksService: StreaksService,
+  ) {}
 
   @Roles(AccountRole.ADMIN)
   @Get()
@@ -33,6 +39,8 @@ export class MembersController {
 
     if (!member) {
       const newMember = await this.membersService.create(req.user);
+      // 스트릭 생성
+      await this.streaksService.create(newMember.member_id);
 
       return MemberMapper.toDto(newMember);
     }
@@ -59,6 +67,14 @@ export class MembersController {
       updateMemberInputDto,
     );
 
-    return { member: updatedMember };
+    return { member: MemberMapper.toDto(updatedMember) };
+  }
+
+  // 유저 스트릭 정보 조회
+  @Get(':member_id/study-streak')
+  @UseGuards(MemberExistsGuard)
+  async getMemberStudyStreak(@Param('member_id') member_id: string) {
+    const streak = await this.streaksService.findOneByMemberId(member_id);
+    return StudyStreakMapper.toDto(streak);
   }
 }

@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard, RolesGuard } from '@app/auth';
 import { SharedAuthModule } from '@app/auth/auth.module';
 import { MembersModule } from './members/members.module';
+import { StreaksModule } from './streaks/streaks.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MembersModule } from './members/members.module';
     DatabaseModule,
     SharedAuthModule,
     MembersModule,
+    StreaksModule,
   ],
   controllers: [TimerAppController],
   providers: [
