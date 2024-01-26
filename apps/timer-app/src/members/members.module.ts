@@ -6,6 +6,7 @@ import { MembersProviders } from './members.providers';
 import { StreaksModule } from '../streaks/streaks.module';
 import { EggInventoryModule } from '../egg-inventory/egg-inventory.module';
 import { StudyRecordsModule } from '../study-records/study-records.module';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { StudyRecordsModule } from '../study-records/study-records.module';
     StreaksModule,
     EggInventoryModule,
     StudyRecordsModule,
+    StatisticsModule,
   ],
   providers: [...MembersProviders, MembersService],
   controllers: [MembersController],

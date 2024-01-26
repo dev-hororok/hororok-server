@@ -21,6 +21,8 @@ import { EggInventoryService } from '../egg-inventory/egg-inventory.service';
 import { EggInventoryMapper } from '@app/database/typeorm/mappers/egg-inventory.mapper';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
+import { StatisticsService } from '../statistics/statistics.service';
+import { StatisticMapper } from '@app/database/typeorm/mappers/statistic.mapper';
 
 @Controller('members')
 export class MembersController {
@@ -29,6 +31,7 @@ export class MembersController {
     private readonly streaksService: StreaksService,
     private readonly eggInventoryService: EggInventoryService,
     private readonly studyRecordsService: StudyRecordsService,
+    private readonly statisticsService: StatisticsService,
   ) {}
 
   @Roles(AccountRole.ADMIN)
@@ -48,7 +51,10 @@ export class MembersController {
       // 스트릭 생성
       await this.streaksService.create(newMember.member_id);
 
-      return MemberMapper.toDto(newMember);
+      // 통계 생성
+      await this.statisticsService.create(newMember.member_id);
+
+      return { member: MemberMapper.toDto(newMember) };
     }
 
     return { member: MemberMapper.toDto(member) };
@@ -102,7 +108,7 @@ export class MembersController {
     };
   }
 
-  // 유저 공부 기록 조회
+  // 유저 공부 기록들 조회
   @Get(':member_id/study-records')
   @UseGuards(MemberExistsGuard)
   async getMemberStudyRecords(@Param('member_id') member_id: string) {
@@ -111,6 +117,21 @@ export class MembersController {
 
     return {
       study_records: study_records.map((sr) => StudyRecordMapper.toDto(sr)),
+    };
+  }
+
+  // 유저 통계 조회 (없으면 생성)
+  @Get(':member_id/statistic')
+  @UseGuards(PermissionsGuard)
+  async getMemberStatistic(@Param('member_id') member_id: string) {
+    const statistic = await this.statisticsService.findOneByMemberId(member_id);
+
+    if (!statistic) {
+      const newStatistic = await this.statisticsService.create(member_id);
+      return { statistic: StatisticMapper.toDto(newStatistic) };
+    }
+    return {
+      statistic: StatisticMapper.toDto(statistic),
     };
   }
 }
