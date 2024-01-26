@@ -23,6 +23,8 @@ import { StudyRecordsService } from '../study-records/study-records.service';
 import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
 import { StatisticsService } from '../statistics/statistics.service';
 import { StatisticMapper } from '@app/database/typeorm/mappers/statistic.mapper';
+import { CharacterInventoryService } from '../character-inventory/character-inventory.service';
+import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/character-inventory.mapper';
 
 @Controller('members')
 export class MembersController {
@@ -30,6 +32,7 @@ export class MembersController {
     private readonly membersService: MembersService,
     private readonly streaksService: StreaksService,
     private readonly eggInventoryService: EggInventoryService,
+    private readonly characterInventoryService: CharacterInventoryService,
     private readonly studyRecordsService: StudyRecordsService,
     private readonly statisticsService: StatisticsService,
   ) {}
@@ -105,6 +108,20 @@ export class MembersController {
 
     return {
       egg_inventory: egg_inventory.map((ei) => EggInventoryMapper.toDto(ei)),
+    };
+  }
+
+  // 유저 캐릭터 인벤토리 조회
+  @Get(':member_id/character-inventory')
+  @UseGuards(PermissionsGuard)
+  async getMemberCharacterInventory(@Param('member_id') member_id: string) {
+    const character_inventory =
+      await this.characterInventoryService.findByMemberId(member_id);
+
+    return {
+      character_inventory: character_inventory.map((ci) =>
+        CharacterInventoryMapper.toDto(ci),
+      ),
     };
   }
 

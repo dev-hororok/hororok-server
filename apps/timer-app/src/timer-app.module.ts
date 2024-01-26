@@ -10,6 +10,7 @@ import { StreaksModule } from './streaks/streaks.module';
 import { EggInventoryModule } from './egg-inventory/egg-inventory.module';
 import { StudyRecordsModule } from './study-records/study-records.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { CharacterInventoryModule } from './character-inventory/character-inventory.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     EggInventoryModule,
     StudyRecordsModule,
     StatisticsModule,
+    CharacterInventoryModule,
   ],
   controllers: [TimerAppController],
   providers: [
