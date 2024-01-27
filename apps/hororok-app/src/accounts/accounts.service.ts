@@ -7,8 +7,8 @@ import { EditAccountDto } from './dtos/edit-account.dto';
 import { AccountsRepository } from './accounts.repository';
 import { v4 as uuid } from 'uuid';
 import * as crypto from 'crypto';
-import { Account } from '@app/database/mongoose/entities/account.model';
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
+import { Account } from '@app/database/mongodb/entities/account.model';
 
 @Injectable()
 export class AccountsService {

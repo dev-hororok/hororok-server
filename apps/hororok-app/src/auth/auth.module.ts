@@ -3,21 +3,11 @@ import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AccountsModule } from '../accounts/accounts.module';
-import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { SharedAuthModule } from '@app/auth';
 
 @Module({
-  imports: [
-    AccountsModule,
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
-      }),
-      inject: [ConfigService],
-    }),
-    PassportModule,
-  ],
+  imports: [AccountsModule, JwtModule, SharedAuthModule],
   providers: [AuthService, LocalStrategy],
   controllers: [AuthController],
 })

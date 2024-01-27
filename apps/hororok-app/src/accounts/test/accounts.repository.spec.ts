@@ -3,7 +3,8 @@ import { AccountModel } from './support/account.model';
 import { accountStub } from './stubs/account.stub';
 import { FilterQuery } from 'mongoose';
 import { AccountsRepository } from '../accounts.repository';
-import { Account } from '@app/database/mongoose/entities/account.model';
+import { Account } from '@app/database/mongodb/entities/account.model';
+import { getModelToken } from '@nestjs/mongoose';
 
 describe('AccountsRepository', () => {
   let accountRepository: AccountsRepository;
@@ -16,14 +17,14 @@ describe('AccountsRepository', () => {
         providers: [
           AccountsRepository,
           {
-            provide: 'ACCOUNT_MODEL',
+            provide: getModelToken(Account.name),
             useClass: AccountModel,
           },
         ],
       }).compile();
 
       accountRepository = moduleRef.get<AccountsRepository>(AccountsRepository);
-      accountModel = moduleRef.get<AccountModel>('ACCOUNT_MODEL');
+      accountModel = moduleRef.get<AccountModel>(getModelToken(Account.name));
 
       accountFilterQuery = {
         account_id: accountStub().account_id,
@@ -109,7 +110,7 @@ describe('AccountsRepository', () => {
         providers: [
           AccountsRepository,
           {
-            provide: 'ACCOUNT_MODEL',
+            provide: getModelToken(Account.name),
             useValue: AccountModel,
           },
         ],

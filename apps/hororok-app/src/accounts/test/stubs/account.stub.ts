@@ -1,6 +1,6 @@
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
-import { ReadOnlyAccountDto } from '@app/database/mongoose/dtos/readonly-account.dto';
-import { Account } from '@app/database/mongoose/entities/account.model';
+import { ReadOnlyAccountDto } from '@app/database/mongodb/dtos/readonly-account.dto';
+import { Account } from '@app/database/mongodb/entities/account.model';
 
 export const accountStub = (): Account => {
   return {

@@ -11,8 +11,8 @@ import {
 import { AccountsService } from './accounts.service';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { EditAccountDto } from './dtos/edit-account.dto';
-import { ReadOnlyAccountDto } from '@app/database/mongoose/dtos/readonly-account.dto';
-import { AccountMapper } from '@app/database/mongoose/mappers/account.mapper';
+import { AccountMapper } from '@app/database/mongodb/mappers/account.mapper';
+import { ReadOnlyAccountDto } from '@app/database/mongodb/dtos/readonly-account.dto';
 
 @Controller('accounts')
 export class AccountsController {

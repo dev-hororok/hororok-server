@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { HororokAppModule } from './../src/hororok-app.module';
+import { AppModule } from './../src/app.module';
 
-describe('HororokAppController (e2e)', () => {
+describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [HororokAppModule],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

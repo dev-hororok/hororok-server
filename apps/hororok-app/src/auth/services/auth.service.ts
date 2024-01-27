@@ -3,10 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { AccountsService } from '../../accounts/accounts.service';
-import { AccountMapper } from '@app/database/mongoose/mappers/account.mapper';
 import { RefreshTokenOuputDto } from '../dtos/refresh-token.dto';
 import { LoginOutputDto } from '../dtos/login.dto';
 import { JWTPayload } from '@app/auth/types/jwt.payload';
+import { AccountMapper } from '@app/database/mongodb/mappers/account.mapper';
 
 const EXPIRE_TIME = 20 * 60 * 1000; // 20분
 

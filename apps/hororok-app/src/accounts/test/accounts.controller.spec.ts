@@ -4,7 +4,7 @@ import { AccountsService } from '../accounts.service';
 import { readonlyAccountStub } from './stubs/account.stub';
 import { EditAccountDto } from '../dtos/edit-account.dto';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
-import { ReadOnlyAccountDto } from '@app/database/mongoose/dtos/readonly-account.dto';
+import { ReadOnlyAccountDto } from '@app/database/mongodb/dtos/readonly-account.dto';
 
 jest.mock('../accounts.service');
 
