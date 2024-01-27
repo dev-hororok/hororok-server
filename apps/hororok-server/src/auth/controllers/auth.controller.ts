@@ -6,6 +6,7 @@ import { AccountsService } from '../../accounts/accounts.service';
 import { LoginOutputDto } from '../dtos/login.dto';
 import { RegisterInputDto, RegisterOutputDto } from '../dtos/register.dto';
 import { RefreshTokenOuputDto } from '../dtos/refresh-token.dto';
+import { Public } from '@app/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,7 @@ export class AuthController {
     private readonly accountsService: AccountsService,
   ) {}
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req): Promise<LoginOutputDto> {
@@ -22,6 +24,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @Public()
   @Post('register')
   async registerAccount(
     @Body() body: RegisterInputDto,
@@ -32,6 +35,7 @@ export class AuthController {
     return { account_id: result.account_id };
   }
 
+  @Public()
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   async refreshToken(@Request() req): Promise<RefreshTokenOuputDto> {
