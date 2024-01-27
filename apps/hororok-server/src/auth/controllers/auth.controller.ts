@@ -19,7 +19,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req): Promise<LoginOutputDto> {
-    // node 관습상 인증된 정보는 request의 user에 담긴다
+    console.log('******************************');
+    console.log(req);
     return this.authService.login(req.user);
   }
 
