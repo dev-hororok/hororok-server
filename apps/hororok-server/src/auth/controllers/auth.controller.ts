@@ -29,6 +29,8 @@ export class AuthController {
   async registerAccount(
     @Body() body: RegisterInputDto,
   ): Promise<RegisterOutputDto> {
+    console.log('******************************');
+    console.log(body);
     const result = await this.accountsService.create(body);
     return { account_id: result.account_id };
   }
