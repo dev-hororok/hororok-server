@@ -1,11 +1,12 @@
 import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class StudyRecordsService {
   constructor(
-    @Inject('STUDY_RECORD_REPOSITORY')
+    @InjectRepository(StudyRecord)
     private studyRecordRepository: Repository<StudyRecord>,
   ) {}
 

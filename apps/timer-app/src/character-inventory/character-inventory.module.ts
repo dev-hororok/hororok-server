@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CharacterInventoryService } from './character-inventory.service';
-import { CharacterInventoryProviders } from './character-inventory.providers';
-import { DatabaseModule } from '@app/database';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CharacterInventory } from '@app/database/typeorm/entities/character-inventory.entity';
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [...CharacterInventoryProviders, CharacterInventoryService],
+  imports: [TypeOrmModule.forFeature([CharacterInventory])],
+  providers: [CharacterInventoryService],
   exports: [CharacterInventoryService],
 })
 export class CharacterInventoryModule {}

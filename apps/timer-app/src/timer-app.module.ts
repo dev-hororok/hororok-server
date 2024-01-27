@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TimerAppController } from './timer-app.controller';
-import { DatabaseModule } from '@app/database';
+import { TypeormDBModule } from '@app/database';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard, RolesGuard } from '@app/auth';
@@ -18,7 +18,7 @@ import { StudyCategoriesModule } from './study-categories/study-categories.modul
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    DatabaseModule,
+    TypeormDBModule,
     SharedAuthModule,
     MembersModule,
     StreaksModule,

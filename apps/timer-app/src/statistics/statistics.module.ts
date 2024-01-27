@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
-import { StatisticsProviders } from './statistics.providers';
-import { DatabaseModule } from '@app/database';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Statistic } from '@app/database/typeorm/entities/statistic.entity';
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [...StatisticsProviders, StatisticsService],
+  imports: [TypeOrmModule.forFeature([Statistic])],
+  providers: [StatisticsService],
   exports: [StatisticsService],
 })
 export class StatisticsModule {}

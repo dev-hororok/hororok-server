@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { StreaksService } from './streaks.service';
-import { StreaksProviders } from './streaks.providers';
-import { DatabaseModule } from '@app/database';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [...StreaksProviders, StreaksService],
+  imports: [TypeOrmModule.forFeature([StreaksModule])],
+  providers: [StreaksService],
   exports: [StreaksService],
 })
 export class StreaksModule {}

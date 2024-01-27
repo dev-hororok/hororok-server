@@ -1,5 +1,6 @@
-import { ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from '../typeorm/entities/member.entity';
 import { CharacterInventory } from '../typeorm/entities/character-inventory.entity';
 import { Character } from '../typeorm/entities/character.entity';
@@ -14,18 +15,18 @@ import { StudyRecord } from '../typeorm/entities/study-record.entity';
 import { StudyStreak } from '../typeorm/entities/study-streak.entity';
 import { TransactionRecord } from '../typeorm/entities/transaction-record.entity';
 
-export const databaseProviders = [
-  {
-    provide: 'DATA_SOURCE',
-    inject: [ConfigService],
-    useFactory: async (configService: ConfigService) => {
-      const dataSource = new DataSource({
+@Module({
+  imports: [
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USER'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
+        host: config.get('DB_HOST'),
+        port: config.get('DB_PORT'),
+        username: config.get('DB_USER'),
+        password: config.get('DB_PASSWORD'),
+        database: config.get('DB_NAME'),
         entities: [
           CharacterInventory,
           Character,
@@ -43,9 +44,8 @@ export const databaseProviders = [
         ],
         synchronize: false,
         logging: false,
-      });
-
-      return dataSource.initialize();
-    },
-  },
-];
+      }),
+    }),
+  ],
+})
+export class TypeormDBModule {}

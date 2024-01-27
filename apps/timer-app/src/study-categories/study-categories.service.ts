@@ -1,16 +1,17 @@
 import { StudyCategory } from '@app/database/typeorm/entities/study-category.entity';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
 import { CreateStudyCategoryInputDto } from './dtos/create-study-category.dto';
 import { UpdateStudyCategoryInputDto } from './dtos/update-study-category.dto';
 import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class StudyCategoriesService {
   constructor(
-    @Inject('STUDY_CATEGORIES_REPOSITORY')
+    @InjectRepository(StudyCategory)
     private studyCategoryRepository: Repository<StudyCategory>,
-    @Inject('STUDY_RECORD_REPOSITORY')
+    @InjectRepository(StudyRecord)
     private studyRecordRepository: Repository<StudyRecord>,
   ) {}
 

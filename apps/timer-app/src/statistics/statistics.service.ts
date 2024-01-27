@@ -1,11 +1,12 @@
 import { Statistic } from '@app/database/typeorm/entities/statistic.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class StatisticsService {
   constructor(
-    @Inject('STATISTIC_REPOSITORY')
+    @InjectRepository(Statistic)
     private statisticsRepository: Repository<Statistic>,
   ) {}
 

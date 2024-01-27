@@ -1,11 +1,12 @@
 import { CharacterInventory } from '@app/database/typeorm/entities/character-inventory.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class CharacterInventoryService {
   constructor(
-    @Inject('CHARACTER_INVENTORY_REPOSITORY')
+    @InjectRepository(CharacterInventory)
     private characterInventoryRepository: Repository<CharacterInventory>,
   ) {}
 

@@ -1,15 +1,16 @@
 import { JWTPayload } from '@app/auth';
 import { Member } from '@app/database/typeorm/entities/member.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
 import { TimerAppMemberRole } from '@app/database/typeorm/enums/timer-app-member-role.enum';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MembersService {
   constructor(
-    @Inject('MEMBER_REPOSITORY')
+    @InjectRepository(Member)
     private memberRepository: Repository<Member>,
   ) {}
 

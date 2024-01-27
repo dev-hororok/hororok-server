@@ -1,11 +1,12 @@
 import { StudyStreak } from '@app/database/typeorm/entities/study-streak.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class StreaksService {
   constructor(
-    @Inject('STREAK_REPOSITORY')
+    @InjectRepository(StudyStreak)
     private streakRepository: Repository<StudyStreak>,
   ) {}
 

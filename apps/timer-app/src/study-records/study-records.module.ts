@@ -1,11 +1,11 @@
-import { StudyRecordsProviders } from './study-records.providers';
 import { Module } from '@nestjs/common';
 import { StudyRecordsService } from './study-records.service';
-import { DatabaseModule } from '@app/database';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [...StudyRecordsProviders, StudyRecordsService],
+  imports: [TypeOrmModule.forFeature([StudyRecord])],
+  providers: [StudyRecordsService],
   exports: [StudyRecordsService],
 })
 export class StudyRecordsModule {}
