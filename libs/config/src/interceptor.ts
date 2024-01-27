@@ -24,7 +24,7 @@ export class Interceptor implements NestInterceptor {
     next: CallHandler,
   ): Observable<SuccessResponse<unknown>> {
     console.log('*****************인터셉터*******************');
-    console.log(context.switchToHttp());
+    console.log(context.switchToHttp().getRequest());
     context.switchToHttp().getResponse().status(HttpStatus.OK);
     return next.handle().pipe(map((data) => new SuccessResponse(data)));
   }
