@@ -8,15 +8,6 @@
   "monorepo": true,
   "root": ".",
   "projects": {
-    "hororok-server": {
-      "type": "application",
-      "root": "apps/hororok-server",
-      "entryFile": "main",
-      "sourceRoot": "apps/hororok-server/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/hororok-server/tsconfig.app.json"
-      }
-    },
     "hororok-app": {
       "type": "application",
       "root": "apps/hororok-app",

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { StudyCategoriesService } from '../study-categories/study-categories.service';
@@ -23,6 +24,7 @@ export class MemberStudyCategoriesController {
 
   @Post()
   async createCategory(
+    @Req() req,
     @Param('member_id') member_id: string,
     @Body() createStudyCategoryDto: CreateStudyCategoryInputDto,
   ) {
