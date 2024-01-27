@@ -1,5 +1,4 @@
 import { ConfigService } from '@nestjs/config';
-import mongoose from 'mongoose';
 import { DataSource } from 'typeorm';
 import { Member } from '../typeorm/entities/member.entity';
 import { CharacterInventory } from '../typeorm/entities/character-inventory.entity';
@@ -48,13 +47,5 @@ export const databaseProviders = [
 
       return dataSource.initialize();
     },
-  },
-  {
-    provide: 'DATABASE_CONNECTION',
-    useFactory: async (
-      configService: ConfigService,
-    ): Promise<typeof mongoose> =>
-      await mongoose.connect(configService.get<string>('MONGODB_URL')),
-    inject: [ConfigService],
   },
 ];
