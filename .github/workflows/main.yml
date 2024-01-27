@@ -75,7 +75,12 @@ jobs:
 
       - name: Deploy
         run: |
-          sudo docker rm -f $(docker ps -qa)
+          CONTAINERS=$(docker ps -qa)
+
+          if [ -n "$CONTAINERS" ]; then
+            sudo docker rm -f $CONTAINERS
+          fi
+
           sudo docker-compose pull
           docker-compose up -d
           docker image prune -f
