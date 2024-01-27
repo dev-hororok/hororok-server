@@ -68,6 +68,6 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     container_name: web.server.com
     depends_on:
-      - hororok-api
+      - hororok-app
       - timer-app
     restart: always
