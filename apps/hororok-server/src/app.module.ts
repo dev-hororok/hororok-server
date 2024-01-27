@@ -5,7 +5,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { AppController } from './app.controller';
 import { DatabaseModule } from '@app/database';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard, RolesGuard } from '@app/auth';
+import { JwtAuthGuard, RolesGuard, SharedAuthModule } from '@app/auth';
 
 @Module({
   imports: [
@@ -13,6 +13,7 @@ import { JwtAuthGuard, RolesGuard } from '@app/auth';
       isGlobal: true,
     }),
     DatabaseModule,
+    SharedAuthModule,
     AuthModule,
     AccountsModule,
   ],

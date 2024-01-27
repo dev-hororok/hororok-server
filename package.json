@@ -21,7 +21,8 @@
     "start:hororok-server:local": "nest start hororok-server --debug --watch",
     "start:timer-app:local": "nest start timer-app --debug --watch",
     "build:hororok-server": "nest build hororok-server",
-    "build:timer-app": "nest build timer-app"
+    "build:timer-app": "nest build timer-app",
+    "build:hororok-app": "nest build hororok-app"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -84,7 +85,6 @@
     },
     "moduleNameMapper": {
       "^@src/(.*)$": "<rootDir>/$1",
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
       "^@app/database(|/.*)$": "<rootDir>/libs/database/src/$1",
       "^@app/auth(|/.*)$": "<rootDir>/libs/auth/src/$1"

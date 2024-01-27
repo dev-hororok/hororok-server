@@ -1,13 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { HororokAppModule } from './hororok-app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { CustomExceptionFilter, Interceptor } from '@app/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  const app = await NestFactory.create(HororokAppModule);
 
-  app.setGlobalPrefix('hororok');
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  app.setGlobalPrefix('hororok-api');
   app.useGlobalInterceptors(new Interceptor());
   app.useGlobalFilters(new CustomExceptionFilter());
   app.enableCors();

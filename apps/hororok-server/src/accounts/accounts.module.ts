@@ -7,7 +7,7 @@ import { DatabaseModule } from '@app/database';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [AccountsService, AccountsRepository, ...accountsProviders],
+  providers: [...accountsProviders, AccountsService, AccountsRepository],
   controllers: [AccountsController],
   exports: [AccountsService],
 })

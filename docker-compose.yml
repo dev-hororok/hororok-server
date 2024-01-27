@@ -9,11 +9,28 @@ services:
   #   ports:
   #     - '3306:3306'
 
-  hororok-api:
-    image: changwoot/hororok-api:latest
+  # hororok-api:
+  #   image: changwoot/hororok-api:latest
+  #   build:
+  #     context: .
+  #     dockerfile: DockerFile.hororok
+  #   environment:
+  #     MONGODB_URL: ${MONGODB_URL}
+  #     MONGODB_PORT: ${MONGODB_PORT}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #     JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_PORT: ${DB_PORT}
+  #   restart: always
+
+  hororok-app:
+    image: changwoot/hororok-app:latest
     build:
       context: .
-      dockerfile: DockerFile.hororok
+      dockerfile: DockerFile.hororok-app
     environment:
       MONGODB_URL: ${MONGODB_URL}
       MONGODB_PORT: ${MONGODB_PORT}
@@ -25,8 +42,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
     restart: always
-    # depends_on:
-    #   - mysql
 
   timer-app:
     image: changwoot/timer-app:latest
@@ -44,8 +59,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
     restart: always
-    # depends_on:
-    #   - mysql
 
   nginx:
     image: nginx:1.25.3-alpine
