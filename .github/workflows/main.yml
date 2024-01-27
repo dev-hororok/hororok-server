@@ -54,6 +54,7 @@ jobs:
     needs: build
     runs-on: [self-hosted, 'hororok']
     steps:
+      - uses: actions/checkout@v3
       - name: Create .env file
         run: |
           echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
@@ -75,12 +76,7 @@ jobs:
 
       - name: Deploy
         run: |
-          CONTAINERS=$(docker ps -qa)
-
-          if [ -n "$CONTAINERS" ]; then
-            sudo docker rm -f $CONTAINERS
-          fi
-
+          sudo docker rm -f $(docker ps -qa)
           sudo docker-compose pull
           docker-compose up -d
           docker image prune -f
