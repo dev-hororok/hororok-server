@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { AppController } from './app.controller';
 import { DatabaseModule } from '@app/database';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard, RolesGuard } from '@app/auth';
 
 @Module({
   imports: [
@@ -16,5 +18,15 @@ import { DatabaseModule } from '@app/database';
   ],
 
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}
