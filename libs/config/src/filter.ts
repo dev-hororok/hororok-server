@@ -27,8 +27,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     //로깅
-    const request = host.switchToHttp().getRequest();
-    console.log(request);
+    console.log('************************************');
+    console.log(error);
 
     if (error.response) {
       host
