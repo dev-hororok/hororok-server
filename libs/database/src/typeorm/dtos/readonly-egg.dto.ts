@@ -14,6 +14,10 @@ export class ReadOnlyEggDto {
 
   @IsNumber()
   @IsNotEmpty()
+  purchase_price: number;
+
+  @IsNumber()
+  @IsNotEmpty()
   required_study_time: number;
 
   @IsString()
