@@ -26,8 +26,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Req() req): Promise<LoginOutputDto> {
-    console.log('******************************');
-    console.log(req);
     return this.authService.login(req.user);
   }
 
@@ -36,8 +34,6 @@ export class AuthController {
   async registerAccount(
     @Body() body: RegisterInputDto,
   ): Promise<RegisterOutputDto> {
-    console.log('******************************');
-    console.log(body);
     const result = await this.accountsService.create(body);
     return { account_id: result.account_id };
   }
