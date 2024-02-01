@@ -22,12 +22,12 @@ export class StudyCategoriesService {
         subject,
       },
     });
-    if (exist && !exist.hidden) {
+    if (exist && !exist.isHidden) {
       throw new BadRequestException('이미 동일한 카테고리가 존재합니다.');
     }
     // 만들어진 이력이 있으면 살려서 반환
     if (exist) {
-      exist.hidden = false;
+      exist.isHidden = false;
       const result = await this.studyCategoryRepository.save(exist);
       return result;
     }
@@ -38,7 +38,7 @@ export class StudyCategoriesService {
         member_id,
       },
       subject,
-      hidden: false,
+      isHidden: false,
     });
 
     const result = await this.studyCategoryRepository.save(newCategory);
@@ -60,7 +60,7 @@ export class StudyCategoriesService {
         member: {
           member_id,
         },
-        hidden: false,
+        isHidden: false,
       },
     });
     return categories;
@@ -75,10 +75,10 @@ export class StudyCategoriesService {
     if (!exist) {
       throw new BadRequestException('해당 카테고리가 존재하지 않습니다.');
     }
-    if (exist.hidden) {
+    if (exist.isHidden) {
       throw new BadRequestException('이미 삭제된 카테고리입니다.');
     }
-    exist.hidden = true;
+    exist.isHidden = true;
 
     return this.studyCategoryRepository.save(exist);
   }
@@ -144,8 +144,8 @@ export class StudyCategoriesService {
       },
     );
 
-    if (targetCategory.hidden) {
-      targetCategory.hidden = false;
+    if (targetCategory.isHidden) {
+      targetCategory.isHidden = false;
       await this.studyCategoryRepository.save(targetCategory);
     }
 

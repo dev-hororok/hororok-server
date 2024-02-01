@@ -22,7 +22,7 @@ export class StudyCategory extends CommonEntity {
 
   @Column()
   @IsBoolean()
-  hidden: boolean;
+  isHidden: boolean;
 
   @ManyToOne(() => Member, (member) => member.study_categories, {
     nullable: false,
