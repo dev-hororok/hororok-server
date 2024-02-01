@@ -42,7 +42,7 @@ import { TransactionRecord } from '../typeorm/entities/transaction-record.entity
           StudyStreak,
           TransactionRecord,
         ],
-        synchronize: false,
+        synchronize: true,
         logging: false,
       }),
     }),
