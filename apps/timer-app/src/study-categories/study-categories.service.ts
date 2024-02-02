@@ -54,6 +54,13 @@ export class StudyCategoriesService {
     });
   }
 
+  async findOneById(category_id: number) {
+    return this.studyCategoryRepository.findOne({
+      where: { study_category_id: category_id },
+      relations: ['member'],
+    });
+  }
+
   async findByMemberId(member_id: string) {
     const categories = await this.studyCategoryRepository.find({
       where: {

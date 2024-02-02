@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -23,6 +24,8 @@ import { StudyRecordsService } from '../study-records/study-records.service';
 import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
 import { CharacterInventoryService } from '../character-inventory/character-inventory.service';
 import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/character-inventory.mapper';
+import { ItemInventoryService } from '../item-inventory/item-inventory.service';
+import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 
 @Controller('members')
 export class MembersController {
@@ -30,6 +33,7 @@ export class MembersController {
     private readonly membersService: MembersService,
     private readonly streaksService: StreaksService,
     private readonly eggInventoryService: EggInventoryService,
+    private readonly itemInventoryService: ItemInventoryService,
     private readonly characterInventoryService: CharacterInventoryService,
     private readonly studyRecordsService: StudyRecordsService,
   ) {}
@@ -102,6 +106,26 @@ export class MembersController {
 
     return {
       egg_inventory: egg_inventory.map((ei) => EggInventoryMapper.toDto(ei)),
+    };
+  }
+
+  // 유저 아이템 인벤토리 조회
+  @Get(':member_id/item-inventory')
+  @UseGuards(PermissionsGuard)
+  async getMemberItemInventory(
+    @Param('member_id') member_id: string,
+    @Query('item_type') item_type: string,
+  ) {
+    const item_inventory =
+      await this.itemInventoryService.findByMemberIdAndItemType(
+        member_id,
+        item_type,
+      );
+
+    return {
+      item_inventory: item_inventory.map((itemInventory) =>
+        ItemInventoryMapper.toDto(itemInventory),
+      ),
     };
   }
 

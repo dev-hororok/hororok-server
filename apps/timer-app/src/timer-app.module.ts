@@ -12,6 +12,8 @@ import { StudyRecordsModule } from './study-records/study-records.module';
 import { CharacterInventoryModule } from './character-inventory/character-inventory.module';
 import { StudyCategoriesModule } from './study-categories/study-categories.module';
 import { StudyTimerModule } from './study-timer/study-timer.module';
+import { ItemsModule } from './items/items.module';
+import { ItemInventoryModule } from './item-inventory/item-inventory.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { StudyTimerModule } from './study-timer/study-timer.module';
     CharacterInventoryModule,
     StudyCategoriesModule,
     StudyTimerModule,
+    ItemsModule,
+    ItemInventoryModule,
   ],
   controllers: [TimerAppController],
   providers: [

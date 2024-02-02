@@ -9,6 +9,7 @@ import { StudyCategoriesModule } from '../study-categories/study-categories.modu
 import { MemberStudyCategoriesController } from './members-study-categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from '@app/database/typeorm/entities/member.entity';
+import { ItemInventoryModule } from '../item-inventory/item-inventory.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Member } from '@app/database/typeorm/entities/member.entity';
     StreaksModule,
     EggInventoryModule,
     CharacterInventoryModule,
+    ItemInventoryModule,
     StudyRecordsModule,
     StudyCategoriesModule,
   ],
