@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { CommonEntity } from './common.entity';
 import { ItemInventory } from './item-inventory.entity';
@@ -39,6 +39,10 @@ export class Item extends CommonEntity {
   @Column()
   @IsNumber()
   effect_code: number; // 음식사용(10000번대), 사용아이템(20000번대)
+
+  @Column({ type: 'boolean' })
+  @IsBoolean()
+  is_hidden: boolean; // 상점에 보이는 여부
 
   @OneToMany(
     () => ItemInventory,
