@@ -1,5 +1,4 @@
-import { IsDate, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
-import { PaletteGrade } from '../enums/palette-grade.enum';
+import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ReadOnlyPaletteDto {
   @IsNumber()
@@ -10,9 +9,9 @@ export class ReadOnlyPaletteDto {
   @IsNotEmpty()
   name: string;
 
-  @IsEnum(PaletteGrade)
+  @IsString()
   @IsNotEmpty()
-  grade: PaletteGrade;
+  grade: string;
 
   @IsDate()
   @IsNotEmpty()

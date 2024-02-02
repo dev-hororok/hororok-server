@@ -17,11 +17,11 @@ export class Character extends CommonEntity {
 
   @Column({ nullable: true })
   @IsString()
-  description: string;
+  description: string | null;
 
   @Column({
     type: 'varchar',
-    length: 10,
+    length: 20,
   })
   @IsString()
   grade: string;

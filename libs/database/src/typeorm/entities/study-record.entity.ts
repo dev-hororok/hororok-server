@@ -29,7 +29,6 @@ export class StudyRecord extends CommonEntity {
   @ManyToOne(
     () => StudyCategory,
     (studyCategory) => studyCategory.study_records,
-    { nullable: false },
   )
   @JoinColumn({ name: 'study_category_id' })
   study_category: StudyCategory;

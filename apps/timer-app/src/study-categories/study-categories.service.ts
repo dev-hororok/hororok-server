@@ -91,7 +91,6 @@ export class StudyCategoriesService {
     const existingCategory =
       await this.findCategoryWithRecords(study_category_id);
 
-    console.log(existingCategory);
     this.validateCategoryExistence(existingCategory);
     this.validateSubjectChange(existingCategory, subject);
 

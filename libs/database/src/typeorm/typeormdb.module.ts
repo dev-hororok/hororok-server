@@ -7,13 +7,14 @@ import { Character } from '../typeorm/entities/character.entity';
 import { EggInventory } from '../typeorm/entities/egg-inventory.entity';
 import { Egg } from '../typeorm/entities/egg.entity';
 import { Palette } from '../typeorm/entities/palette.entity';
-import { Probability } from '../typeorm/entities/probability.entity';
 import { Statistic } from '../typeorm/entities/statistic.entity';
 import { StreakColorChangePermission } from '../typeorm/entities/streak-color-change-permission.entity';
 import { StudyCategory } from '../typeorm/entities/study-category.entity';
 import { StudyRecord } from '../typeorm/entities/study-record.entity';
 import { StudyStreak } from '../typeorm/entities/study-streak.entity';
 import { TransactionRecord } from '../typeorm/entities/transaction-record.entity';
+import { Item } from './entities/item.entity';
+import { ItemInventory } from './entities/item-inventory.entity';
 
 @Module({
   imports: [
@@ -32,9 +33,10 @@ import { TransactionRecord } from '../typeorm/entities/transaction-record.entity
           Character,
           EggInventory,
           Egg,
+          Item,
+          ItemInventory,
           Member,
           Palette,
-          Probability,
           Statistic,
           StreakColorChangePermission,
           StudyCategory,

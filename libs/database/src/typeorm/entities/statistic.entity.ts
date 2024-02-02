@@ -27,5 +27,5 @@ export class Statistic extends CommonEntity {
     nullable: false,
   })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member: Member | null;
 }

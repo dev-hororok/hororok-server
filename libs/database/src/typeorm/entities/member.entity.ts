@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import {
   Entity,
   Column,
@@ -8,7 +8,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { TimerAppMemberRole } from '@app/database/typeorm/enums/timer-app-member-role.enum';
 import { CharacterInventory } from './character-inventory.entity';
 import { EggInventory } from './egg-inventory.entity';
 import { StudyCategory } from './study-category.entity';
@@ -16,6 +15,7 @@ import { TransactionRecord } from './transaction-record.entity';
 import { StreakColorChangePermission } from './streak-color-change-permission.entity';
 import { StudyStreak } from './study-streak.entity';
 import { Statistic } from './statistic.entity';
+import { ItemInventory } from './item-inventory.entity';
 
 @Entity()
 export class Member extends CommonEntity {
@@ -36,13 +36,9 @@ export class Member extends CommonEntity {
   @IsString()
   image_url: string;
 
-  @Column({
-    type: 'enum',
-    enum: TimerAppMemberRole,
-    default: TimerAppMemberRole.USER,
-  })
-  @IsEnum(TimerAppMemberRole)
-  role: TimerAppMemberRole;
+  @Column({ type: 'varchar', length: 20 })
+  @IsString()
+  role: string;
 
   @Column({
     nullable: true,
@@ -74,6 +70,9 @@ export class Member extends CommonEntity {
     (characterInventory) => characterInventory.member,
   )
   character_inventories: CharacterInventory[];
+
+  @OneToMany(() => ItemInventory, (eggInventory) => eggInventory.member)
+  item_inventories: ItemInventory[];
 
   @OneToMany(() => EggInventory, (eggInventory) => eggInventory.member)
   egg_inventories: EggInventory[];
