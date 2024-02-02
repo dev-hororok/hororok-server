@@ -1,4 +1,9 @@
-import { CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export abstract class CommonEntity {
@@ -8,6 +13,6 @@ export abstract class CommonEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  //   @DeleteDateColumn()
-  //   deleted_at!: Date | null;
+  @DeleteDateColumn()
+  deleted_at!: Date | null;
 }

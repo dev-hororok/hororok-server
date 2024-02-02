@@ -20,9 +20,13 @@ export class StudyCategory extends CommonEntity {
   @IsString()
   subject: string;
 
-  @Column()
+  @Column({ type: 'boolean' })
   @IsBoolean()
   is_hidden: boolean;
+
+  @Column({ type: 'varchar', length: 7, default: '#000000' })
+  @IsString()
+  color: string;
 
   @ManyToOne(() => Member, (member) => member.study_categories, {
     nullable: false,

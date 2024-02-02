@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import {
   Entity,
   Column,
@@ -8,19 +8,15 @@ import {
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
 import { Member } from './member.entity';
-import { TransactionType } from '../enums/transaction.enum';
 
 @Entity()
 export class TransactionRecord extends CommonEntity {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   transaction_record_id: number;
 
-  @Column({
-    type: 'enum',
-    enum: TransactionType,
-  })
-  @IsEnum(TransactionType)
-  transaction_type: TransactionType;
+  @Column({ type: 'varchar', length: 20 })
+  @IsString()
+  transaction_type: string; // Purchase, Sell, Reward
 
   @Column()
   @IsNumber()
