@@ -21,8 +21,6 @@ import { EggInventoryService } from '../egg-inventory/egg-inventory.service';
 import { EggInventoryMapper } from '@app/database/typeorm/mappers/egg-inventory.mapper';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
-import { StatisticsService } from '../statistics/statistics.service';
-import { StatisticMapper } from '@app/database/typeorm/mappers/statistic.mapper';
 import { CharacterInventoryService } from '../character-inventory/character-inventory.service';
 import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/character-inventory.mapper';
 
@@ -34,7 +32,6 @@ export class MembersController {
     private readonly eggInventoryService: EggInventoryService,
     private readonly characterInventoryService: CharacterInventoryService,
     private readonly studyRecordsService: StudyRecordsService,
-    private readonly statisticsService: StatisticsService,
   ) {}
 
   @Roles(AccountRole.ADMIN)
@@ -53,9 +50,6 @@ export class MembersController {
       const newMember = await this.membersService.create(req.user);
       // 스트릭 생성
       await this.streaksService.create(newMember.member_id);
-
-      // 통계 생성
-      await this.statisticsService.create(newMember.member_id);
 
       return { member: MemberMapper.toDto(newMember) };
     }
@@ -134,21 +128,6 @@ export class MembersController {
 
     return {
       study_records: study_records.map((sr) => StudyRecordMapper.toDto(sr)),
-    };
-  }
-
-  // 유저 통계 조회 (없으면 생성)
-  @Get(':member_id/statistic')
-  @UseGuards(PermissionsGuard)
-  async getMemberStatistic(@Param('member_id') member_id: string) {
-    const statistic = await this.statisticsService.findOneByMemberId(member_id);
-
-    if (!statistic) {
-      const newStatistic = await this.statisticsService.create(member_id);
-      return { statistic: StatisticMapper.toDto(newStatistic) };
-    }
-    return {
-      statistic: StatisticMapper.toDto(statistic),
     };
   }
 }

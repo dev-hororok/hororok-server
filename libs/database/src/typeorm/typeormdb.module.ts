@@ -7,8 +7,6 @@ import { Character } from '../typeorm/entities/character.entity';
 import { EggInventory } from '../typeorm/entities/egg-inventory.entity';
 import { Egg } from '../typeorm/entities/egg.entity';
 import { Palette } from '../typeorm/entities/palette.entity';
-import { Statistic } from '../typeorm/entities/statistic.entity';
-import { StreakColorChangePermission } from '../typeorm/entities/streak-color-change-permission.entity';
 import { StudyCategory } from '../typeorm/entities/study-category.entity';
 import { StudyRecord } from '../typeorm/entities/study-record.entity';
 import { StudyStreak } from '../typeorm/entities/study-streak.entity';
@@ -37,8 +35,6 @@ import { ItemInventory } from './entities/item-inventory.entity';
           ItemInventory,
           Member,
           Palette,
-          Statistic,
-          StreakColorChangePermission,
           StudyCategory,
           StudyRecord,
           StudyStreak,
