@@ -6,7 +6,7 @@ import {
   Column,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { Member } from './member.entity';
 import { Item } from './item.entity';
 
@@ -22,6 +22,10 @@ export class ItemInventory extends CommonEntity {
   @Column()
   @IsNumber()
   quantity: number;
+
+  @Column()
+  @IsString()
+  item_type: string; // Food, Consumable
 
   @ManyToOne(() => Item, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'item_id' })
