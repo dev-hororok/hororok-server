@@ -35,7 +35,7 @@ describe('AccountsRepository', () => {
 
     describe('findOne', () => {
       describe('findOne 호출 시', () => {
-        let account: Account;
+        let account: Account | null;
 
         beforeEach(async () => {
           jest.spyOn(accountModel, 'findOne');
@@ -79,7 +79,7 @@ describe('AccountsRepository', () => {
 
     describe('findOneAndUpdate', () => {
       describe('findOneAndUpdate 호출 시', () => {
-        let account: Account;
+        let account: Account | null;
 
         beforeEach(async () => {
           jest.spyOn(accountModel, 'findOneAndUpdate');
