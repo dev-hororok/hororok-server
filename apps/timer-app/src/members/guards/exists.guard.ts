@@ -12,8 +12,10 @@ export class MemberExistsGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const memberId = request.params.member_id;
 
-    return this.membersService.findOne(memberId).then((member) => {
-      return !!member;
-    });
+    return this.membersService
+      .findOne({ where: { member_id: memberId } })
+      .then((member) => {
+        return !!member;
+      });
   }
 }
