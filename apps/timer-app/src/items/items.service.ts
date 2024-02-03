@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Item } from '@app/database/typeorm/entities/item.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -10,12 +10,7 @@ export class ItemsService {
     private readonly itemsRepository: Repository<Item>,
   ) {}
 
-  async findByItemType(itemType: string) {
-    const items = await this.itemsRepository.find({
-      where: {
-        item_type: itemType,
-      },
-    });
-    return items;
+  async findAll(options?: FindManyOptions<Item>): Promise<Item[]> {
+    return await this.itemsRepository.find(options);
   }
 }

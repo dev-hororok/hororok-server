@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ItemInventory } from '@app/database/typeorm/entities/item-inventory.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, QueryRunner, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -10,24 +10,26 @@ export class ItemInventoryService {
     private itemInventoryRepository: Repository<ItemInventory>,
   ) {}
 
-  async findByMemberIdAndItemType(
-    member_id: string,
-    item_type: string,
+  async findAll(
+    options?: FindManyOptions<ItemInventory>,
+    queryRunner?: QueryRunner,
   ): Promise<ItemInventory[]> {
-    return this.itemInventoryRepository.find({
-      where: { member: { member_id }, item_type: item_type },
-      relations: ['item'],
-    });
+    if (queryRunner) {
+      return queryRunner.manager.find(ItemInventory, options);
+    }
+    return this.itemInventoryRepository.find(options);
   }
 
   async update(
     id: string,
     itemInventory: Partial<ItemInventory>,
-  ): Promise<ItemInventory> {
-    await this.itemInventoryRepository.update(id, itemInventory);
-    return this.itemInventoryRepository.findOne({
-      where: { item_inventory_id: id },
-    });
+    queryRunner?: QueryRunner,
+  ): Promise<boolean> {
+    const repository = queryRunner
+      ? queryRunner.manager.getRepository(ItemInventory)
+      : this.itemInventoryRepository;
+    const result = await repository.update(id, itemInventory);
+    return result.affected ? 0 < result.affected : false;
   }
 
   async delete(id: string): Promise<void> {

@@ -7,6 +7,12 @@ export class ItemsController {
 
   @Get()
   findByItemType(@Query('item_type') itemType: string) {
-    return this.itemsService.findByItemType(itemType);
+    const itmes = this.itemsService.findAll({
+      where: {
+        item_type: itemType,
+        is_hidden: false,
+      },
+    });
+    return { itmes };
   }
 }

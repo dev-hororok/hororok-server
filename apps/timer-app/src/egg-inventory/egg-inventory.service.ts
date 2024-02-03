@@ -1,7 +1,7 @@
 import { EggInventory } from '@app/database/typeorm/entities/egg-inventory.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class EggInventoryService {
@@ -10,22 +10,16 @@ export class EggInventoryService {
     private eggInventoryRepository: Repository<EggInventory>,
   ) {}
 
-  async findAll(): Promise<EggInventory[]> {
-    return this.eggInventoryRepository.find();
+  async findAll(
+    options?: FindManyOptions<EggInventory>,
+  ): Promise<EggInventory[]> {
+    return this.eggInventoryRepository.find(options);
   }
 
-  async findOne(id: string): Promise<EggInventory> {
-    return this.eggInventoryRepository.findOne({
-      where: { egg_inventory_id: id },
-      relations: ['egg'],
-    });
-  }
-
-  async findByMemberId(member_id: string): Promise<EggInventory[]> {
-    return this.eggInventoryRepository.find({
-      where: { member: { member_id } },
-      relations: ['egg'],
-    });
+  async findOne(
+    options: FindOneOptions<EggInventory>,
+  ): Promise<EggInventory | null> {
+    return this.eggInventoryRepository.findOne(options);
   }
 
   async delete(id: string): Promise<void> {
