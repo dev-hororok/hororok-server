@@ -153,6 +153,8 @@ export class StudyCategoriesService {
           targetCategory,
           queryRunner,
         );
+        await queryRunner.commitTransaction();
+
         return;
       }
       // target 기록 없을시 기존 카테고리의 subject만 업데이트
@@ -161,6 +163,7 @@ export class StudyCategoriesService {
         existingCategory.study_category_id,
         { subject },
       );
+      await queryRunner.commitTransaction();
       existingCategory.subject = subject;
       return existingCategory;
     } catch (e) {
