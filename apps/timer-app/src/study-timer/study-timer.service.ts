@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { StartStudyTimerInputDto } from './dtos/start-study-timer.dto';
 import { MembersService } from '../members/services/members.service';
 import { ItemInventoryService } from '../item-inventory/item-inventory.service';
 import { DataSource } from 'typeorm';
+import { EndStudyTimerInputDto } from './dtos/end.study-timer.dto';
 
 @Injectable()
 export class StudyTimerService {
@@ -65,7 +70,7 @@ export class StudyTimerService {
     }
   }
 
-  async end(account_id: string) {
+  async end(account_id: string, data: EndStudyTimerInputDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -102,12 +107,16 @@ export class StudyTimerService {
       const startMilli = existRecord.created_at.getTime();
 
       const timeDiff = 0; // 9 * 60 * 60 * 1000; // KST - UTC 차이 (9시간)
-      const exp = (endMilli - startMilli - timeDiff) / 1000;
+      const exp = (endMilli - startMilli - timeDiff) / 1000; // start와 end요청시간의 간격
 
+      // 업데이트를 요청한 duration이 실제 요청간격과 10분이상 차이나면 잘못된 요청 처리
+      if (1000 * 60 * 10 <= Math.abs(data.duration - exp)) {
+        throw new BadRequestException('잘못된 요청입니다.');
+      }
       await this.studyRecordsService.update(
         existRecord.study_record_id,
         {
-          duration: exp,
+          duration: data.duration,
         },
         queryRunner,
       );
@@ -133,7 +142,9 @@ export class StudyTimerService {
             inventory.item_inventory_id,
             {
               progress:
-                inventory.progress - exp < 0 ? 0 : inventory.progress - exp,
+                inventory.progress - data.duration < 0
+                  ? 0
+                  : inventory.progress - data.duration,
             },
             queryRunner,
           );
