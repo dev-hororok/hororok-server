@@ -139,6 +139,7 @@ export class StudyTimerService {
         }
       });
 
+      await queryRunner.commitTransaction();
       return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
