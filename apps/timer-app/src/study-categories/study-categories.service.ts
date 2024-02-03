@@ -47,9 +47,11 @@ export class StudyCategoriesService {
     return this.studyCategoryRepository.findOne(options);
   }
 
-  async delete(study_category_id: number) {
-    const result =
-      await this.studyCategoryRepository.softDelete(study_category_id);
+  async delete(study_category_id: number, queryRunner?: QueryRunner) {
+    const repository = queryRunner
+      ? queryRunner.manager.getRepository(StudyCategory)
+      : this.studyCategoryRepository;
+    const result = await repository.softDelete(study_category_id);
     return result.affected ? 0 < result.affected : false;
   }
 
@@ -190,7 +192,7 @@ export class StudyCategoriesService {
       );
     }
 
-    await repository.delete(existingCategory.study_category_id);
+    await this.delete(existingCategory.study_category_id, queryRunner);
     if (targetCategory.deleted_at) {
       await repository.update(targetCategory.study_category_id, {
         deleted_at: null,

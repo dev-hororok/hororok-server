@@ -14,10 +14,12 @@ export class PermissionsGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const member_id = request.params.member_id || request.body.member_id;
+    const memberId = request.params.member_id || request.body.member_id;
     const user = request.user;
 
-    const member = await this.membersService.findOne(member_id);
+    const member = await this.membersService.findOne({
+      where: { member_id: memberId },
+    });
     if (!member) {
       throw new NotFoundException('멤버가 존재하지 않습니다.');
     }

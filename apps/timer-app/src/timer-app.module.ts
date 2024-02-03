@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TimerAppController } from './timer-app.controller';
 import { TypeormDBModule } from '@app/database';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
@@ -32,7 +31,6 @@ import { ItemInventoryModule } from './item-inventory/item-inventory.module';
     ItemsModule,
     ItemInventoryModule,
   ],
-  controllers: [TimerAppController],
   providers: [
     {
       provide: APP_GUARD,
