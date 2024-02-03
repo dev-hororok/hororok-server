@@ -4,6 +4,7 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Request,
@@ -21,6 +22,9 @@ export class AccountsController {
   @Get('me')
   async getLoggedInAccount(@Request() req): Promise<ReadOnlyAccountDto> {
     const account = await this.accountsService.findOneById(req.user.sub);
+    if (!account) {
+      throw new NotFoundException('계정이 존재하지 않습니다.');
+    }
     return AccountMapper.toDto(account);
   }
 
