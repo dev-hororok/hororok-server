@@ -27,6 +27,7 @@ import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/characte
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 import { MemberInitializationService } from '../services/member-initialization.service';
+import { MoreThan } from 'typeorm';
 
 @Controller('members')
 export class MembersController {
@@ -87,11 +88,6 @@ export class MembersController {
   async getMemberStudyStreak(@Param('member_id') member_id: string) {
     const streak = await this.streaksService.findOrCreate(member_id);
 
-    if (!streak) {
-      const newStreak = await this.streaksService.create(member_id);
-      return StudyStreakMapper.toDto(newStreak);
-    }
-
     return StudyStreakMapper.toDto(streak);
   }
 
@@ -149,7 +145,7 @@ export class MembersController {
   @UseGuards(MemberExistsGuard)
   async getMemberStudyRecords(@Param('member_id') member_id: string) {
     const study_records = await this.studyRecordsService.findAll({
-      where: { member: { member_id } },
+      where: { member: { member_id }, duration: MoreThan(0) },
       relations: { study_category: true },
     });
     return {
