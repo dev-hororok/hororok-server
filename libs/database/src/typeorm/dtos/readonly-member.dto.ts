@@ -28,8 +28,8 @@ export class ReadOnlyMemberDto {
   role: string;
 
   @IsString()
-  image_url: string;
+  image_url: string | null;
 
   @IsNumber()
-  active_record_id: number;
+  active_record_id: number | null;
 }

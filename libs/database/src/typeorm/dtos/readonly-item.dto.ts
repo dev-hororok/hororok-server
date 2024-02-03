@@ -14,22 +14,21 @@ export class ReadOnlyItemDto {
   name: string;
 
   @IsString()
-  grade: string;
+  grade: string | null;
 
   @IsString()
   @IsNotEmpty()
   description: string;
 
   @IsString()
-  @IsNotEmpty()
-  image_url: string;
+  image_url: string | null;
 
   @IsNumber()
   @IsNotEmpty()
   cost: number;
 
   @IsNumber()
-  required_study_time: number;
+  required_study_time: number | null;
 
   @IsNumber()
   @IsNotEmpty()

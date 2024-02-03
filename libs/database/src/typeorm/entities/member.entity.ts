@@ -29,10 +29,12 @@ export class Member extends CommonEntity {
   email: string;
 
   @Column({
+    type: 'varchar',
+    length: 255,
     nullable: true,
   })
   @IsString()
-  image_url: string;
+  image_url: string | null;
 
   @Column({ type: 'varchar', length: 20 })
   @IsString()
@@ -43,7 +45,7 @@ export class Member extends CommonEntity {
     type: 'bigint',
   })
   @IsNumber()
-  active_record_id: number;
+  active_record_id: number | null;
 
   @Column({
     default: 0,

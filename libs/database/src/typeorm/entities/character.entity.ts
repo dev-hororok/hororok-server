@@ -15,7 +15,7 @@ export class Character extends CommonEntity {
   @IsString()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsString()
   description: string | null;
 

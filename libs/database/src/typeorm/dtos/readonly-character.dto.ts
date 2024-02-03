@@ -10,7 +10,7 @@ export class ReadOnlyCharacterDto {
   name: string;
 
   @IsString()
-  description: string;
+  description: string | null;
 
   @IsString()
   image_url: string;
