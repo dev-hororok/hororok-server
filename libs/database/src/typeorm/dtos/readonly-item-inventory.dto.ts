@@ -7,8 +7,7 @@ export class ReadOnlyItemInventoryDto {
   item_inventory_id: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  progress: number;
+  progress: number | null;
 
   @IsString()
   @IsNotEmpty()

@@ -15,7 +15,7 @@ export class ItemInventory extends CommonEntity {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   item_inventory_id: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   @IsNumber()
   progress: number | null;
 
@@ -27,7 +27,7 @@ export class ItemInventory extends CommonEntity {
   @IsString()
   item_type: string; // Food, Consumable
 
-  @ManyToOne(() => Item, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Item, { nullable: false, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'item_id' })
   item: Item;
 

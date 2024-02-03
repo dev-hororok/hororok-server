@@ -15,6 +15,5 @@ export class ReadOnlyStudyRecordDto {
   created_at: Date;
 
   @IsObject()
-  @IsNotEmpty()
-  study_category: ReadOnlyStudyCategoryDto;
+  study_category: ReadOnlyStudyCategoryDto | null;
 }

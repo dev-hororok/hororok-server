@@ -5,7 +5,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { MembersService } from '../members.service';
+import { MembersService } from '../services/members.service';
 
 // jwt 토큰에 담긴 account_id가 요청한 유저의 주인이 맞는지 확인하는 가드
 @Injectable()

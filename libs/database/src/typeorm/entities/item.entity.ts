@@ -20,7 +20,7 @@ export class Item extends CommonEntity {
   @IsString()
   description: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   @IsNumber()
   required_study_time: number | null;
 

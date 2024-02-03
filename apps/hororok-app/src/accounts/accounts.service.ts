@@ -14,10 +14,10 @@ import { Account } from '@app/database/mongodb/entities/account.model';
 export class AccountsService {
   constructor(private readonly accountsRepository: AccountsRepository) {}
 
-  async findOneById(id: string): Promise<Account> {
+  async findOneById(id: string): Promise<Account | null> {
     return this.accountsRepository.findOne({ account_id: id });
   }
-  async findOneByEmail(email: string): Promise<Account> {
+  async findOneByEmail(email: string): Promise<Account | null> {
     return this.accountsRepository.findOne({ email });
   }
 

@@ -8,5 +8,5 @@ export class UpdateMemberInputDto {
 
   @IsString()
   @IsOptional()
-  image_url: string;
+  image_url?: string;
 }

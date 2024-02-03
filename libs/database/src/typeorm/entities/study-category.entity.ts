@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import {
   Entity,
   Column,
@@ -19,10 +19,6 @@ export class StudyCategory extends CommonEntity {
   @Column({ type: 'varchar', length: 50 })
   @IsString()
   subject: string;
-
-  @Column({ type: 'boolean' })
-  @IsBoolean()
-  is_hidden: boolean;
 
   @Column({ type: 'varchar', length: 7, default: '#000000' })
   @IsString()

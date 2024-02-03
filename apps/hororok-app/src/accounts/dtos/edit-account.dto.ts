@@ -5,9 +5,9 @@ export class EditAccountDto {
   @MinLength(3)
   @MaxLength(14)
   @IsOptional()
-  name: string;
+  name?: string;
 
   @IsString()
   @IsOptional()
-  profile_url: string;
+  profile_url?: string;
 }
