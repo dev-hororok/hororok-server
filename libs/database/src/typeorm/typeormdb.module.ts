@@ -40,7 +40,7 @@ import { ItemInventory } from './entities/item-inventory.entity';
           StudyStreak,
           TransactionRecord,
         ],
-        synchronize: true,
+        synchronize: false,
         logging: false,
       }),
     }),
