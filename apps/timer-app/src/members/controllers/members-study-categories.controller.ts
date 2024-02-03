@@ -9,10 +9,10 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { StudyCategoriesService } from '../study-categories/study-categories.service';
-import { PermissionsGuard } from './guards/permissions.guard';
-import { CreateStudyCategoryInputDto } from '../study-categories/dtos/create-study-category.dto';
-import { UpdateStudyCategoryInputDto } from '../study-categories/dtos/update-study-category.dto';
+import { StudyCategoriesService } from '../../study-categories/study-categories.service';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { CreateStudyCategoryInputDto } from '../../study-categories/dtos/create-study-category.dto';
+import { UpdateStudyCategoryInputDto } from '../../study-categories/dtos/update-study-category.dto';
 import { StudyCategoryMapper } from '@app/database/typeorm/mappers/study-category.mapper';
 
 @UseGuards(PermissionsGuard)
@@ -39,8 +39,9 @@ export class MemberStudyCategoriesController {
 
   @Get()
   async getStudyCategories(@Param('member_id') member_id: string) {
-    const categories =
-      await this.studyCategoriesService.findByMemberId(member_id);
+    const categories = await this.studyCategoriesService.findAll({
+      where: { member: { member_id } },
+    });
     return {
       study_categories: categories.map((category) =>
         StudyCategoryMapper.toDto(category),
@@ -60,11 +61,11 @@ export class MemberStudyCategoriesController {
     @Param('study_category_id') study_category_id: number,
     @Body() updateStudyCategoryDto: UpdateStudyCategoryInputDto,
   ) {
-    const updatedCategory = await this.studyCategoriesService.update(
+    await this.studyCategoriesService.update(
       member_id,
       study_category_id,
       updateStudyCategoryDto,
     );
-    return { study_category: StudyCategoryMapper.toDto(updatedCategory) };
+    return null;
   }
 }

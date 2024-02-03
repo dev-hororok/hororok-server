@@ -1,4 +1,4 @@
-import { StreaksService } from './../streaks/streaks.service';
+import { StreaksService } from '../../streaks/streaks.service';
 import { Roles } from '@app/auth';
 import {
   BadRequestException,
@@ -11,26 +11,28 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { MembersService } from './members.service';
+import { MembersService } from '../services/members.service';
 import { MemberMapper } from '@app/database/typeorm/mappers/member.mapper';
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
-import { UpdateMemberInputDto } from './dtos/update-member.dto';
-import { PermissionsGuard } from './guards/permissions.guard';
+import { UpdateMemberInputDto } from '../dtos/update-member.dto';
+import { PermissionsGuard } from '../guards/permissions.guard';
 import { StudyStreakMapper } from '@app/database/typeorm/mappers/study-streak.mapper';
-import { MemberExistsGuard } from './guards/exists.guard';
-import { EggInventoryService } from '../egg-inventory/egg-inventory.service';
+import { MemberExistsGuard } from '../guards/exists.guard';
+import { EggInventoryService } from '../../egg-inventory/egg-inventory.service';
 import { EggInventoryMapper } from '@app/database/typeorm/mappers/egg-inventory.mapper';
-import { StudyRecordsService } from '../study-records/study-records.service';
+import { StudyRecordsService } from '../../study-records/study-records.service';
 import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
-import { CharacterInventoryService } from '../character-inventory/character-inventory.service';
+import { CharacterInventoryService } from '../../character-inventory/character-inventory.service';
 import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/character-inventory.mapper';
-import { ItemInventoryService } from '../item-inventory/item-inventory.service';
+import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
+import { MemberInitializationService } from '../services/member-initialization.service';
 
 @Controller('members')
 export class MembersController {
   constructor(
     private readonly membersService: MembersService,
+    private readonly memberInitializationService: MemberInitializationService,
     private readonly streaksService: StreaksService,
     private readonly eggInventoryService: EggInventoryService,
     private readonly itemInventoryService: ItemInventoryService,
@@ -48,14 +50,15 @@ export class MembersController {
   // 로그인 된 계정의 유저를 조회 (없으면 새로 생성)
   @Get('me')
   async getCurrentMember(@Req() req) {
-    const member = await this.membersService.findOneByAccountId(req.user.sub);
-
+    let member = await this.membersService.findOne({
+      where: {
+        account_id: req.user.sub,
+      },
+    });
     if (!member) {
-      const newMember = await this.membersService.create(req.user);
-      // 스트릭 생성
-      await this.streaksService.create(newMember.member_id);
-
-      return { member: MemberMapper.toDto(newMember) };
+      member = await this.memberInitializationService.initializeMember(
+        req.user,
+      );
     }
 
     return { member: MemberMapper.toDto(member) };
@@ -74,20 +77,15 @@ export class MembersController {
     ) {
       throw new BadRequestException('변경할 내용이 없습니다.');
     }
-
-    const updatedMember = await this.membersService.update(
-      member_id,
-      updateMemberInputDto,
-    );
-
-    return { member: MemberMapper.toDto(updatedMember) };
+    await this.membersService.update(member_id, updateMemberInputDto);
+    return null;
   }
 
   // 유저 스트릭 정보 조회 (없으면 생성)
   @Get(':member_id/study-streak')
   @UseGuards(MemberExistsGuard)
   async getMemberStudyStreak(@Param('member_id') member_id: string) {
-    const streak = await this.streaksService.findOneByMemberId(member_id);
+    const streak = await this.streaksService.findOrCreate(member_id);
 
     if (!streak) {
       const newStreak = await this.streaksService.create(member_id);
@@ -101,8 +99,9 @@ export class MembersController {
   @Get(':member_id/egg-inventory')
   @UseGuards(PermissionsGuard)
   async getMemberEggInventory(@Param('member_id') member_id: string) {
-    const egg_inventory =
-      await this.eggInventoryService.findByMemberId(member_id);
+    const egg_inventory = await this.eggInventoryService.findAll({
+      where: { member: { member_id } },
+    });
 
     return {
       egg_inventory: egg_inventory.map((ei) => EggInventoryMapper.toDto(ei)),
@@ -116,11 +115,12 @@ export class MembersController {
     @Param('member_id') member_id: string,
     @Query('item_type') item_type: string,
   ) {
-    const item_inventory =
-      await this.itemInventoryService.findByMemberIdAndItemType(
-        member_id,
+    const item_inventory = await this.itemInventoryService.findAll({
+      where: {
+        member: { member_id },
         item_type,
-      );
+      },
+    });
 
     return {
       item_inventory: item_inventory.map((itemInventory) =>
@@ -133,8 +133,9 @@ export class MembersController {
   @Get(':member_id/character-inventory')
   @UseGuards(PermissionsGuard)
   async getMemberCharacterInventory(@Param('member_id') member_id: string) {
-    const character_inventory =
-      await this.characterInventoryService.findByMemberId(member_id);
+    const character_inventory = await this.characterInventoryService.findAll({
+      where: { member: { member_id } },
+    });
 
     return {
       character_inventory: character_inventory.map((ci) =>
@@ -147,9 +148,10 @@ export class MembersController {
   @Get(':member_id/study-records')
   @UseGuards(MemberExistsGuard)
   async getMemberStudyRecords(@Param('member_id') member_id: string) {
-    const study_records =
-      await this.studyRecordsService.findByMemberId(member_id);
-
+    const study_records = await this.studyRecordsService.findAll({
+      where: { member: { member_id } },
+      relations: { study_category: true },
+    });
     return {
       study_records: study_records.map((sr) => StudyRecordMapper.toDto(sr)),
     };

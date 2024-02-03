@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { MembersService } from '../members.service';
+import { MembersService } from '../services/members.service';
 
 @Injectable()
 export class MemberExistsGuard implements CanActivate {
