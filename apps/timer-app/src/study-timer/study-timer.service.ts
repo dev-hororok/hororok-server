@@ -101,8 +101,9 @@ export class StudyTimerService {
       const endMilli = new Date().getTime();
       const startMilli = existRecord.created_at.getTime();
 
-      const timeDiff = 9 * 60 * 60 * 1000; // KST - UTC 차이 (9시간)
+      const timeDiff = 0; // 9 * 60 * 60 * 1000; // KST - UTC 차이 (9시간)
       const exp = (endMilli - startMilli - timeDiff) / 1000;
+
       await this.studyRecordsService.update(
         existRecord.study_record_id,
         {
