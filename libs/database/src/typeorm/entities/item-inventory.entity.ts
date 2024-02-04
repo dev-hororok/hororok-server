@@ -13,7 +13,7 @@ import { Item } from './item.entity';
 @Entity()
 export class ItemInventory extends CommonEntity {
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  item_inventory_id: string;
+  item_inventory_id: number;
 
   @Column({ type: 'int', nullable: true })
   @IsNumber()

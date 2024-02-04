@@ -116,6 +116,9 @@ export class MembersController {
         member: { member_id },
         item_type,
       },
+      relations: {
+        item: true,
+      },
     });
 
     return {
@@ -131,6 +134,9 @@ export class MembersController {
   async getMemberCharacterInventory(@Param('member_id') member_id: string) {
     const character_inventory = await this.characterInventoryService.findAll({
       where: { member: { member_id } },
+      relations: {
+        character: true,
+      },
     });
 
     return {

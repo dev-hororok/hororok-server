@@ -2,9 +2,9 @@ import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
 import { ReadOnlyItemDto } from './readonly-item.dto';
 
 export class ReadOnlyItemInventoryDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  item_inventory_id: string;
+  item_inventory_id: number;
 
   @IsNumber()
   progress: number | null;

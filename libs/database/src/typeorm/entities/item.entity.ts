@@ -6,7 +6,7 @@ import { ItemInventory } from './item-inventory.entity';
 @Entity()
 export class Item extends CommonEntity {
   @PrimaryGeneratedColumn()
-  item_id: string;
+  item_id: number;
 
   @Column({ type: 'varchar', length: 100 })
   @IsString()
