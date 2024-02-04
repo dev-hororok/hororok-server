@@ -7,12 +7,12 @@ export class ItemsController {
 
   @Get()
   async findByItemType(@Query('item_type') itemType: string) {
-    const itmes = await this.itemsService.findAll({
+    const items = await this.itemsService.findAll({
       where: {
         item_type: itemType,
         is_hidden: false,
       },
     });
-    return { itmes };
+    return { items };
   }
 }
