@@ -21,7 +21,7 @@ export class ItemInventoryService {
   }
 
   async update(
-    id: string,
+    id: number,
     itemInventory: Partial<ItemInventory>,
     queryRunner?: QueryRunner,
   ): Promise<boolean> {

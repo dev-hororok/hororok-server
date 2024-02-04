@@ -61,6 +61,7 @@ export class StudyTimerService {
         },
         queryRunner,
       );
+      await queryRunner.startTransaction();
       return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
