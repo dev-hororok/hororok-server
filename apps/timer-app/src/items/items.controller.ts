@@ -6,8 +6,8 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Get()
-  findByItemType(@Query('item_type') itemType: string) {
-    const itmes = this.itemsService.findAll({
+  async findByItemType(@Query('item_type') itemType: string) {
+    const itmes = await this.itemsService.findAll({
       where: {
         item_type: itemType,
         is_hidden: false,
