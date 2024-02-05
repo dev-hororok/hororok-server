@@ -72,6 +72,9 @@ export class StudyTimerService {
   }
 
   async end(account_id: string, data: EndStudyTimerInputDto) {
+    if (data.duration < 10) {
+      throw new BadRequestException('10초 미만의 기록은 저장되지 않습니다.');
+    }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
