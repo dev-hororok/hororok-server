@@ -69,6 +69,9 @@ export class StreaksService {
     try {
       let streak = await this.findOne({
         where: { member: { member_id: memberId } },
+        relations: {
+          palette: true,
+        },
       });
       if (!streak) {
         streak = await this.create(memberId, queryRunner);
