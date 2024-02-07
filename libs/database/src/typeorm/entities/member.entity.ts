@@ -9,11 +9,11 @@ import {
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
 import { CharacterInventory } from './character-inventory.entity';
-import { EggInventory } from './egg-inventory.entity';
 import { StudyCategory } from './study-category.entity';
 import { TransactionRecord } from './transaction-record.entity';
 import { StudyStreak } from './study-streak.entity';
 import { ItemInventory } from './item-inventory.entity';
+import { StudyRecord } from './study-record.entity';
 
 @Entity()
 export class Member extends CommonEntity {
@@ -66,11 +66,11 @@ export class Member extends CommonEntity {
   @OneToMany(() => ItemInventory, (eggInventory) => eggInventory.member)
   item_inventories: ItemInventory[];
 
-  @OneToMany(() => EggInventory, (eggInventory) => eggInventory.member)
-  egg_inventories: EggInventory[];
-
   @OneToMany(() => StudyCategory, (studyCategory) => studyCategory.member)
   study_categories: StudyCategory[];
+
+  @OneToMany(() => StudyRecord, (studyRecord) => studyRecord.member)
+  study_records: StudyRecord[];
 
   @OneToMany(
     () => TransactionRecord,

@@ -13,7 +13,7 @@ import { Member } from './member.entity';
 
 @Entity()
 export class StudyStreak extends CommonEntity {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   study_streak_id: number;
 
   @Column()

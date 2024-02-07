@@ -6,13 +6,13 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
-import { CommonEntity } from './common.entity';
 import { Member } from './member.entity';
 import { StudyRecord } from './study-record.entity';
 
 @Entity()
-export class StudyCategory extends CommonEntity {
+export class StudyCategory {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   study_category_id: number;
 
@@ -33,4 +33,7 @@ export class StudyCategory extends CommonEntity {
 
   @OneToMany(() => StudyRecord, (studyRecord) => studyRecord.study_category)
   study_records: StudyRecord[];
+
+  @DeleteDateColumn()
+  deleted_at!: Date | null;
 }

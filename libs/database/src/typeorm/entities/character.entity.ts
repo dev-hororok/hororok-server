@@ -5,8 +5,8 @@ import { CommonEntity } from './common.entity';
 
 @Entity()
 export class Character extends CommonEntity {
-  @PrimaryGeneratedColumn('uuid')
-  character_id: string;
+  @PrimaryGeneratedColumn()
+  character_id: number;
 
   @Column({
     type: 'varchar',

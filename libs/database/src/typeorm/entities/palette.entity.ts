@@ -5,7 +5,7 @@ import { CommonEntity } from './common.entity';
 
 @Entity()
 export class Palette extends CommonEntity {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn()
   palette_id: number;
 
   @Column({ type: 'varchar', length: 20 })
