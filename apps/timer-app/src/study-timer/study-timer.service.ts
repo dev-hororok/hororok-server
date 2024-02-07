@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { StartStudyTimerInputDto } from './dtos/start-study-timer.dto';
 import { MembersService } from '../members/services/members.service';
@@ -50,10 +46,10 @@ export class StudyTimerService {
         {
           member_id: member.member_id,
           category_id: body.category_id,
+          start_time: new Date(),
         },
         queryRunner,
       );
-
       await this.membersService.update(
         member.member_id,
         {
@@ -61,7 +57,7 @@ export class StudyTimerService {
         },
         queryRunner,
       );
-      await queryRunner.startTransaction();
+      await queryRunner.commitTransaction();
       return null;
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -72,9 +68,6 @@ export class StudyTimerService {
   }
 
   async end(account_id: string, data: EndStudyTimerInputDto) {
-    if (data.duration < 10) {
-      throw new BadRequestException('10초 미만의 기록은 저장되지 않습니다.');
-    }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -108,19 +101,15 @@ export class StudyTimerService {
 
       // 공부시간 계산
       const endMilli = new Date().getTime();
-      const startMilli = existRecord.created_at.getTime();
+      const startMilli = existRecord.start_time.getTime();
 
-      const timeDiff = 0; // 9 * 60 * 60 * 1000; // KST - UTC 차이 (9시간)
-      const exp = (endMilli - startMilli - timeDiff) / 1000; // start와 end요청시간의 간격
+      const exp = (endMilli - startMilli) / 1000; // start와 end요청시간의 간격
 
-      // 업데이트를 요청한 duration이 실제 요청간격과 10분이상 차이나면 잘못된 요청 처리
-      if (1000 * 60 * 10 <= Math.abs(data.duration - exp)) {
-        throw new BadRequestException('잘못된 요청입니다.');
-      }
       await this.studyRecordsService.update(
         existRecord.study_record_id,
         {
-          duration: data.duration,
+          end_time: new Date(),
+          status: data.status,
         },
         queryRunner,
       );
@@ -135,25 +124,25 @@ export class StudyTimerService {
       // 유저가 가진 음식 progress 줄이기
       const memberFoods = await this.itemInventoryService.findAll(
         {
+          select: ['item_inventory_id', 'progress'],
           where: { member: { member_id: member.member_id }, item_type: 'Food' },
         },
         queryRunner,
       );
 
-      memberFoods.forEach(async (inventory) => {
-        if (inventory.progress !== null && inventory.progress !== 0) {
-          await this.itemInventoryService.update(
-            inventory.item_inventory_id,
-            {
-              progress:
-                inventory.progress - data.duration < 0
-                  ? 0
-                  : inventory.progress - data.duration,
-            },
-            queryRunner,
-          );
-        }
-      });
+      await Promise.all(
+        memberFoods.map((inventory) => {
+          if (inventory.progress !== null && inventory.progress !== 0) {
+            const newProgress =
+              inventory.progress - exp < 0 ? 0 : inventory.progress - exp;
+            return this.itemInventoryService.update(
+              inventory.item_inventory_id,
+              { progress: newProgress },
+              queryRunner,
+            );
+          }
+        }),
+      );
 
       await queryRunner.commitTransaction();
       return null;

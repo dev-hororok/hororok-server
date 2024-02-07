@@ -17,10 +17,6 @@ export class ReadOnlyStudyRecordDto {
   duration: number;
 
   @IsString()
-  @IsNotEmpty()
-  member_id: string;
-
-  @IsString()
   status: string | null;
 
   @IsDate()

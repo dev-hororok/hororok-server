@@ -5,7 +5,6 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
-  RelationId,
 } from 'typeorm';
 import { Member } from './member.entity';
 import { StudyCategory } from './study-category.entity';
@@ -23,11 +22,6 @@ export class StudyRecord {
   @JoinColumn({ name: 'member_id' })
   member: Member;
 
-  @RelationId((self: StudyRecord) => self.member)
-  @IsString()
-  @IsNotEmpty()
-  member_id: string;
-
   @ManyToOne(
     () => StudyCategory,
     (studyCategory) => studyCategory.study_records,
@@ -39,14 +33,14 @@ export class StudyRecord {
   @IsString()
   status: string | null; // Completed, Incompleted
 
-  @Column()
+  @Column({ type: 'datetime' })
   @IsDate()
   @IsNotEmpty()
   start_time: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   @IsDate()
-  end_time: Date | null;
+  end_time!: Date | null;
 
   @DeleteDateColumn()
   @IsDate()

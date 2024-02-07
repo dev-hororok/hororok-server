@@ -13,7 +13,7 @@ export class MemberExistsGuard implements CanActivate {
     const memberId = request.params.member_id;
 
     return this.membersService
-      .findOne({ where: { member_id: memberId } })
+      .findOne({ where: { member_id: memberId }, select: { member_id: true } })
       .then((member) => {
         return !!member;
       });

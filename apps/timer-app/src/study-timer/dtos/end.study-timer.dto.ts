@@ -1,6 +1,6 @@
-import { IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class EndStudyTimerInputDto {
-  @IsNumber()
-  duration: number;
+  @IsString()
+  status: string;
 }

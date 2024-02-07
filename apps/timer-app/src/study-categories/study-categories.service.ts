@@ -91,10 +91,8 @@ export class StudyCategoriesService {
 
       // 없으면 새로 생성
       const newCategory = queryRunner.manager.create(StudyCategory, {
-        member: {
-          member_id,
-        },
         subject,
+        member: { member_id },
       });
 
       await queryRunner.manager.insert(StudyCategory, newCategory);

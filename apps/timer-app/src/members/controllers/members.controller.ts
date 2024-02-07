@@ -25,7 +25,7 @@ import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/characte
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 import { MemberInitializationService } from '../services/member-initialization.service';
-import { MoreThan } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 
 @Controller('members')
 export class MembersController {
@@ -97,7 +97,9 @@ export class MembersController {
   ) {
     const item_inventory = await this.itemInventoryService.findAll({
       where: {
-        member: { member_id },
+        member: {
+          member_id,
+        },
         item_type,
       },
       relations: {
@@ -135,7 +137,12 @@ export class MembersController {
   @UseGuards(MemberExistsGuard)
   async getMemberStudyRecords(@Param('member_id') member_id: string) {
     const study_records = await this.studyRecordsService.findAll({
-      where: { member: { member_id }, duration: MoreThan(0) },
+      where: {
+        member: {
+          member_id,
+        },
+        end_time: Not(IsNull()),
+      },
       relations: { study_category: true },
     });
     return {

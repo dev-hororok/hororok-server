@@ -36,7 +36,7 @@ export class StudyRecordsService {
   }
 
   async create(
-    { member_id, category_id }: CreateStudyRecordInputDto,
+    { start_time, member_id, category_id }: CreateStudyRecordInputDto,
     queryRunner?: QueryRunner,
   ) {
     const repository = queryRunner
@@ -45,17 +45,20 @@ export class StudyRecordsService {
 
     const category = await this.studyCategoryService.findOne(
       {
-        where: { member: { member_id }, study_category_id: category_id },
+        select: ['study_category_id'],
+        where: {
+          member: { member_id: member_id },
+          study_category_id: category_id,
+        },
       },
       queryRunner,
     );
-
     const newRecord = repository.create({
+      start_time: start_time,
+      study_category: category ? category : undefined,
       member: {
         member_id,
       },
-      study_category: category ? category : undefined,
-      duration: 0,
     });
 
     await repository.insert(newRecord);
@@ -78,8 +81,7 @@ export class StudyRecordsService {
     const repository = queryRunner
       ? queryRunner.manager.getRepository(StudyRecord)
       : this.studyRecordRepository;
-    const result = await repository.delete(id);
-
+    const result = await repository.softDelete(id);
     return result.affected ? 0 < result.affected : false;
   }
 

@@ -34,7 +34,7 @@ export class StreaksService {
   }
 
   async create(
-    member_id: string,
+    memberId: string,
     queryRunner?: QueryRunner,
   ): Promise<StudyStreak> {
     const repository = queryRunner
@@ -44,9 +44,7 @@ export class StreaksService {
     const newStreak = repository.create({
       longest_streak: 0,
       current_streak: 0,
-      member: {
-        member_id,
-      },
+      member: { member_id: memberId },
     });
 
     return await this.streakRepository.save(newStreak);
