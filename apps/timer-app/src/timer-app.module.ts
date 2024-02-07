@@ -6,7 +6,6 @@ import { JwtAuthGuard, RolesGuard } from '@app/auth';
 import { SharedAuthModule } from '@app/auth/auth.module';
 import { MembersModule } from './members/members.module';
 import { StreaksModule } from './streaks/streaks.module';
-import { EggInventoryModule } from './egg-inventory/egg-inventory.module';
 import { StudyRecordsModule } from './study-records/study-records.module';
 import { CharacterInventoryModule } from './character-inventory/character-inventory.module';
 import { StudyCategoriesModule } from './study-categories/study-categories.module';
@@ -23,7 +22,6 @@ import { ItemInventoryModule } from './item-inventory/item-inventory.module';
     SharedAuthModule,
     MembersModule,
     StreaksModule,
-    EggInventoryModule,
     StudyRecordsModule,
     CharacterInventoryModule,
     StudyCategoriesModule,

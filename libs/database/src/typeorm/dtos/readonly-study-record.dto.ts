@@ -1,4 +1,10 @@
-import { IsDate, IsNotEmpty, IsNumber, IsObject } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+} from 'class-validator';
 import { ReadOnlyStudyCategoryDto } from './readonly-study-category.dto';
 
 export class ReadOnlyStudyRecordDto {
@@ -10,9 +16,19 @@ export class ReadOnlyStudyRecordDto {
   @IsNotEmpty()
   duration: number;
 
+  @IsString()
+  @IsNotEmpty()
+  member_id: string;
+
+  @IsString()
+  status: string | null;
+
   @IsDate()
   @IsNotEmpty()
-  created_at: Date;
+  start_time: Date;
+
+  @IsDate()
+  end_time: Date | null;
 
   @IsObject()
   study_category: ReadOnlyStudyCategoryDto | null;

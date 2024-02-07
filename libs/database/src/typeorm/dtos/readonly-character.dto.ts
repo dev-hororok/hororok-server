@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ReadOnlyCharacterDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  character_id: string;
+  character_id: number;
 
   @IsString()
   @IsNotEmpty()

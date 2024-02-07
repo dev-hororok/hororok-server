@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MembersService } from './services/members.service';
 import { MembersController } from './controllers/members.controller';
 import { StreaksModule } from '../streaks/streaks.module';
-import { EggInventoryModule } from '../egg-inventory/egg-inventory.module';
 import { StudyRecordsModule } from '../study-records/study-records.module';
 import { CharacterInventoryModule } from '../character-inventory/character-inventory.module';
 import { StudyCategoriesModule } from '../study-categories/study-categories.module';
@@ -16,7 +15,6 @@ import { MemberInitializationService } from './services/member-initialization.se
   imports: [
     TypeOrmModule.forFeature([Member]),
     StreaksModule,
-    EggInventoryModule,
     CharacterInventoryModule,
     ItemInventoryModule,
     StudyRecordsModule,

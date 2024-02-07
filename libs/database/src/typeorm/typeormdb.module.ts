@@ -4,8 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from '../typeorm/entities/member.entity';
 import { CharacterInventory } from '../typeorm/entities/character-inventory.entity';
 import { Character } from '../typeorm/entities/character.entity';
-import { EggInventory } from '../typeorm/entities/egg-inventory.entity';
-import { Egg } from '../typeorm/entities/egg.entity';
 import { Palette } from '../typeorm/entities/palette.entity';
 import { StudyCategory } from '../typeorm/entities/study-category.entity';
 import { StudyRecord } from '../typeorm/entities/study-record.entity';
@@ -19,6 +17,7 @@ import { ItemInventory } from './entities/item-inventory.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
+
       useFactory: async (config: ConfigService) => ({
         type: 'mysql',
         host: config.get('DB_HOST'),
@@ -29,8 +28,6 @@ import { ItemInventory } from './entities/item-inventory.entity';
         entities: [
           CharacterInventory,
           Character,
-          EggInventory,
-          Egg,
           Item,
           ItemInventory,
           Member,

@@ -9,4 +9,8 @@ export class ReadOnlyCharacterInventoryDto {
   @IsObject()
   @IsNotEmpty()
   character: ReadOnlyCharacterDto;
+
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
 }

@@ -18,8 +18,6 @@ import { UpdateMemberInputDto } from '../dtos/update-member.dto';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { StudyStreakMapper } from '@app/database/typeorm/mappers/study-streak.mapper';
 import { MemberExistsGuard } from '../guards/exists.guard';
-import { EggInventoryService } from '../../egg-inventory/egg-inventory.service';
-import { EggInventoryMapper } from '@app/database/typeorm/mappers/egg-inventory.mapper';
 import { StudyRecordsService } from '../../study-records/study-records.service';
 import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
 import { CharacterInventoryService } from '../../character-inventory/character-inventory.service';
@@ -35,7 +33,6 @@ export class MembersController {
     private readonly membersService: MembersService,
     private readonly memberInitializationService: MemberInitializationService,
     private readonly streaksService: StreaksService,
-    private readonly eggInventoryService: EggInventoryService,
     private readonly itemInventoryService: ItemInventoryService,
     private readonly characterInventoryService: CharacterInventoryService,
     private readonly studyRecordsService: StudyRecordsService,
@@ -89,19 +86,6 @@ export class MembersController {
     const streak = await this.streaksService.findOrCreate(member_id);
 
     return StudyStreakMapper.toDto(streak);
-  }
-
-  // 유저 알 인벤토리 조회
-  @Get(':member_id/egg-inventory')
-  @UseGuards(PermissionsGuard)
-  async getMemberEggInventory(@Param('member_id') member_id: string) {
-    const egg_inventory = await this.eggInventoryService.findAll({
-      where: { member: { member_id } },
-    });
-
-    return {
-      egg_inventory: egg_inventory.map((ei) => EggInventoryMapper.toDto(ei)),
-    };
   }
 
   // 유저 아이템 인벤토리 조회
