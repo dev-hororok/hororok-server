@@ -31,13 +31,13 @@ export class MembersService {
     queryRunner?: QueryRunner,
   ): Promise<Member | null> {
     const cacheKey = `member_${JSON.stringify(options)}`;
-    let member = await this.cacheManager.get<Member | null>(cacheKey);
+    const cache = await this.cacheManager.get<Member>(cacheKey);
 
-    if (member) {
+    if (cache) {
       console.log('캐시에서 조회', cacheKey);
-      return member;
+      return cache;
     }
-
+    let member;
     if (queryRunner) {
       member = await queryRunner.manager.findOne(Member, options);
     } else {
