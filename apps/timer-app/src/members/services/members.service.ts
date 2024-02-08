@@ -1,6 +1,6 @@
 import { JWTPayload } from '@app/auth';
 import { Member } from '@app/database/typeorm/entities/member.entity';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -11,12 +11,15 @@ import * as crypto from 'crypto';
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
 import { TimerAppMemberRole } from '@app/database/typeorm/enums/timer-app-member-role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class MembersService {
   constructor(
     @InjectRepository(Member)
     private memberRepository: Repository<Member>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async findAll(options?: FindManyOptions<Member>): Promise<Member[]> {
@@ -27,10 +30,22 @@ export class MembersService {
     options: FindOneOptions<Member>,
     queryRunner?: QueryRunner,
   ): Promise<Member | null> {
-    if (queryRunner) {
-      return queryRunner.manager.findOne(Member, options);
+    const cacheKey = `member_${JSON.stringify(options)}`;
+    let member = await this.cacheManager.get<Member | null>(cacheKey);
+
+    if (member) {
+      console.log('캐시에서 조회', cacheKey);
+      return member;
     }
-    return this.memberRepository.findOne(options);
+
+    if (queryRunner) {
+      member = await queryRunner.manager.findOne(Member, options);
+    } else {
+      member = await this.memberRepository.findOne(options);
+    }
+    await this.cacheManager.set(cacheKey, member, 300);
+
+    return member;
   }
 
   async create(
