@@ -37,13 +37,15 @@ export class MembersService {
       console.log('캐시에서 조회', cacheKey);
       return cache;
     }
-    let member;
+    let member: Member | null;
     if (queryRunner) {
       member = await queryRunner.manager.findOne(Member, options);
     } else {
       member = await this.memberRepository.findOne(options);
     }
-    await this.cacheManager.set(cacheKey, member, 300);
+    if (member) {
+      await this.cacheManager.set(cacheKey, member, 300);
+    }
 
     return member;
   }
