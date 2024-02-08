@@ -57,19 +57,22 @@ jobs:
       # ###### 필요할때만 활성화 (파일전송시 ec2 폴더 초기화됨 (인증서 사라짐)) ######
       # ########### docker-compose.yml, nginx.conf 수정시엔 ec2 직접가서 수정)
       # - uses: actions/checkout@v3
-      # - name: Create .env file
-      #   run: |
-      #     echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
-      #     echo MONGODB_URL=${{ secrets.MONGODB_URL }} >> .env
-      #     echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
-      #     echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
-      #     echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env
-      #     echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-      #     echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-      #     echo DB_USER=${{ secrets.DB_USER }} >> .env
-      #     echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-      #     echo DB_PORT=${{ secrets.DB_PORT }} >> .env
       #############################
+      - name: Create .env file
+        run: |
+          sudo rm -rf .env
+          echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
+          echo MONGODB_URL=${{ secrets.MONGODB_URL }} >> .env
+          echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo DB_USER=${{ secrets.DB_USER }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
 
       - name: Login to DockerHub
         env:
