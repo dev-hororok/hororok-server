@@ -21,7 +21,8 @@
     "start:timer-app:local": "nest start timer-app --debug --watch",
     "build:timer-app": "nest build timer-app",
     "start:hororok-app:local": "nest start hororok-app --debug --watch",
-    "build:hororok-app": "nest build hororok-app"
+    "build:hororok-app": "nest build hororok-app",
+    "start:redis": "docker-compose -f docker-compose.redis.yml up -d"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.1",

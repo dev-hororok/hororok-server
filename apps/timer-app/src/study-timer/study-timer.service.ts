@@ -21,12 +21,8 @@ export class StudyTimerService {
     await queryRunner.startTransaction();
 
     try {
-      const member = await this.membersService.findOne(
-        {
-          where: {
-            account_id,
-          },
-        },
+      const member = await this.membersService.findOneByAccountId(
+        account_id,
         queryRunner,
       );
       if (!member) {
@@ -50,13 +46,25 @@ export class StudyTimerService {
         },
         queryRunner,
       );
-      await this.membersService.update(
+      const isUpdated = await this.membersService.update(
         member.member_id,
         {
           active_record_id: newRecord.study_record_id,
         },
         queryRunner,
       );
+
+      // 캐시 업데이트
+      if (isUpdated) {
+        await this.membersService.updateMemberCache(
+          `account-member_${account_id}`,
+          {
+            ...member,
+            active_record_id: newRecord.study_record_id,
+          },
+        );
+      }
+
       await queryRunner.commitTransaction();
       return null;
     } catch (e) {
@@ -73,12 +81,8 @@ export class StudyTimerService {
     await queryRunner.startTransaction();
 
     try {
-      const member = await this.membersService.findOne(
-        {
-          where: {
-            account_id,
-          },
-        },
+      const member = await this.membersService.findOneByAccountId(
+        account_id,
         queryRunner,
       );
       if (!member) {
@@ -113,13 +117,24 @@ export class StudyTimerService {
         },
         queryRunner,
       );
-      await this.membersService.update(
+      const isUpdated = await this.membersService.update(
         member.member_id,
         {
           active_record_id: null,
         },
         queryRunner,
       );
+
+      // 캐시 업데이트
+      if (isUpdated) {
+        await this.membersService.updateMemberCache(
+          `account-member_${account_id}`,
+          {
+            ...member,
+            active_record_id: null,
+          },
+        );
+      }
 
       // 유저가 가진 음식 progress 줄이기
       const memberFoods = await this.itemInventoryService.findAll(

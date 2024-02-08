@@ -30,7 +30,19 @@ export class MembersService {
     options: FindOneOptions<Member>,
     queryRunner?: QueryRunner,
   ): Promise<Member | null> {
-    const cacheKey = `member_${JSON.stringify(options)}`;
+    let member: Member | null;
+    if (queryRunner) {
+      member = await queryRunner.manager.findOne(Member, options);
+    } else {
+      member = await this.memberRepository.findOne(options);
+    }
+
+    return member;
+  }
+
+  // 캐싱처리
+  async findOneById(memberId: string, queryRunner?: QueryRunner) {
+    const cacheKey = `member_${memberId}`;
     const cache = await this.cacheManager.get<Member>(cacheKey);
 
     if (cache) {
@@ -39,12 +51,41 @@ export class MembersService {
     }
     let member: Member | null;
     if (queryRunner) {
-      member = await queryRunner.manager.findOne(Member, options);
+      member = await queryRunner.manager.findOne(Member, {
+        where: { member_id: memberId },
+      });
     } else {
-      member = await this.memberRepository.findOne(options);
+      member = await this.memberRepository.findOne({
+        where: { member_id: memberId },
+      });
     }
     if (member) {
-      await this.cacheManager.set(cacheKey, member, 300);
+      await this.cacheManager.set(cacheKey, member, 3000);
+    }
+
+    return member;
+  }
+  // 캐싱처리
+  async findOneByAccountId(accountId: string, queryRunner?: QueryRunner) {
+    const cacheKey = `account-member_${accountId}`;
+    const cache = await this.cacheManager.get<Member>(cacheKey);
+
+    if (cache) {
+      console.log('캐시에서 조회', cacheKey);
+      return cache;
+    }
+    let member: Member | null;
+    if (queryRunner) {
+      member = await queryRunner.manager.findOne(Member, {
+        where: { account_id: accountId },
+      });
+    } else {
+      member = await this.memberRepository.findOne({
+        where: { account_id: accountId },
+      });
+    }
+    if (member) {
+      await this.cacheManager.set(cacheKey, member, 3000);
     }
 
     return member;
@@ -87,5 +128,9 @@ export class MembersService {
 
   async delete(id: string): Promise<void> {
     await this.memberRepository.delete(id);
+  }
+
+  async updateMemberCache(key: string, member: Member) {
+    await this.cacheManager.set(key, member);
   }
 }
