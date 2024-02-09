@@ -45,6 +45,7 @@ export class StudyTimerService {
         queryRunner,
       );
 
+      // account-member의 키값은 직접 업데이트 해야함
       if (isUpdated) {
         await this.membersService.updateMemberCache(
           `account-member_${accountId}`,
@@ -81,6 +82,7 @@ export class StudyTimerService {
         queryRunner,
       );
 
+      // account-member의 키값은 직접 업데이트 해야함
       if (isUpdated) {
         await this.membersService.updateMemberCache(
           `account-member_${accountId}`,

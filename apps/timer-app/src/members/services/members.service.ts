@@ -122,11 +122,13 @@ export class MembersService {
   ): Promise<boolean> {
     const repository = this.getRepository(queryRunner);
     const result = await repository.update(id, member);
+    await this.cacheManager.del(`member_${id}`);
     return result.affected ? 0 < result.affected : false;
   }
 
   async delete(id: string, queryRunner?: QueryRunner): Promise<void> {
     const repository = this.getRepository(queryRunner);
+    await this.cacheManager.del(`member_${id}`);
     await repository.delete(id);
   }
 
@@ -139,6 +141,7 @@ export class MembersService {
     const result = await repository.update(memberId, {
       active_record_id: null,
     });
+    await this.cacheManager.del(`member_${memberId}`);
     return result.affected ? 0 < result.affected : false;
   }
 
@@ -152,6 +155,7 @@ export class MembersService {
     const result = await repository.update(memberId, {
       active_record_id: activeRecordId,
     });
+    await this.cacheManager.del(`member_${memberId}`);
     return result.affected ? 0 < result.affected : false;
   }
 

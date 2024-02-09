@@ -6,7 +6,13 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(TimerAppModule);
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // DTO에 정의된 필드만 받아들임
+      forbidNonWhitelisted: true, // 정의되지 않은 필드가 포함되어 있으면 요청을 거부
+      transform: true,
+    }),
+  );
 
   app.setGlobalPrefix('timer-api');
   app.useGlobalInterceptors(new Interceptor());
