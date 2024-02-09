@@ -18,9 +18,10 @@ export class MemberStatisticsController {
   @Get('/monthly')
   getMonthlyStatistics(
     @Param('memberId') memberId: string,
+    @Query('year') year: number,
     @Query('month') month: number,
   ) {
-    return this.statisticsService.getMonthlyStatistics(memberId, month);
+    return this.statisticsService.getMonthlyStatistics(memberId, year, month);
   }
 
   @Get('/heat-map')
