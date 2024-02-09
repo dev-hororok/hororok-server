@@ -1,10 +1,5 @@
 import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FindManyOptions,
@@ -13,15 +8,12 @@ import {
   Repository,
 } from 'typeorm';
 import { CreateStudyRecordInputDto } from './dtos/create-study-record.dto';
-import { StudyCategoriesService } from '../study-categories/study-categories.service';
 
 @Injectable()
 export class StudyRecordsService {
   constructor(
     @InjectRepository(StudyRecord)
     private studyRecordRepository: Repository<StudyRecord>,
-    @Inject(forwardRef(() => StudyCategoriesService))
-    private readonly studyCategoryService: StudyCategoriesService,
   ) {}
 
   /** queryRunner 여부에 따라 StudyRecord Repository를 생성 */
