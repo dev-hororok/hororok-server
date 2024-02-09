@@ -63,6 +63,7 @@
 - [ ] 통계
   - [ ] 일일 통계 (ex. /members/{member_id}/statistics?date=2024-02-08)
   - [ ] 월별 통계 (ex. /members/{member_id}/statistics/monthly?month=4)
+  - [ ] 히트맵 데이터 조회(ex. /members/{member_id}/statistic/heat-map?start=2023-02-08&end=2024-02-08)
 - [ ] 캐싱처리
   - [ ] 캐싱이 필요한 Services 메서드를 따로 생성 (서비스 객체의 CRUD가 범용성을 위해 options객체를 받도록 되어있어 캐싱처리 하기 힘듬)
 - [ ] 테스트 코드
