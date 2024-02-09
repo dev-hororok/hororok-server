@@ -35,4 +35,27 @@ export class ItemInventoryService {
   async delete(id: string): Promise<void> {
     await this.itemInventoryRepository.delete(id);
   }
+
+  /** 멤버가 소유한 모든 FoodInventory의 progress값을 experience만큼 감소 */
+  async decreaseFoodProgressByExperience(
+    memberId: string,
+    experience: number,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    const repository = queryRunner
+      ? queryRunner.manager.getRepository(ItemInventory)
+      : this.itemInventoryRepository;
+    const memberFoods = await repository.find({
+      where: { member: { member_id: memberId }, item_type: 'Food' },
+    });
+
+    for (const food of memberFoods) {
+      if (food.progress && 0 < food.progress) {
+        const newProgress = Math.max(0, food.progress - experience);
+        await repository.update(food.item_inventory_id, {
+          progress: newProgress,
+        });
+      }
+    }
+  }
 }

@@ -1,5 +1,10 @@
 import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FindManyOptions,
@@ -33,6 +38,27 @@ export class StudyRecordsService {
       return queryRunner.manager.findOne(StudyRecord, options);
     }
     return this.studyRecordRepository.findOne(options);
+  }
+  async findActiveRecordOrFail(
+    activeRecordId: number | null,
+    queryRunner?: QueryRunner,
+  ): Promise<StudyRecord> {
+    if (activeRecordId === null) {
+      throw new NotFoundException('진행중인 타이머가 없습니다.');
+    }
+    const queryBuilder = queryRunner
+      ? queryRunner.manager.getRepository(StudyRecord)
+      : this.studyRecordRepository;
+
+    const record = await queryBuilder.findOne({
+      where: { study_record_id: activeRecordId },
+    });
+
+    if (!record) {
+      throw new NotFoundException('진행중인 타이머가 없습니다.');
+    }
+
+    return record;
   }
 
   async create(
@@ -99,5 +125,20 @@ export class StudyRecordsService {
       .set({ study_category: { study_category_id: targetCategoryId } })
       .where('study_record_id In (:...recordIds)', { recordIds })
       .execute();
+  }
+
+  /** 레코드의 status를 업데이트 시켜줌 (status : "Completed" | "Incompleted") */
+  async completeStudyRecord(
+    studyRecordId: number,
+    status: string,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    const repository = queryRunner
+      ? queryRunner.manager.getRepository(StudyRecord)
+      : this.studyRecordRepository;
+    await repository.update(studyRecordId, {
+      status: status,
+      end_time: new Date(),
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { JWTPayload } from '@app/auth';
 import { Member } from '@app/database/typeorm/entities/member.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -40,7 +40,7 @@ export class MembersService {
     return member;
   }
 
-  // 캐싱처리
+  /** 캐싱: `member_${memberId}` */
   async findOneById(memberId: string, queryRunner?: QueryRunner) {
     const cacheKey = `member_${memberId}`;
     const cache = await this.cacheManager.get<Member>(cacheKey);
@@ -65,7 +65,15 @@ export class MembersService {
 
     return member;
   }
-  // 캐싱처리
+  /** 캐싱: `member_${memberId}` */
+  async findOneByIdOrFail(memberId: string, queryRunner?: QueryRunner) {
+    const member = await this.findOneById(memberId, queryRunner);
+    if (!member) {
+      throw new NotFoundException('유저가 존재하지 않습니다.');
+    }
+    return member;
+  }
+  /** 캐싱: account-member_${accountId} */
   async findOneByAccountId(accountId: string, queryRunner?: QueryRunner) {
     const cacheKey = `account-member_${accountId}`;
     const cache = await this.cacheManager.get<Member>(cacheKey);
@@ -88,6 +96,14 @@ export class MembersService {
       await this.cacheManager.set(cacheKey, member, 3000);
     }
 
+    return member;
+  }
+  /** 캐싱: account-member_${accountId} */
+  async findOneByAccountIdOrFail(accountId: string, queryRunner?: QueryRunner) {
+    const member = await this.findOneByAccountId(accountId, queryRunner);
+    if (!member) {
+      throw new NotFoundException('유저가 존재하지 않습니다.');
+    }
     return member;
   }
 
@@ -130,6 +146,38 @@ export class MembersService {
     await this.memberRepository.delete(id);
   }
 
+  /** 유저의 현재 공부중인 테이블 필드를 비워줌 */
+  async clearActiveRecordId(
+    memberId: string,
+    queryRunner?: QueryRunner,
+  ): Promise<boolean> {
+    const repository = queryRunner
+      ? queryRunner.manager.getRepository(Member)
+      : this.memberRepository;
+
+    const result = await repository.update(memberId, {
+      active_record_id: null,
+    });
+    return result.affected ? 0 < result.affected : false;
+  }
+
+  /** 유저의 activeRecord 필드를 업데이트 시켜줌 */
+  async updateActiveRecordId(
+    memberId: string,
+    activeRecordId: number,
+    queryRunner?: QueryRunner,
+  ) {
+    const repository = queryRunner
+      ? queryRunner.manager.getRepository(Member)
+      : this.memberRepository;
+
+    const result = await repository.update(memberId, {
+      active_record_id: activeRecordId,
+    });
+    return result.affected ? 0 < result.affected : false;
+  }
+
+  /** 해당 캐시키에 새 멤버로 값을 업데이트 */
   async updateMemberCache(key: string, member: Member) {
     await this.cacheManager.set(key, member);
   }
