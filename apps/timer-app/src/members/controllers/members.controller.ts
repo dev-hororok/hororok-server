@@ -1,5 +1,5 @@
 import { StreaksService } from '../../streaks/streaks.service';
-import { Roles } from '@app/auth';
+import { JWTPayload, Roles } from '@app/auth';
 import {
   BadRequestException,
   Body,
@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Query,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { MembersService } from '../services/members.service';
@@ -26,6 +25,7 @@ import { ItemInventoryService } from '../../item-inventory/item-inventory.servic
 import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 import { MemberInitializationService } from '../services/member-initialization.service';
 import { IsNull, MoreThan, Not } from 'typeorm';
+import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
 
 @Controller('members')
 export class MembersController {
@@ -47,12 +47,10 @@ export class MembersController {
 
   // 로그인 된 계정의 유저를 조회 (없으면 새로 생성)
   @Get('me')
-  async getCurrentMember(@Req() req) {
-    let member = await this.membersService.findOneByAccountId(req.user.sub);
+  async getCurrentMember(@CurrentUser() user: JWTPayload) {
+    let member = await this.membersService.findOneByAccountId(user.sub);
     if (!member) {
-      member = await this.memberInitializationService.initializeMember(
-        req.user,
-      );
+      member = await this.memberInitializationService.initializeMember(user);
     }
 
     return { member: MemberMapper.toDto(member) };
