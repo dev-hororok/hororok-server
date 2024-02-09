@@ -8,6 +8,7 @@ import {
   QueryRunner,
   Repository,
 } from 'typeorm';
+import { TransactionService } from '../common/transaction.service';
 
 @Injectable()
 export class StreaksService {
@@ -15,31 +16,49 @@ export class StreaksService {
     @InjectRepository(StudyStreak)
     private streakRepository: Repository<StudyStreak>,
     private dataSource: DataSource,
+    private transactionService: TransactionService,
   ) {}
+  /** queryRunner 여부에 따라 StudyStreak Repository를 생성 */
+  private getRepository(queryRunner?: QueryRunner): Repository<StudyStreak> {
+    return queryRunner
+      ? queryRunner.manager.getRepository(StudyStreak)
+      : this.streakRepository;
+  }
 
   async findAll(
     options?: FindManyOptions<StudyStreak>,
+    queryRunner?: QueryRunner,
   ): Promise<StudyStreak[]> {
-    return this.streakRepository.find(options);
+    const repository = this.getRepository(queryRunner);
+    return repository.find(options);
   }
 
   async findOne(
     options: FindOneOptions<StudyStreak>,
     queryRunner?: QueryRunner,
   ): Promise<StudyStreak | null> {
-    if (queryRunner) {
-      return queryRunner.manager.findOne(StudyStreak, options);
-    }
-    return this.streakRepository.findOne(options);
+    const repository = this.getRepository(queryRunner);
+    return repository.findOne(options);
+  }
+
+  async findOneWithPaletteByMemberId(
+    memberId: string,
+    queryRunner?: QueryRunner,
+  ) {
+    const repository = this.getRepository(queryRunner);
+    return repository.findOne({
+      where: {
+        member: { member_id: memberId },
+      },
+      relations: ['palette'],
+    });
   }
 
   async create(
     memberId: string,
     queryRunner?: QueryRunner,
   ): Promise<StudyStreak> {
-    const repository = queryRunner
-      ? queryRunner.manager.getRepository(StudyStreak)
-      : this.streakRepository;
+    const repository = this.getRepository(queryRunner);
 
     const newStreak = repository.create({
       longest_streak: 0,
@@ -47,40 +66,35 @@ export class StreaksService {
       member: { member_id: memberId },
     });
 
-    return await this.streakRepository.save(newStreak);
+    return this.streakRepository.save(newStreak);
   }
 
-  async update(id: number, streak: Partial<StudyStreak>): Promise<boolean> {
-    const result = await this.streakRepository.update(id, streak);
+  async update(
+    id: number,
+    streak: Partial<StudyStreak>,
+    queryRunner?: QueryRunner,
+  ): Promise<boolean> {
+    const repository = this.getRepository(queryRunner);
+    const result = await repository.update(id, streak);
     return result.affected ? 0 < result.affected : false;
   }
 
-  async delete(id: number): Promise<void> {
-    await this.streakRepository.delete(id);
+  async delete(id: number, queryRunner?: QueryRunner): Promise<void> {
+    const repository = this.getRepository(queryRunner);
+    await repository.delete(id);
   }
 
   async findOrCreate(memberId: string): Promise<StudyStreak> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      let streak = await this.findOne({
-        where: { member: { member_id: memberId } },
-        relations: {
-          palette: true,
-        },
-      });
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
+      let streak = await this.findOneWithPaletteByMemberId(
+        memberId,
+        queryRunner,
+      );
       if (!streak) {
         streak = await this.create(memberId, queryRunner);
       }
-      await queryRunner.commitTransaction();
+
       return streak;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 }
