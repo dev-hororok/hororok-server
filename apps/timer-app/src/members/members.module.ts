@@ -12,6 +12,7 @@ import { ItemInventoryModule } from '../item-inventory/item-inventory.module';
 import { MemberInitializationService } from './services/member-initialization.service';
 import { MemberStatisticsController } from './controllers/members-statistic.controller';
 import { StatisticsModule } from '../statistics/statistics.module';
+import { TransactionService } from '../common/transaction.service';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
     StudyCategoriesModule,
     StatisticsModule,
   ],
-  providers: [MembersService, MemberInitializationService],
+  providers: [MembersService, MemberInitializationService, TransactionService],
   controllers: [
     MembersController,
     MemberStudyCategoriesController,
