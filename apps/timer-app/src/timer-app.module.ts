@@ -13,6 +13,7 @@ import { StudyTimerModule } from './study-timer/study-timer.module';
 import { ItemsModule } from './items/items.module';
 import { ItemInventoryModule } from './item-inventory/item-inventory.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { StatisticsModule } from './statistics/statistics.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -36,6 +37,7 @@ import * as redisStore from 'cache-manager-redis-store';
     StudyTimerModule,
     ItemsModule,
     ItemInventoryModule,
+    StatisticsModule,
   ],
   providers: [
     {
