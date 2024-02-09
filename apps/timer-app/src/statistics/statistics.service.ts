@@ -51,10 +51,18 @@ export class StatisticsService {
       },
     });
 
+    const uniqueDays = new Set();
     const monthlyTotal = records.reduce((acc, record) => {
       if (!record.end_time) return acc;
       const duration =
         (record.end_time.getTime() - record.start_time.getTime()) / 1000;
+
+      const year = record.start_time.getFullYear();
+      const month = record.start_time.getMonth() + 1;
+      const day = record.start_time.getDate();
+      const dayKey = `${year}-${month}-${day}`;
+
+      uniqueDays.add(dayKey);
       return acc + duration;
     }, 0);
 
@@ -62,6 +70,7 @@ export class StatisticsService {
       month,
       year,
       totalSeconds: monthlyTotal,
+      uniqueStudyDays: uniqueDays.size, // 공부한 횟수/월
     };
   }
 
