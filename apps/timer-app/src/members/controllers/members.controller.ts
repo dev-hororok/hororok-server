@@ -25,7 +25,7 @@ import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/characte
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 import { MemberInitializationService } from '../services/member-initialization.service';
-import { IsNull, Not } from 'typeorm';
+import { IsNull, MoreThan, Not } from 'typeorm';
 
 @Controller('members')
 export class MembersController {
@@ -100,6 +100,7 @@ export class MembersController {
         member: {
           member_id,
         },
+        quantity: MoreThan(0),
         item_type,
       },
       relations: {
