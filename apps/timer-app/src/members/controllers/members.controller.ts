@@ -120,7 +120,7 @@ export class MembersController {
   @UseGuards(PermissionsGuard)
   async getMemberCharacterInventory(@Param('member_id') member_id: string) {
     const character_inventory = await this.characterInventoryService.findAll({
-      where: { member: { member_id } },
+      where: { member: { member_id }, quantity: MoreThan(0) },
       relations: {
         character: true,
       },
