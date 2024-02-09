@@ -2,7 +2,6 @@ import { StudyStreak } from '@app/database/typeorm/entities/study-streak.entity'
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  DataSource,
   FindManyOptions,
   FindOneOptions,
   QueryRunner,
@@ -15,7 +14,6 @@ export class StreaksService {
   constructor(
     @InjectRepository(StudyStreak)
     private streakRepository: Repository<StudyStreak>,
-    private dataSource: DataSource,
     private transactionService: TransactionService,
   ) {}
   /** queryRunner 여부에 따라 StudyStreak Repository를 생성 */

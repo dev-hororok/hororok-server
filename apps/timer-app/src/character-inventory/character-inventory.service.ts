@@ -1,7 +1,12 @@
 import { CharacterInventory } from '@app/database/typeorm/entities/character-inventory.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOneOptions,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class CharacterInventoryService {
@@ -10,19 +15,33 @@ export class CharacterInventoryService {
     private characterInventoryRepository: Repository<CharacterInventory>,
   ) {}
 
+  /** queryRunner 여부에 따라 CharacterInventory Repository를 생성 */
+  private getRepository(
+    queryRunner?: QueryRunner,
+  ): Repository<CharacterInventory> {
+    return queryRunner
+      ? queryRunner.manager.getRepository(CharacterInventory)
+      : this.characterInventoryRepository;
+  }
+
   async findAll(
     options?: FindManyOptions<CharacterInventory>,
+    queryRunner?: QueryRunner,
   ): Promise<CharacterInventory[]> {
-    return this.characterInventoryRepository.find(options);
+    const repository = this.getRepository(queryRunner);
+    return repository.find(options);
   }
 
   async findOne(
     options: FindOneOptions<CharacterInventory>,
+    queryRunner?: QueryRunner,
   ): Promise<CharacterInventory | null> {
-    return this.characterInventoryRepository.findOne(options);
+    const repository = this.getRepository(queryRunner);
+    return repository.findOne(options);
   }
 
-  async delete(id: number): Promise<void> {
-    await this.characterInventoryRepository.delete(id);
+  async delete(id: number, queryRunner?: QueryRunner): Promise<void> {
+    const repository = this.getRepository(queryRunner);
+    await repository.delete(id);
   }
 }
