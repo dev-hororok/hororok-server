@@ -3,10 +3,10 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  NotFoundException,
   forwardRef,
 } from '@nestjs/common';
 import {
-  DataSource,
   FindManyOptions,
   FindOneOptions,
   QueryRunner,
@@ -16,6 +16,7 @@ import { CreateStudyCategoryInputDto } from './dtos/create-study-category.dto';
 import { UpdateStudyCategoryInputDto } from './dtos/update-study-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudyRecordsService } from '../study-records/study-records.service';
+import { TransactionService } from '../common/transaction.service';
 
 @Injectable()
 export class StudyCategoriesService {
@@ -24,164 +25,118 @@ export class StudyCategoriesService {
     private studyCategoryRepository: Repository<StudyCategory>,
     @Inject(forwardRef(() => StudyRecordsService))
     private studyRecordsService: StudyRecordsService,
-    private dataSource: DataSource,
+
+    private transactionService: TransactionService,
   ) {}
+
+  /** queryRunner 여부에 따라 StudyCategory Repository를 생성 */
+  private getRepository(queryRunner?: QueryRunner): Repository<StudyCategory> {
+    return queryRunner
+      ? queryRunner.manager.getRepository(StudyCategory)
+      : this.studyCategoryRepository;
+  }
 
   async findAll(
     options: FindManyOptions<StudyCategory>,
     queryRunner?: QueryRunner,
   ) {
-    if (queryRunner) {
-      return queryRunner.manager.getRepository(StudyCategory).find(options);
-    }
-    return this.studyCategoryRepository.find(options);
+    const repository = this.getRepository(queryRunner);
+    return repository.find(options);
   }
 
   async findOne(
     options: FindOneOptions<StudyCategory>,
     queryRunner?: QueryRunner,
   ) {
-    if (queryRunner) {
-      return queryRunner.manager.getRepository(StudyCategory).findOne(options);
-    }
-    return this.studyCategoryRepository.findOne(options);
+    const repository = this.getRepository(queryRunner);
+    return repository.findOne(options);
   }
 
-  async delete(study_category_id: number, queryRunner?: QueryRunner) {
-    const repository = queryRunner
-      ? queryRunner.manager.getRepository(StudyCategory)
-      : this.studyCategoryRepository;
-    const result = await repository.softDelete(study_category_id);
+  async delete(studyCategoryId: number, queryRunner?: QueryRunner) {
+    const repository = this.getRepository(queryRunner);
+    const result = await repository.softDelete(studyCategoryId);
     return result.affected ? 0 < result.affected : false;
   }
 
-  async create(member_id: string, { subject }: CreateStudyCategoryInputDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const exist = await this.findOne(
-        {
-          withDeleted: true,
-          where: {
-            member: { member_id: member_id },
-            subject,
-          },
-        },
+  async create(memberId: string, { subject }: CreateStudyCategoryInputDto) {
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
+      const existingCategory = await this.findOneBySubjectAndMemberId(
+        subject,
+        memberId,
         queryRunner,
       );
-      if (exist && !exist.deleted_at) {
+      if (existingCategory && !existingCategory.deleted_at) {
         throw new BadRequestException('이미 동일한 카테고리가 존재합니다.');
       }
-      // 만들어진 이력이 있으면 살려서 반환
-      if (exist && exist.deleted_at) {
+
+      if (existingCategory && existingCategory.deleted_at) {
+        // 카테고리 복원 로직
         await queryRunner.manager.update(
           StudyCategory,
-          exist.study_category_id,
+          existingCategory.study_category_id,
           {
             deleted_at: null,
           },
         );
-        await queryRunner.commitTransaction();
-        exist.deleted_at = null;
-        return exist;
+        existingCategory.deleted_at = null;
+        return existingCategory;
       }
 
-      // 없으면 새로 생성
+      // 새 카테고리 생성
       const newCategory = queryRunner.manager.create(StudyCategory, {
-        subject,
-        member: { member_id },
+        subject: subject,
+        member: { member_id: memberId },
       });
-
       await queryRunner.manager.insert(StudyCategory, newCategory);
-      await queryRunner.commitTransaction();
-
       return newCategory;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 
   async update(
-    member_id: string,
-    study_category_id: number,
+    memberId: string,
+    studyCategoryId: number,
     { subject }: UpdateStudyCategoryInputDto,
-  ) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const existingCategory = await this.findOne(
-        {
-          where: {
-            study_category_id,
-          },
-          relations: {
-            study_records: true,
-          },
-        },
+  ): Promise<StudyCategory> {
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
+      const existingCategory = await this.findOneWithStudyRecordsByIdOrFail(
+        studyCategoryId,
         queryRunner,
       );
-      if (!existingCategory) {
-        throw new BadRequestException('해당 카테고리가 존재하지 않습니다.');
-      }
       if (existingCategory.subject === subject) {
         throw new BadRequestException('변경된 내용이 없습니다.');
       }
 
-      const targetCategory = await this.findOne(
-        {
-          withDeleted: true,
-          where: { member: { member_id }, subject },
-        },
+      const targetCategory = await this.findOneBySubjectAndMemberId(
+        subject,
+        memberId,
         queryRunner,
       );
 
-      // target 기록 존재시 공부기록들의 카테고리를 타겟 카테고리로 수정 후 기존꺼 삭제
       if (targetCategory) {
         await this.mergeCategories(
           existingCategory,
           targetCategory,
           queryRunner,
         );
-        await queryRunner.commitTransaction();
-
-        return;
+        return targetCategory;
       }
-      // target 기록 없을시 기존 카테고리의 subject만 업데이트
-      await queryRunner.manager.update(
-        StudyCategory,
-        existingCategory.study_category_id,
-        { subject },
-      );
-      await queryRunner.commitTransaction();
+
+      // subject 업데이트
+      await queryRunner.manager.update(StudyCategory, studyCategoryId, {
+        subject: subject,
+      });
       existingCategory.subject = subject;
       return existingCategory;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 
-  // 기존 카테고리를 제거하고 타겟 카테고리에 공부기록 연결
+  /** 기존 카테고리를 제거하고 타겟 카테고리에 공부기록 연결 */
   private async mergeCategories(
     existingCategory: StudyCategory,
     targetCategory: StudyCategory,
     queryRunner?: QueryRunner,
   ) {
-    const repository = queryRunner
-      ? queryRunner.manager.getRepository(StudyCategory)
-      : this.studyCategoryRepository;
-
-    // 기존 카테고리에 속한 기록의 연결을 끊고 타겟 카테고리와 연결
+    const repository = this.getRepository(queryRunner);
     const studyRecordIds = existingCategory.study_records.map(
       (record) => record.study_record_id,
     );
@@ -202,5 +157,50 @@ export class StudyCategoriesService {
     }
 
     return targetCategory;
+  }
+
+  /** StudyCategory를 StudyRecords와 함께 반환 */
+  private async findOneWithStudyRecordsById(
+    studyCategoryId: number,
+    queryRunner?: QueryRunner,
+  ): Promise<StudyCategory | null> {
+    const repository = this.getRepository(queryRunner);
+    return repository.findOne({
+      where: {
+        study_category_id: studyCategoryId,
+      },
+      relations: ['study_records'],
+    });
+  }
+
+  /** StudyCategory를 StudyRecords와 함께 반환 or 없으면 에러 */
+  private async findOneWithStudyRecordsByIdOrFail(
+    studyCategoryId: number,
+    queryRunner?: QueryRunner,
+  ): Promise<StudyCategory> {
+    const category = await this.findOneWithStudyRecordsById(
+      studyCategoryId,
+      queryRunner,
+    );
+    if (!category) {
+      throw new NotFoundException('해당 카테고리가 존재하지 않습니다.');
+    }
+    return category;
+  }
+
+  /** softDelete된 카테고리 포함 */
+  private async findOneBySubjectAndMemberId(
+    subject: string,
+    memberId: string,
+    queryRunner?: QueryRunner,
+  ): Promise<StudyCategory | null> {
+    const repository = this.getRepository(queryRunner);
+    return repository.findOne({
+      withDeleted: true,
+      where: {
+        subject: subject,
+        member: { member_id: memberId },
+      },
+    });
   }
 }

@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { StudyCategoriesService } from '../../study-categories/study-categories.service';
@@ -24,12 +23,11 @@ export class MemberStudyCategoriesController {
 
   @Post()
   async createCategory(
-    @Req() req,
-    @Param('member_id') member_id: string,
+    @Param('member_id') memberId: string,
     @Body() createStudyCategoryDto: CreateStudyCategoryInputDto,
   ) {
     const newCategory = await this.studyCategoriesService.create(
-      member_id,
+      memberId,
       createStudyCategoryDto,
     );
     return {
@@ -38,9 +36,9 @@ export class MemberStudyCategoriesController {
   }
 
   @Get()
-  async getStudyCategories(@Param('member_id') member_id: string) {
+  async getStudyCategories(@Param('member_id') memberId: string) {
     const categories = await this.studyCategoriesService.findAll({
-      where: { member: { member_id } },
+      where: { member: { member_id: memberId } },
     });
     return {
       study_categories: categories.map((category) =>
@@ -50,20 +48,20 @@ export class MemberStudyCategoriesController {
   }
 
   @Delete(':study_category_id')
-  async deleteCategory(@Param('study_category_id') study_category_id: number) {
-    await this.studyCategoriesService.delete(study_category_id);
+  async deleteCategory(@Param('study_category_id') studyCategoryId: number) {
+    await this.studyCategoriesService.delete(studyCategoryId);
     return null;
   }
 
   @Patch(':study_category_id')
   async updateCategory(
-    @Param('member_id') member_id: string,
-    @Param('study_category_id') study_category_id: number,
+    @Param('member_id') memberId: string,
+    @Param('study_category_id') studyCategoryId: number,
     @Body() updateStudyCategoryDto: UpdateStudyCategoryInputDto,
   ) {
     await this.studyCategoriesService.update(
-      member_id,
-      study_category_id,
+      memberId,
+      studyCategoryId,
       updateStudyCategoryDto,
     );
     return null;

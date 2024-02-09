@@ -2,33 +2,24 @@ import { StreaksService } from './../../streaks/streaks.service';
 import { JWTPayload } from '@app/auth';
 import { Member } from '@app/database/typeorm/entities/member.entity';
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import { MembersService } from './members.service';
+import { TransactionService } from '../../common/transaction.service';
 
 @Injectable()
 export class MemberInitializationService {
   constructor(
     private membersService: MembersService,
     private streaksService: StreaksService,
-    private dataSource: DataSource,
+
+    private transactionService: TransactionService,
   ) {}
 
+  /** 멤버 초기화(계정으로 첫 접속할 시 멤버객체 생성) */
   async initializeMember(jwtToken: JWTPayload): Promise<Member> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
       const newMember = await this.membersService.create(jwtToken, queryRunner);
       await this.streaksService.create(newMember.member_id, queryRunner);
-      await queryRunner.commitTransaction();
-
       return newMember;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 }

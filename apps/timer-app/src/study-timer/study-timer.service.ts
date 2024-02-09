@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { StartStudyTimerInputDto } from './dtos/start-study-timer.dto';
 import { MembersService } from '../members/services/members.service';
 import { ItemInventoryService } from '../item-inventory/item-inventory.service';
-import { DataSource } from 'typeorm';
 import { EndStudyTimerInputDto } from './dtos/end.study-timer.dto';
+import { TransactionService } from '../common/transaction.service';
 
 @Injectable()
 export class StudyTimerService {
@@ -12,32 +12,24 @@ export class StudyTimerService {
     private readonly studyRecordsService: StudyRecordsService,
     private readonly membersService: MembersService,
     private readonly itemInventoryService: ItemInventoryService,
-    private dataSource: DataSource,
+
+    private transactionService: TransactionService,
   ) {}
 
-  async start(account_id: string, body: StartStudyTimerInputDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const member = await this.membersService.findOneByAccountId(
-        account_id,
+  async start(accountId: string, body: StartStudyTimerInputDto) {
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
+      const member = await this.membersService.findOneByAccountIdOrFail(
+        accountId,
         queryRunner,
       );
-      if (!member) {
-        throw new NotFoundException('유저가 존재하지 않습니다.');
-      }
 
       if (member.active_record_id) {
-        // 기존 레코드 삭제
         await this.studyRecordsService.delete(
           member.active_record_id,
           queryRunner,
         );
       }
 
-      // 새 레코드 생성
       const newRecord = await this.studyRecordsService.create(
         {
           member_id: member.member_id,
@@ -46,89 +38,54 @@ export class StudyTimerService {
         },
         queryRunner,
       );
-      const isUpdated = await this.membersService.update(
+
+      const isUpdated = await this.membersService.updateActiveRecordId(
         member.member_id,
-        {
-          active_record_id: newRecord.study_record_id,
-        },
+        newRecord.study_record_id,
         queryRunner,
       );
 
-      // 캐시 업데이트
+      // account-member의 키값은 직접 업데이트 해야함
       if (isUpdated) {
         await this.membersService.updateMemberCache(
-          `account-member_${account_id}`,
+          `account-member_${accountId}`,
           {
             ...member,
             active_record_id: newRecord.study_record_id,
           },
         );
       }
-
-      await queryRunner.commitTransaction();
       return null;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 
-  async end(account_id: string, data: EndStudyTimerInputDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const member = await this.membersService.findOneByAccountId(
-        account_id,
+  async end(accountId: string, data: EndStudyTimerInputDto) {
+    return this.transactionService.executeInTransaction(async (queryRunner) => {
+      const member = await this.membersService.findOneByAccountIdOrFail(
+        accountId,
         queryRunner,
       );
-      if (!member) {
-        throw new NotFoundException('유저가 존재하지 않습니다.');
-      }
-      if (!member.active_record_id) {
-        throw new NotFoundException('진행중인 타이머가 없습니다.');
-      }
-      const existRecord = await this.studyRecordsService.findOne(
-        {
-          where: {
-            study_record_id: member.active_record_id,
-          },
-        },
+      const existRecord = await this.studyRecordsService.findActiveRecordOrFail(
+        member.active_record_id,
         queryRunner,
       );
-      if (!existRecord) {
-        throw new NotFoundException('진행중인 타이머가 없습니다.');
-      }
 
-      // 공부시간 계산
-      const endMilli = new Date().getTime();
-      const startMilli = existRecord.start_time.getTime();
+      const exp = this.calculateExperience(existRecord.start_time, new Date());
 
-      const exp = (endMilli - startMilli) / 1000; // start와 end요청시간의 간격
-
-      await this.studyRecordsService.update(
+      await this.studyRecordsService.completeStudyRecord(
         existRecord.study_record_id,
-        {
-          end_time: new Date(),
-          status: data.status,
-        },
+        data.status,
         queryRunner,
       );
-      const isUpdated = await this.membersService.update(
+      const isUpdated = await this.membersService.clearActiveRecordId(
         member.member_id,
-        {
-          active_record_id: null,
-        },
         queryRunner,
       );
 
-      // 캐시 업데이트
+      // account-member의 키값은 직접 업데이트 해야함
       if (isUpdated) {
         await this.membersService.updateMemberCache(
-          `account-member_${account_id}`,
+          `account-member_${accountId}`,
           {
             ...member,
             active_record_id: null,
@@ -136,36 +93,20 @@ export class StudyTimerService {
         );
       }
 
-      // 유저가 가진 음식 progress 줄이기
-      const memberFoods = await this.itemInventoryService.findAll(
-        {
-          select: ['item_inventory_id', 'progress'],
-          where: { member: { member_id: member.member_id }, item_type: 'Food' },
-        },
+      await this.itemInventoryService.decreaseFoodProgressByExperience(
+        member.member_id,
+        exp,
         queryRunner,
       );
 
-      await Promise.all(
-        memberFoods.map((inventory) => {
-          if (inventory.progress !== null && inventory.progress !== 0) {
-            const newProgress =
-              inventory.progress - exp < 0 ? 0 : inventory.progress - exp;
-            return this.itemInventoryService.update(
-              inventory.item_inventory_id,
-              { progress: newProgress },
-              queryRunner,
-            );
-          }
-        }),
-      );
-
-      await queryRunner.commitTransaction();
       return null;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
+  }
+
+  /** startTime과 endTime의 차이를 seconds로 반환 */
+  private calculateExperience(startTime: Date, endTime: Date): number {
+    const endMilli = endTime.getTime();
+    const startMilli = startTime.getTime();
+    return (endMilli - startMilli) / 1000;
   }
 }

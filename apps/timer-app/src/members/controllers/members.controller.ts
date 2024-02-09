@@ -1,5 +1,5 @@
 import { StreaksService } from '../../streaks/streaks.service';
-import { Roles } from '@app/auth';
+import { JWTPayload, Roles } from '@app/auth';
 import {
   BadRequestException,
   Body,
@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Query,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { MembersService } from '../services/members.service';
@@ -26,6 +25,7 @@ import { ItemInventoryService } from '../../item-inventory/item-inventory.servic
 import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 import { MemberInitializationService } from '../services/member-initialization.service';
 import { IsNull, MoreThan, Not } from 'typeorm';
+import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
 
 @Controller('members')
 export class MembersController {
@@ -47,16 +47,10 @@ export class MembersController {
 
   // 로그인 된 계정의 유저를 조회 (없으면 새로 생성)
   @Get('me')
-  async getCurrentMember(@Req() req) {
-    let member = await this.membersService.findOne({
-      where: {
-        account_id: req.user.sub,
-      },
-    });
+  async getCurrentMember(@CurrentUser() user: JWTPayload) {
+    let member = await this.membersService.findOneByAccountId(user.sub);
     if (!member) {
-      member = await this.memberInitializationService.initializeMember(
-        req.user,
-      );
+      member = await this.memberInitializationService.initializeMember(user);
     }
 
     return { member: MemberMapper.toDto(member) };
@@ -66,7 +60,7 @@ export class MembersController {
   @Patch(':member_id')
   @UseGuards(PermissionsGuard)
   async updateMember(
-    @Param('member_id') member_id: string,
+    @Param('member_id') memberId: string,
     @Body() updateMemberInputDto: UpdateMemberInputDto,
   ) {
     if (
@@ -75,15 +69,15 @@ export class MembersController {
     ) {
       throw new BadRequestException('변경할 내용이 없습니다.');
     }
-    await this.membersService.update(member_id, updateMemberInputDto);
+    await this.membersService.update(memberId, updateMemberInputDto);
     return null;
   }
 
   // 유저 스트릭 정보 조회 (없으면 생성)
   @Get(':member_id/study-streak')
   @UseGuards(MemberExistsGuard)
-  async getMemberStudyStreak(@Param('member_id') member_id: string) {
-    const streak = await this.streaksService.findOrCreate(member_id);
+  async getMemberStudyStreak(@Param('member_id') memberId: string) {
+    const streak = await this.streaksService.findOrCreate(memberId);
 
     return StudyStreakMapper.toDto(streak);
   }
@@ -92,16 +86,16 @@ export class MembersController {
   @Get(':member_id/item-inventory')
   @UseGuards(PermissionsGuard)
   async getMemberItemInventory(
-    @Param('member_id') member_id: string,
-    @Query('item_type') item_type: string,
+    @Param('member_id') memberId: string,
+    @Query('item_type') itemType: string,
   ) {
     const item_inventory = await this.itemInventoryService.findAll({
       where: {
         member: {
-          member_id,
+          member_id: memberId,
         },
         quantity: MoreThan(0),
-        item_type,
+        item_type: itemType,
       },
       relations: {
         item: true,
@@ -118,9 +112,9 @@ export class MembersController {
   // 유저 캐릭터 인벤토리 조회
   @Get(':member_id/character-inventory')
   @UseGuards(PermissionsGuard)
-  async getMemberCharacterInventory(@Param('member_id') member_id: string) {
+  async getMemberCharacterInventory(@Param('member_id') memberId: string) {
     const character_inventory = await this.characterInventoryService.findAll({
-      where: { member: { member_id }, quantity: MoreThan(0) },
+      where: { member: { member_id: memberId }, quantity: MoreThan(0) },
       relations: {
         character: true,
       },
@@ -136,11 +130,11 @@ export class MembersController {
   // 유저 공부 기록들 조회
   @Get(':member_id/study-records')
   @UseGuards(MemberExistsGuard)
-  async getMemberStudyRecords(@Param('member_id') member_id: string) {
+  async getMemberStudyRecords(@Param('member_id') memberId: string) {
     const study_records = await this.studyRecordsService.findAll({
       where: {
         member: {
-          member_id,
+          member_id: memberId,
         },
         end_time: Not(IsNull()),
       },
