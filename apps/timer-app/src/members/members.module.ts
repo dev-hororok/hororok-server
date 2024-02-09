@@ -10,6 +10,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from '@app/database/typeorm/entities/member.entity';
 import { ItemInventoryModule } from '../item-inventory/item-inventory.module';
 import { MemberInitializationService } from './services/member-initialization.service';
+import { MemberStatisticsController } from './controllers/members-statistic.controller';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @Module({
   imports: [
@@ -19,9 +21,14 @@ import { MemberInitializationService } from './services/member-initialization.se
     ItemInventoryModule,
     StudyRecordsModule,
     StudyCategoriesModule,
+    StatisticsModule,
   ],
   providers: [MembersService, MemberInitializationService],
-  controllers: [MembersController, MemberStudyCategoriesController],
+  controllers: [
+    MembersController,
+    MemberStudyCategoriesController,
+    MemberStatisticsController,
+  ],
   exports: [MembersService],
 })
 export class MembersModule {}

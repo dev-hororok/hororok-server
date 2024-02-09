@@ -4,12 +4,12 @@ import { PermissionsGuard } from '../guards/permissions.guard';
 
 @UseGuards(PermissionsGuard)
 @Controller('members/:member_id/statistics')
-export class StatisticsController {
+export class MemberStatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
   @Get()
   getDailyStatistics(
-    @Param('memberId') memberId: number,
+    @Param('memberId') memberId: string,
     @Query('date') date: string,
   ) {
     return this.statisticsService.getDailyStatistics(memberId, date);
@@ -17,7 +17,7 @@ export class StatisticsController {
 
   @Get('/monthly')
   getMonthlyStatistics(
-    @Param('memberId') memberId: number,
+    @Param('memberId') memberId: string,
     @Query('month') month: number,
   ) {
     return this.statisticsService.getMonthlyStatistics(memberId, month);
@@ -25,7 +25,7 @@ export class StatisticsController {
 
   @Get('/heat-map')
   getHeatMapData(
-    @Param('memberId') memberId: number,
+    @Param('memberId') memberId: string,
     @Query('start') start: string,
     @Query('end') end: string,
   ) {
