@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { AccountsController } from '../accounts.controller';
 import { AccountsService } from '../accounts.service';
-import { readonlyAccountStub } from './stubs/account.stub';
+import { jwtPayloadStub, readonlyAccountStub } from './stubs/account.stub';
 import { EditAccountDto } from '../dtos/edit-account.dto';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { ReadOnlyAccountDto } from '@app/database/mongodb/dtos/readonly-account.dto';
@@ -27,9 +27,7 @@ describe('AccountsController', () => {
     describe('getLoggedInAccount 호출 시', () => {
       let account: ReadOnlyAccountDto;
       beforeEach(async () => {
-        account = await accountsController.getLoggedInAccount({
-          user: { sub: readonlyAccountStub().account_id },
-        });
+        account = await accountsController.getLoggedInAccount(jwtPayloadStub());
       });
 
       test('AccountService가 호출됨', () => {
@@ -55,7 +53,7 @@ describe('AccountsController', () => {
         };
         account = await accountsController.editAccount(
           readonlyAccountStub().account_id,
-          { user: { sub: readonlyAccountStub().account_id } },
+          jwtPayloadStub(),
           editAccountDto,
         );
       });
@@ -83,7 +81,7 @@ describe('AccountsController', () => {
         };
         account = await accountsController.changePassword(
           readonlyAccountStub().account_id,
-          { user: { sub: readonlyAccountStub().account_id } },
+          jwtPayloadStub(),
           changePasswordDto,
         );
       });
