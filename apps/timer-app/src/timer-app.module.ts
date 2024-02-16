@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeormDBModule } from '@app/database';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard, RolesGuard } from '@app/auth';
@@ -20,6 +19,9 @@ import * as redisStore from 'cache-manager-redis-store';
 import databaseConfig from './database/config/database-config';
 import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmConfigService } from './database/typeorm-config.service';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -34,8 +36,12 @@ import appConfig from './config/app.config';
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
     }),
-
-    TypeormDBModule,
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        return new DataSource(options).initialize();
+      },
+    }),
     SharedAuthModule,
     MembersModule,
     StreaksModule,

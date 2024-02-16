@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Item } from '@app/database/typeorm/entities/item.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Item } from '../database/entities/item.entity';
 
 @Injectable()
 export class ItemsService {

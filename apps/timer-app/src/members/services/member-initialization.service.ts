@@ -1,9 +1,9 @@
 import { StreaksService } from './../../streaks/streaks.service';
 import { JWTPayload } from '@app/auth';
-import { Member } from '@app/database/typeorm/entities/member.entity';
 import { Injectable } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { TransactionService } from '../../common/transaction.service';
+import { Member } from '../../database/entities/member.entity';
 
 @Injectable()
 export class MemberInitializationService {

@@ -12,7 +12,7 @@ import { StudyCategoriesService } from '../../study-categories/study-categories.
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { CreateStudyCategoryInputDto } from '../../study-categories/dtos/create-study-category.dto';
 import { UpdateStudyCategoryInputDto } from '../../study-categories/dtos/update-study-category.dto';
-import { StudyCategoryMapper } from '@app/database/typeorm/mappers/study-category.mapper';
+import { StudyCategoryMapper } from '../../database/mappers/study-category.mapper';
 
 @UseGuards(PermissionsGuard)
 @Controller('members/:member_id/study-categories')

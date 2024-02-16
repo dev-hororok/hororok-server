@@ -1,5 +1,4 @@
 import { JWTPayload } from '@app/auth';
-import { Member } from '@app/database/typeorm/entities/member.entity';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   FindManyOptions,
@@ -13,6 +12,7 @@ import { TimerAppMemberRole } from '@app/database/typeorm/enums/timer-app-member
 import { InjectRepository } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { Member } from '../../database/entities/member.entity';
 
 @Injectable()
 export class MembersService {
