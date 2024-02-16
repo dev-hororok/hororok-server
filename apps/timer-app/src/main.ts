@@ -1,10 +1,15 @@
 import { NestFactory } from '@nestjs/core';
-import { TimerAppModule } from './timer-app.module';
-import { CustomExceptionFilter, Interceptor } from '@app/config';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { CustomExceptionFilter, Interceptor } from '@app/config';
+import { AllConfigType } from './config/config.type';
+import { TimerAppModule } from './timer-app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(TimerAppModule);
+
+  const configService = app.get(ConfigService<AllConfigType>);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -14,12 +19,17 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('timer-api');
+  app.setGlobalPrefix(
+    configService.getOrThrow('app.apiPrefix', { infer: true }),
+    {
+      exclude: ['/'], // 루트경로 제외
+    },
+  );
+
   app.useGlobalInterceptors(new Interceptor());
   app.useGlobalFilters(new CustomExceptionFilter());
   app.enableCors();
 
-  const PORT = process.env.SERVER_PORT || 4000;
-  await app.listen(PORT);
+  await app.listen(configService.getOrThrow('app.port', { infer: true }));
 }
 bootstrap();
