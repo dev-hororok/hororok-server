@@ -34,10 +34,6 @@ class EnvironmentVariablesValidator {
   @IsBoolean()
   @IsOptional()
   DB_SYNCHRONIZE: boolean;
-
-  @IsInt()
-  @IsOptional()
-  DB_MAX_CONNECTIONS: number;
 }
 
 export default registerAs<DatabaseConfig>('database', () => {
@@ -51,8 +47,5 @@ export default registerAs<DatabaseConfig>('database', () => {
     name: process.env.DB_NAME,
     username: process.env.DB_USER,
     synchronize: process.env.DB_SYNCHRONIZE === 'true',
-    maxConnections: process.env.DB_MAX_CONNECTIONS
-      ? parseInt(process.env.DB_MAX_CONNECTIONS, 10)
-      : 100,
   };
 });

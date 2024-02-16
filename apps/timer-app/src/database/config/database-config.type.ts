@@ -7,5 +7,4 @@ export type DatabaseConfig = {
   username?: string;
 
   synchronize?: boolean;
-  maxConnections: number;
 };
