@@ -30,6 +30,6 @@ async function bootstrap() {
   app.useGlobalFilters(new CustomExceptionFilter());
   app.enableCors();
 
-  await app.listen(configService.getOrThrow('app.port', { infer: true }));
+  await app.listen(configService.getOrThrow('app.port', { infer: true })); // infer이면 자동으로 형변환
 }
 bootstrap();
