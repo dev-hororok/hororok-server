@@ -9,27 +9,6 @@ services:
   #   ports:
   #     - '3306:3306'
 
-  hororok-app:
-    image: changwoot/hororok-app:latest
-    build:
-      context: .
-      dockerfile: DockerFile.hororok-app
-    environment:
-      MONGODB_URL: ${MONGODB_URL}
-      MONGODB_PORT: ${MONGODB_PORT}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-      NODE_ENV: ${NODE_ENV}
-      API_PREFIX: ${API_PREFIX}
-      DB_TYPE: ${DB_TYPE}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_PORT: ${DB_PORT}
-      SERVER_PORT: ${SERVER_PORT}
-    restart: always
-
   timer-app:
     image: changwoot/timer-app:latest
     build:
@@ -64,7 +43,6 @@ services:
       - ./certbot/www:/var/www/certbot
     container_name: web.server.com
     depends_on:
-      - hororok-app
       - timer-app
     restart: always
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
