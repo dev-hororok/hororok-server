@@ -27,7 +27,8 @@
     "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/add-account",
     "migration:create": "yarn typeorm -- migration:create",
     "migration:run": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:run",
-    "migration:revert": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:revert"
+    "migration:revert": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:revert",
+    "seed:run": "ts-node -r tsconfig-paths/register ./apps/timer-app/src/database/seeds/run-seed.ts"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.1",
