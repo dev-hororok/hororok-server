@@ -15,11 +15,15 @@ import { ItemInventoryModule } from './item-inventory/item-inventory.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { StatisticsModule } from './statistics/statistics.module';
 import * as redisStore from 'cache-manager-redis-store';
+import appConfig from './config/app.config';
+import databaseConfig from './database/config/database-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [appConfig, databaseConfig],
+      envFilePath: ['.env'],
     }),
     CacheModule.register({
       isGlobal: true,
