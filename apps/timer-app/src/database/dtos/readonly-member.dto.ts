@@ -24,10 +24,6 @@ export class ReadOnlyMemberDto {
   point: number;
 
   @IsString()
-  @IsNotEmpty()
-  role: string;
-
-  @IsString()
   image_url: string | null;
 
   @IsNumber()

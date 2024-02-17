@@ -37,10 +37,6 @@ export class Member extends CommonEntity {
   @IsString()
   image_url: string | null;
 
-  @Column({ type: 'varchar', length: 20 })
-  @IsString()
-  role: string;
-
   @Column({
     nullable: true,
     type: 'bigint',

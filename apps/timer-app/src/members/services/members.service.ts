@@ -10,9 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Member } from '../../database/entities/member.entity';
-import { TimerAppMemberRole } from '../../database/enums/timer-app-member-role.enum';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
-import { RoleEnum } from '../../roles/roles.enum';
 
 @Injectable()
 export class MembersService {
@@ -108,10 +106,6 @@ export class MembersService {
       nickname: crypto.randomBytes(10).toString('hex'),
       image_url: '',
       point: 500,
-      role:
-        jwtPayload.role?.id === RoleEnum.admin
-          ? TimerAppMemberRole.ADMIN
-          : TimerAppMemberRole.USER,
     });
     await this.memberRepository.insert(newMember);
     return newMember;
