@@ -20,8 +20,6 @@
     "test:e2e": "jest --config ./apps/hororok-server/test/jest-e2e.json",
     "start:timer-app:local": "nest start timer-app --debug --watch",
     "build:timer-app": "nest build timer-app",
-    "start:hororok-app:local": "nest start hororok-app --debug --watch",
-    "build:hororok-app": "nest build hororok-app",
     "start:redis": "docker-compose -f docker-compose.redis.yml up -d",
     "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/init",

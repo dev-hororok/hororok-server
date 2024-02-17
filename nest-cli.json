@@ -8,15 +8,6 @@
   "monorepo": true,
   "root": ".",
   "projects": {
-    "hororok-app": {
-      "type": "application",
-      "root": "apps/hororok-app",
-      "entryFile": "main",
-      "sourceRoot": "apps/hororok-app/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/hororok-app/tsconfig.app.json"
-      }
-    },
     "timer-app": {
       "type": "application",
       "root": "apps/timer-app",
@@ -33,24 +24,6 @@
       "sourceRoot": "libs/config/src",
       "compilerOptions": {
         "tsConfigPath": "libs/config/tsconfig.lib.json"
-      }
-    },
-    "database": {
-      "type": "library",
-      "root": "libs/database",
-      "entryFile": "index",
-      "sourceRoot": "libs/database/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/database/tsconfig.lib.json"
-      }
-    },
-    "auth": {
-      "type": "library",
-      "root": "libs/auth",
-      "entryFile": "index",
-      "sourceRoot": "libs/auth/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
     }
   }

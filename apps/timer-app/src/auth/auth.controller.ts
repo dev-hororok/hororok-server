@@ -3,9 +3,9 @@ import { AuthService } from './auth.service';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
 import { LoginResponseType } from './types/login-response.type';
 import { AuthEmailRegisterDto } from './dtos/auth-email-register.dto';
-import { Public } from '@app/auth';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
+import { Public } from './decorators/public.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {

@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard, RolesGuard } from '@app/auth';
-import { SharedAuthModule } from '@app/auth/auth.module';
 import { MembersModule } from './members/members.module';
 import { StreaksModule } from './streaks/streaks.module';
 import { StudyRecordsModule } from './study-records/study-records.module';
@@ -22,6 +20,8 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import authConfig from './auth/config/auth-config';
 import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
+import { RolesGuard } from './roles/roles.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -42,7 +42,6 @@ import { AccountsModule } from './accounts/accounts.module';
         return new DataSource(options).initialize();
       },
     }),
-    SharedAuthModule,
     AuthModule,
     AccountsModule,
     MembersModule,

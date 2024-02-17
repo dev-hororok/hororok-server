@@ -2,7 +2,7 @@ import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { ClassConstructor } from 'class-transformer/types/interfaces';
 
-const validateConfig = <T extends object>(
+export const validateConfig = <T extends object>(
   config: Record<string, unknown>,
   envVariablesClass: ClassConstructor<T>,
 ) => {
@@ -19,5 +19,3 @@ const validateConfig = <T extends object>(
   }
   return validatedConfig;
 };
-
-export default validateConfig;

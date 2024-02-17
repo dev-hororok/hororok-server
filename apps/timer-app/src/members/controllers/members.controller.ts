@@ -1,5 +1,4 @@
 import { StreaksService } from '../../streaks/streaks.service';
-import { Roles } from '@app/auth';
 import {
   BadRequestException,
   Body,
@@ -11,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MembersService } from '../services/members.service';
-import { AccountRole } from '@app/database/common/enums/account-role.enum';
 import { UpdateMemberInputDto } from '../dtos/update-member.dto';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { MemberExistsGuard } from '../guards/exists.guard';
@@ -20,13 +18,15 @@ import { CharacterInventoryService } from '../../character-inventory/character-i
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { MemberInitializationService } from '../services/member-initialization.service';
 import { IsNull, MoreThan, Not } from 'typeorm';
-import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
 import { MemberMapper } from '../../database/mappers/member.mapper';
 import { StudyStreakMapper } from '../../database/mappers/study-streak.mapper';
 import { ItemInventoryMapper } from '../../database/mappers/item-inventory.mapper';
 import { CharacterInventoryMapper } from '../../database/mappers/character-inventory.mapper';
 import { StudyRecordMapper } from '../../database/mappers/study-record.mapper';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
+import { RoleEnum } from '../../roles/roles.enum';
+import { Roles } from '../../roles/roles.decorator';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
 @Controller('members')
 export class MembersController {
@@ -39,7 +39,7 @@ export class MembersController {
     private readonly studyRecordsService: StudyRecordsService,
   ) {}
 
-  @Roles(AccountRole.ADMIN)
+  @Roles(RoleEnum.admin)
   @Get()
   async getAllMember() {
     const members = await this.membersService.findAll();
