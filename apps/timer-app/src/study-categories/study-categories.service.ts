@@ -1,4 +1,3 @@
-import { StudyCategory } from '@app/database/typeorm/entities/study-category.entity';
 import {
   BadRequestException,
   Inject,
@@ -17,6 +16,7 @@ import { UpdateStudyCategoryInputDto } from './dtos/update-study-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { TransactionService } from '../common/transaction.service';
+import { StudyCategory } from '../database/entities/study-category.entity';
 
 @Injectable()
 export class StudyCategoriesService {

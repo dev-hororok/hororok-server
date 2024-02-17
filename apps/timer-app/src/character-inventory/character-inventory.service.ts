@@ -1,4 +1,3 @@
-import { CharacterInventory } from '@app/database/typeorm/entities/character-inventory.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -7,6 +6,7 @@ import {
   QueryRunner,
   Repository,
 } from 'typeorm';
+import { CharacterInventory } from '../database/entities/character-inventory.entity';
 
 @Injectable()
 export class CharacterInventoryService {

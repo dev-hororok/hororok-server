@@ -1,8 +1,8 @@
-import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { endOfDay, startOfDay } from 'date-fns';
 import { Between, Repository } from 'typeorm';
+import { StudyRecord } from '../database/entities/study-record.entity';
 
 @Injectable()
 export class StatisticsService {

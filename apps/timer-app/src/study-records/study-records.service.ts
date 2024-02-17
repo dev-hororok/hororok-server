@@ -1,4 +1,3 @@
-import { StudyRecord } from '@app/database/typeorm/entities/study-record.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -8,6 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 import { CreateStudyRecordInputDto } from './dtos/create-study-record.dto';
+import { StudyRecord } from '../database/entities/study-record.entity';
 
 @Injectable()
 export class StudyRecordsService {

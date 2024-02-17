@@ -11,21 +11,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MembersService } from '../services/members.service';
-import { MemberMapper } from '@app/database/typeorm/mappers/member.mapper';
 import { AccountRole } from '@app/database/common/enums/account-role.enum';
 import { UpdateMemberInputDto } from '../dtos/update-member.dto';
 import { PermissionsGuard } from '../guards/permissions.guard';
-import { StudyStreakMapper } from '@app/database/typeorm/mappers/study-streak.mapper';
 import { MemberExistsGuard } from '../guards/exists.guard';
 import { StudyRecordsService } from '../../study-records/study-records.service';
-import { StudyRecordMapper } from '@app/database/typeorm/mappers/study-record.mapper';
 import { CharacterInventoryService } from '../../character-inventory/character-inventory.service';
-import { CharacterInventoryMapper } from '@app/database/typeorm/mappers/character-inventory.mapper';
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
-import { ItemInventoryMapper } from '@app/database/typeorm/mappers/item-inventory.mapper';
 import { MemberInitializationService } from '../services/member-initialization.service';
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
+import { MemberMapper } from '../../database/mappers/member.mapper';
+import { StudyStreakMapper } from '../../database/mappers/study-streak.mapper';
+import { ItemInventoryMapper } from '../../database/mappers/item-inventory.mapper';
+import { CharacterInventoryMapper } from '../../database/mappers/character-inventory.mapper';
+import { StudyRecordMapper } from '../../database/mappers/study-record.mapper';
 
 @Controller('members')
 export class MembersController {

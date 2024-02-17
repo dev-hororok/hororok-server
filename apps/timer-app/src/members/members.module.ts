@@ -7,12 +7,12 @@ import { CharacterInventoryModule } from '../character-inventory/character-inven
 import { StudyCategoriesModule } from '../study-categories/study-categories.module';
 import { MemberStudyCategoriesController } from './controllers/members-study-categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Member } from '@app/database/typeorm/entities/member.entity';
 import { ItemInventoryModule } from '../item-inventory/item-inventory.module';
 import { MemberInitializationService } from './services/member-initialization.service';
 import { MemberStatisticsController } from './controllers/members-statistic.controller';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { TransactionService } from '../common/transaction.service';
+import { Member } from '../database/entities/member.entity';
 
 @Module({
   imports: [

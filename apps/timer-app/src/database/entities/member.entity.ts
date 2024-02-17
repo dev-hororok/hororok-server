@@ -14,6 +14,7 @@ import { TransactionRecord } from './transaction-record.entity';
 import { StudyStreak } from './study-streak.entity';
 import { ItemInventory } from './item-inventory.entity';
 import { StudyRecord } from './study-record.entity';
+import { Account } from '../../accounts/entities/account.entity';
 
 @Entity()
 export class Member extends CommonEntity {
@@ -81,4 +82,8 @@ export class Member extends CommonEntity {
   @OneToOne(() => StudyStreak, (studyStreak) => studyStreak.member, {})
   @JoinColumn({ name: 'study_streak_id' })
   study_streak: StudyStreak;
+
+  @OneToOne(() => Account, (account) => account.member, { nullable: true })
+  @JoinColumn({ name: 'account_id' })
+  account: Account;
 }

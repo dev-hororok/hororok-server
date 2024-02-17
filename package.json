@@ -22,7 +22,12 @@
     "build:timer-app": "nest build timer-app",
     "start:hororok-app:local": "nest start hororok-app --debug --watch",
     "build:hororok-app": "nest build hororok-app",
-    "start:redis": "docker-compose -f docker-compose.redis.yml up -d"
+    "start:redis": "docker-compose -f docker-compose.redis.yml up -d",
+    "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/add-account",
+    "migration:create": "yarn typeorm -- migration:create",
+    "migration:run": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:run",
+    "migration:revert": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:revert"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.1",
@@ -66,6 +71,7 @@
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
