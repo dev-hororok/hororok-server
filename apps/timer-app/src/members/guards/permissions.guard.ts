@@ -19,13 +19,15 @@ export class PermissionsGuard implements CanActivate {
 
     const member = await this.membersService.findOne({
       where: { member_id: memberId },
-      select: ['account_id'],
+      select: {
+        account: { account_id: true },
+      },
     });
     if (!member) {
       throw new NotFoundException('멤버가 존재하지 않습니다.');
     }
 
-    if (member.account_id !== user.sub) {
+    if (member.account.account_id !== user.sub) {
       throw new ForbiddenException('권한이 없습니다.');
     }
 

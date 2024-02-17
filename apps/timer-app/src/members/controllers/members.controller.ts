@@ -1,5 +1,5 @@
 import { StreaksService } from '../../streaks/streaks.service';
-import { JWTPayload, Roles } from '@app/auth';
+import { Roles } from '@app/auth';
 import {
   BadRequestException,
   Body,
@@ -26,6 +26,7 @@ import { StudyStreakMapper } from '../../database/mappers/study-streak.mapper';
 import { ItemInventoryMapper } from '../../database/mappers/item-inventory.mapper';
 import { CharacterInventoryMapper } from '../../database/mappers/character-inventory.mapper';
 import { StudyRecordMapper } from '../../database/mappers/study-record.mapper';
+import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
 
 @Controller('members')
 export class MembersController {
@@ -47,7 +48,7 @@ export class MembersController {
 
   // 로그인 된 계정의 유저를 조회 (없으면 새로 생성)
   @Get('me')
-  async getCurrentMember(@CurrentUser() user: JWTPayload) {
+  async getCurrentMember(@CurrentUser() user: JwtPayloadType) {
     let member = await this.membersService.findOneByAccountId(user.sub);
     if (!member) {
       member = await this.memberInitializationService.initializeMember(user);

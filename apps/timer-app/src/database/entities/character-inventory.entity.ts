@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { Character } from './character.entity';
 import { Member } from './member.entity';
 import { IsNumber } from 'class-validator';
+import { Character } from './character.entity';
 
 @Entity()
 export class CharacterInventory extends CommonEntity {

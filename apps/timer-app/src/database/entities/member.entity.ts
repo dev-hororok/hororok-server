@@ -14,7 +14,7 @@ import { TransactionRecord } from './transaction-record.entity';
 import { StudyStreak } from './study-streak.entity';
 import { ItemInventory } from './item-inventory.entity';
 import { StudyRecord } from './study-record.entity';
-import { Account } from '../../accounts/entities/account.entity';
+import { Account } from './account.entity';
 
 @Entity()
 export class Member extends CommonEntity {
@@ -53,10 +53,6 @@ export class Member extends CommonEntity {
   })
   @IsNumber()
   point: number;
-
-  @Column({ type: 'varchar', length: 36, unique: true })
-  @IsString()
-  account_id: string;
 
   @OneToMany(
     () => CharacterInventory,

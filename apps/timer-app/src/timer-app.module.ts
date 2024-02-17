@@ -19,12 +19,15 @@ import databaseConfig from './database/config/database-config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import authConfig from './auth/config/auth-config';
+import { AuthModule } from './auth/auth.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig],
+      load: [appConfig, databaseConfig, authConfig],
       envFilePath: ['.env'],
     }),
     CacheModule.register({
@@ -40,6 +43,8 @@ import { DataSource, DataSourceOptions } from 'typeorm';
       },
     }),
     SharedAuthModule,
+    AuthModule,
+    AccountsModule,
     MembersModule,
     StreaksModule,
     StudyRecordsModule,

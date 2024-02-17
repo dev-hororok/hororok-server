@@ -2,15 +2,14 @@ import {
   Column,
   Entity,
   Index,
-  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AuthProvidersEnum } from '../../auth/auth-providers.enum';
-import { RoleEntity } from '../../roles/entities/role.entity';
-import { CommonEntity } from '../../database/entities/common.entity';
-import { Member } from '../../database/entities/member.entity';
+import { RoleEntity } from './role.entity';
+import { CommonEntity } from './common.entity';
+import { Member } from './member.entity';
 
 @Entity()
 export class Account extends CommonEntity {
@@ -38,6 +37,5 @@ export class Account extends CommonEntity {
   @OneToOne(() => Member, (member) => member.account, {
     nullable: true,
   })
-  @JoinColumn({ name: 'member_id' })
   member?: Member;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoleEntity } from 'apps/timer-app/src/roles/entities/role.entity';
+import { RoleEntity } from 'apps/timer-app/src/database/entities/role.entity';
 import { RoleEnum } from 'apps/timer-app/src/roles/roles.enum';
 import { Repository } from 'typeorm';
 

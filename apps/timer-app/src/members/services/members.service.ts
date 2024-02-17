@@ -1,4 +1,3 @@
-import { JWTPayload } from '@app/auth';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   FindManyOptions,
@@ -7,12 +6,13 @@ import {
   Repository,
 } from 'typeorm';
 import * as crypto from 'crypto';
-import { AccountRole } from '@app/database/common/enums/account-role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Member } from '../../database/entities/member.entity';
 import { TimerAppMemberRole } from '../../database/enums/timer-app-member-role.enum';
+import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
+import { RoleEnum } from '../../roles/roles.enum';
 
 @Injectable()
 export class MembersService {
@@ -77,7 +77,7 @@ export class MembersService {
 
     const repository = this.getRepository(queryRunner);
     const member = await repository.findOne({
-      where: { account_id: accountId },
+      where: { account: { account_id: accountId } },
     });
     if (member) {
       await this.setCachedMember(cacheKey, member, 3000);
@@ -95,19 +95,21 @@ export class MembersService {
   }
 
   async create(
-    jwtToken: JWTPayload,
+    jwtPayload: JwtPayloadType,
     queryRunner?: QueryRunner,
   ): Promise<Member> {
     const repository = this.getRepository(queryRunner);
 
     const newMember = repository.create({
-      account_id: jwtToken.sub,
-      email: jwtToken.email,
+      account: {
+        account_id: jwtPayload.sub,
+      },
+      email: jwtPayload.email || '',
       nickname: crypto.randomBytes(10).toString('hex'),
       image_url: '',
       point: 500,
       role:
-        jwtToken.role === AccountRole.ADMIN
+        jwtPayload.role?.id === RoleEnum.admin
           ? TimerAppMemberRole.ADMIN
           : TimerAppMemberRole.USER,
     });
