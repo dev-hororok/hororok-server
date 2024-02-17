@@ -77,7 +77,7 @@ export class MembersService {
 
     const repository = this.getRepository(queryRunner);
     const member = await repository.findOne({
-      where: { account_id: accountId },
+      where: { account: { account_id: accountId } },
     });
     if (member) {
       await this.setCachedMember(cacheKey, member, 3000);
@@ -101,7 +101,7 @@ export class MembersService {
     const repository = this.getRepository(queryRunner);
 
     const newMember = repository.create({
-      account_id: jwtToken.sub,
+      account: { account_id: jwtToken.sub },
       email: jwtToken.email,
       nickname: crypto.randomBytes(10).toString('hex'),
       image_url: '',

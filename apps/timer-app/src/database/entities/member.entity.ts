@@ -14,8 +14,11 @@ import { TransactionRecord } from './transaction-record.entity';
 import { StudyStreak } from './study-streak.entity';
 import { ItemInventory } from './item-inventory.entity';
 import { StudyRecord } from './study-record.entity';
+import { AccountEntity } from '../../accounts/infrastructure/typeorm/entities/account.entity';
 
-@Entity()
+@Entity({
+  name: 'member',
+})
 export class Member extends CommonEntity {
   @PrimaryGeneratedColumn('uuid')
   member_id: string;
@@ -53,10 +56,6 @@ export class Member extends CommonEntity {
   @IsNumber()
   point: number;
 
-  @Column({ type: 'varchar', length: 36, unique: true })
-  @IsString()
-  account_id: string;
-
   @OneToMany(
     () => CharacterInventory,
     (characterInventory) => characterInventory.member,
@@ -81,4 +80,8 @@ export class Member extends CommonEntity {
   @OneToOne(() => StudyStreak, (studyStreak) => studyStreak.member, {})
   @JoinColumn({ name: 'study_streak_id' })
   study_streak: StudyStreak;
+
+  @OneToOne(() => AccountEntity, (account) => account.member, { cascade: true })
+  @JoinColumn({ name: 'account_id' })
+  account: AccountEntity;
 }

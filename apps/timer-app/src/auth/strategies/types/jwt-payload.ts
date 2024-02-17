@@ -1,7 +1,7 @@
-import { AccountRole } from '@app/database/common/enums/account-role.enum';
+import { Account } from 'apps/timer-app/src/accounts/domain/account';
 
-export type JWTPayload = {
+export type JwtPayloadType = Pick<Account, 'role'> & {
   sub: string;
-  email: string;
-  role: AccountRole;
+  iat: number;
+  exp: number;
 };
