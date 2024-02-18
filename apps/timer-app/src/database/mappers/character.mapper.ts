@@ -1,17 +1,23 @@
-import { ReadOnlyCharacterDto } from '../dtos/readonly-character.dto';
-import { Character } from '../entities/character.entity';
+import { Character } from '../domain/character';
+import { CharacterEntity } from '../entities/character.entity';
 
 export class CharacterMapper {
-  static toDto(character: Character): ReadOnlyCharacterDto {
-    const dto = new ReadOnlyCharacterDto();
+  static toDomain(raw: CharacterEntity): Character {
+    const character = new Character();
 
-    dto.character_id = character.character_id;
-    dto.name = character.name;
-    dto.description = character.description;
-    dto.sell_price = character.sell_price;
-    dto.image_url = character.image_url;
-    dto.grade = character.grade;
+    character.character_id = raw.character_id;
+    character.name = raw.name;
+    character.description = raw.description;
+    character.sell_price = raw.sell_price;
+    character.image_url = raw.image_url;
+    character.grade = raw.grade;
+    if (raw.character_inventories) {
+      character.character_inventories = raw.character_inventories; // mapper
+    }
+    character.created_at = raw.created_at;
+    character.updated_at = raw.updated_at;
+    character.deleted_at = raw.deleted_at;
 
-    return dto;
+    return character;
   }
 }

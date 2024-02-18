@@ -43,7 +43,7 @@ export class StudyRecordEntity implements StudyRecord {
 
   @Column({ type: 'datetime', nullable: true })
   @IsDate()
-  end_time!: Date | null;
+  end_time: Date | null;
 
   @DeleteDateColumn()
   @IsDate()

@@ -1,18 +1,27 @@
-import { ReadOnlyStudyStreakDto } from '../dtos/readonly-study-streak.dto';
-import { StudyStreak } from '../entities/study-streak.entity';
+import { StudyStreak } from '../domain/study-streak';
+import { StudyStreakEntity } from '../entities/study-streak.entity';
+import { MemberMapper } from './member.mapper';
 import { PaletteMapper } from './palette.mapper';
 
 export class StudyStreakMapper {
-  static toDto(streak: StudyStreak): ReadOnlyStudyStreakDto {
-    const dto = new ReadOnlyStudyStreakDto();
+  static toDomain(raw: StudyStreakEntity): StudyStreak {
+    const studyStreak = new StudyStreak();
 
-    dto.study_streak_id = streak.study_streak_id;
-    dto.longest_streak = streak.longest_streak;
-    dto.current_streak = streak.current_streak;
-    dto.created_at = streak.created_at;
-    dto.updated_at = streak.updated_at;
-    dto.palette = streak.palette ? PaletteMapper.toDto(streak.palette) : null;
+    studyStreak.study_streak_id = raw.study_streak_id;
+    studyStreak.longest_streak = raw.longest_streak;
+    studyStreak.current_streak = raw.current_streak;
+    studyStreak.created_at = raw.created_at;
+    studyStreak.updated_at = raw.updated_at;
 
-    return dto;
+    if (raw.member) {
+      studyStreak.member = MemberMapper.toDomain(raw.member);
+    }
+    if (raw.palette) {
+      studyStreak.palette = PaletteMapper.toDomain(raw.palette);
+    }
+    studyStreak.created_at = raw.created_at;
+    studyStreak.updated_at = raw.updated_at;
+    studyStreak.deleted_at = raw.deleted_at;
+    return studyStreak;
   }
 }

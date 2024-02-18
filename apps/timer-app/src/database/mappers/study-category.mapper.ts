@@ -1,13 +1,23 @@
-import { ReadOnlyStudyCategoryDto } from '../dtos/readonly-study-category.dto';
-import { StudyCategory } from '../entities/study-category.entity';
+import { StudyCategory } from '../domain/study-category';
+import { StudyCategoryEntity } from '../entities/study-category.entity';
+import { MemberMapper } from './member.mapper';
 
 export class StudyCategoryMapper {
-  static toDto(study_category: StudyCategory): ReadOnlyStudyCategoryDto {
-    const dto = new ReadOnlyStudyCategoryDto();
+  static toDomain(raw: StudyCategoryEntity): StudyCategory {
+    const studyCategory = new StudyCategory();
 
-    dto.study_category_id = study_category.study_category_id;
-    dto.subject = study_category.subject;
+    studyCategory.study_category_id = raw.study_category_id;
+    studyCategory.subject = raw.subject;
+    studyCategory.color = raw.color;
 
-    return dto;
+    if (raw.member) {
+      studyCategory.member = MemberMapper.toDomain(raw.member);
+    }
+    if (raw.study_records) {
+      studyCategory.study_records = raw.study_records;
+    }
+    studyCategory.deleted_at = raw.deleted_at;
+
+    return studyCategory;
   }
 }

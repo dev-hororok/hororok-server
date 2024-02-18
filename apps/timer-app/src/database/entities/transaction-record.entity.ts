@@ -7,7 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { TransactionRecord } from '../domain/transaction';
+import { TransactionRecord } from '../domain/transaction-record';
 import { MemberEntity } from './member.entity';
 
 @Entity({

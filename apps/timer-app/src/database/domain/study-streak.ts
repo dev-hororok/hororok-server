@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Member } from './member';
 import { Palette } from './palette';
 
@@ -8,7 +9,10 @@ export class StudyStreak {
   member?: Member;
   palette?: Palette;
 
+  @Expose({ groups: ['admin'] })
   created_at: Date;
+  @Expose({ groups: ['admin'] })
   updated_at: Date;
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }

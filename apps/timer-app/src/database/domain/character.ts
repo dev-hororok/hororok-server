@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { CharacterInventory } from './character-inventory';
 
 export class Character {
@@ -9,7 +10,10 @@ export class Character {
   sell_price: number;
   character_inventories?: CharacterInventory[];
 
+  @Expose({ groups: ['admin'] })
   created_at: Date;
+  @Expose({ groups: ['admin'] })
   updated_at: Date;
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }

@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Member } from './member';
 
 export class TransactionRecord {
@@ -9,7 +10,10 @@ export class TransactionRecord {
   notes: string;
   member?: Member;
 
+  @Expose({ groups: ['admin'] })
   created_at: Date;
+  @Expose({ groups: ['admin'] })
   updated_at: Date;
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }

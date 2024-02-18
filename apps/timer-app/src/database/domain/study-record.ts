@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Member } from './member';
 import { StudyCategory } from './study-category';
 
@@ -9,5 +10,6 @@ export class StudyRecord {
   start_time: Date;
   end_time: Date | null;
 
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }

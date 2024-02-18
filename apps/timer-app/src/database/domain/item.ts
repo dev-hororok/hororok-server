@@ -1,3 +1,4 @@
+import { Exclude, Expose } from 'class-transformer';
 import { ItemInventory } from './item-inventory';
 
 export class Item {
@@ -9,11 +10,16 @@ export class Item {
   cost: number;
   grade: string | null;
   image_url: string;
-  effect_code: number; // 음식사용(10000번대), 사용아이템(20000번대)
   is_hidden: boolean; // 상점에 보이는 여부
   item_inventories?: ItemInventory[];
 
+  @Exclude({ toPlainOnly: true })
+  effect_code: number; // 음식사용(10000번대), 사용아이템(20000번대)
+
+  @Expose({ groups: ['admin'] })
   created_at: Date;
+  @Expose({ groups: ['admin'] })
   updated_at: Date;
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }

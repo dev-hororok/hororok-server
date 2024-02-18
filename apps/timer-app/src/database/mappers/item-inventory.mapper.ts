@@ -1,17 +1,27 @@
-import { ReadOnlyItemInventoryDto } from '../dtos/readonly-item-inventory.dto';
-import { ItemInventory } from '../entities/item-inventory.entity';
+import { ItemInventory } from '../domain/item-inventory';
+import { ItemInventoryEntity } from '../entities/item-inventory.entity';
 import { ItemMapper } from './item.mapper';
+import { MemberMapper } from './member.mapper';
 
 export class ItemInventoryMapper {
-  static toDto(item_inventory: ItemInventory): ReadOnlyItemInventoryDto {
-    const dto = new ReadOnlyItemInventoryDto();
+  static toDomain(raw: ItemInventoryEntity): ItemInventory {
+    const itemInventory = new ItemInventory();
 
-    dto.item_inventory_id = item_inventory.item_inventory_id;
-    dto.progress = item_inventory.progress;
-    dto.quantity = item_inventory.quantity;
-    dto.item_type = item_inventory.item_type;
-    dto.item = ItemMapper.toDto(item_inventory.item);
+    itemInventory.item_inventory_id = raw.item_inventory_id;
+    itemInventory.progress = raw.progress;
+    itemInventory.quantity = raw.quantity;
+    itemInventory.item_type = raw.item_type;
 
-    return dto;
+    if (raw.item) {
+      itemInventory.item = ItemMapper.toDomain(raw.item);
+    }
+    if (raw.member) {
+      itemInventory.member = MemberMapper.toDomain(raw.member);
+    }
+
+    itemInventory.created_at = raw.created_at;
+    itemInventory.updated_at = raw.updated_at;
+    itemInventory.deleted_at = raw.deleted_at;
+    return itemInventory;
   }
 }

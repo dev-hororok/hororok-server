@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { StudyStreak } from './study-streak';
 
 export class Palette {
@@ -10,7 +11,10 @@ export class Palette {
   darker_color: string;
   study_streaks?: StudyStreak[];
 
+  @Expose({ groups: ['admin'] })
   created_at: Date;
+  @Expose({ groups: ['admin'] })
   updated_at: Date;
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }

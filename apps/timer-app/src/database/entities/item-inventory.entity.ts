@@ -32,7 +32,7 @@ export class ItemInventoryEntity extends CommonEntity implements ItemInventory {
 
   @ManyToOne(() => ItemEntity, { nullable: false, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'item_id' })
-  item: ItemEntity;
+  item?: ItemEntity;
 
   @ManyToOne(() => MemberEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'member_id' })

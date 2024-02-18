@@ -1,18 +1,26 @@
-import { ReadOnlyPaletteDto } from '../dtos/readonly-palette.dto';
-import { Palette } from '../entities/palette.entity';
+import { Palette } from '../domain/palette';
+import { PaletteEntity } from '../entities/palette.entity';
 
 export class PaletteMapper {
-  static toDto(palette: Palette): ReadOnlyPaletteDto {
-    const dto = new ReadOnlyPaletteDto();
+  static toDomain(raw: PaletteEntity): Palette {
+    const palette = new Palette();
 
-    dto.palette_id = palette.palette_id;
-    dto.name = palette.name;
-    dto.grade = palette.grade;
-    dto.light_color = palette.light_color;
-    dto.normal_color = palette.normal_color;
-    dto.dark_color = palette.dark_color;
-    dto.darker_color = palette.darker_color;
+    palette.palette_id = raw.palette_id;
+    palette.name = raw.name;
+    palette.grade = raw.grade;
+    palette.light_color = raw.light_color;
+    palette.normal_color = raw.normal_color;
+    palette.dark_color = raw.dark_color;
+    palette.darker_color = raw.darker_color;
 
-    return dto;
+    if (raw.study_streaks) {
+      palette.study_streaks = raw.study_streaks; //mapper
+    }
+
+    palette.created_at = raw.created_at;
+    palette.updated_at = raw.updated_at;
+    palette.deleted_at = raw.deleted_at;
+
+    return palette;
   }
 }
