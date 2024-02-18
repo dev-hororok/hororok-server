@@ -21,7 +21,6 @@ import { IsNull, MoreThan, Not } from 'typeorm';
 import { MemberMapper } from '../../database/mappers/member.mapper';
 import { StudyStreakMapper } from '../../database/mappers/study-streak.mapper';
 import { ItemInventoryMapper } from '../../database/mappers/item-inventory.mapper';
-import { CharacterInventoryMapper } from '../../database/mappers/character-inventory.mapper';
 import { StudyRecordMapper } from '../../database/mappers/study-record.mapper';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
 import { RoleEnum } from '../../roles/roles.enum';
@@ -114,17 +113,11 @@ export class MembersController {
   @Get(':member_id/character-inventory')
   @UseGuards(PermissionsGuard)
   async getMemberCharacterInventory(@Param('member_id') memberId: string) {
-    const character_inventory = await this.characterInventoryService.findAll({
-      where: { member: { member_id: memberId }, quantity: MoreThan(0) },
-      relations: {
-        character: true,
-      },
-    });
+    const character_inventory =
+      await this.characterInventoryService.getMemeberInventory(memberId);
 
     return {
-      character_inventory: character_inventory.map((ci) =>
-        CharacterInventoryMapper.toDomain(ci),
-      ),
+      character_inventory,
     };
   }
 

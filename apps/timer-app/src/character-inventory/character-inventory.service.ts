@@ -1,48 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import {
-  FindManyOptions,
-  FindOneOptions,
-  QueryRunner,
-  Repository,
-} from 'typeorm';
-import { CharacterInventoryEntity } from '../database/entities/character-inventory.entity';
+import { QueryRunner } from 'typeorm';
 import { CharacterInventory } from '../database/domain/character-inventory';
+import { CharacterInventoryRepository } from './repositories/character-inventory.repository.interface';
+import { EntityCondition } from '../utils/types/entity-condition.type';
+import { Member } from '../database/domain/member';
 
 @Injectable()
 export class CharacterInventoryService {
   constructor(
-    @InjectRepository(CharacterInventoryEntity)
-    private characterInventoryRepository: Repository<CharacterInventoryEntity>,
+    private readonly characterInventoryRepository: CharacterInventoryRepository,
   ) {}
 
-  /** queryRunner 여부에 따라 CharacterInventory Repository를 생성 */
-  private getRepository(
-    queryRunner?: QueryRunner,
-  ): Repository<CharacterInventoryEntity> {
-    return queryRunner
-      ? queryRunner.manager.getRepository(CharacterInventoryEntity)
-      : this.characterInventoryRepository;
-  }
-
-  async findAll(
-    options?: FindManyOptions<CharacterInventoryEntity>,
+  async getMemeberInventory(
+    memberId: Member['member_id'],
     queryRunner?: QueryRunner,
   ): Promise<CharacterInventory[]> {
-    const repository = this.getRepository(queryRunner);
-    return repository.find(options);
+    return this.characterInventoryRepository.getMemeberInventory(
+      memberId,
+      queryRunner,
+    );
   }
 
   async findOne(
-    options: FindOneOptions<CharacterInventoryEntity>,
+    options: EntityCondition<CharacterInventory>,
     queryRunner?: QueryRunner,
   ): Promise<CharacterInventory | null> {
-    const repository = this.getRepository(queryRunner);
-    return repository.findOne(options);
+    return this.characterInventoryRepository.findOne(options, queryRunner);
   }
 
   async delete(id: number, queryRunner?: QueryRunner): Promise<void> {
-    const repository = this.getRepository(queryRunner);
-    await repository.delete(id);
+    await this.characterInventoryRepository.softDelete(id, queryRunner);
   }
 }
