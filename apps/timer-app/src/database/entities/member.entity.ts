@@ -8,16 +8,19 @@ import {
   OneToMany,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { CharacterInventory } from './character-inventory.entity';
-import { StudyCategory } from './study-category.entity';
-import { TransactionRecord } from './transaction-record.entity';
-import { StudyStreak } from './study-streak.entity';
-import { ItemInventory } from './item-inventory.entity';
-import { StudyRecord } from './study-record.entity';
-import { Account } from './account.entity';
+import { Member } from '../domain/member';
+import { CharacterInventoryEntity } from './character-inventory.entity';
+import { ItemInventoryEntity } from './item-inventory.entity';
+import { StudyCategoryEntity } from './study-category.entity';
+import { StudyRecordEntity } from './study-record.entity';
+import { TransactionRecordEntity } from './transaction-record.entity';
+import { StudyStreakEntity } from './study-streak.entity';
+import { AccountEntity } from './account.entity';
 
-@Entity()
-export class Member extends CommonEntity {
+@Entity({
+  name: 'member',
+})
+export class MemberEntity extends CommonEntity implements Member {
   @PrimaryGeneratedColumn('uuid')
   member_id: string;
 
@@ -51,31 +54,33 @@ export class Member extends CommonEntity {
   point: number;
 
   @OneToMany(
-    () => CharacterInventory,
+    () => CharacterInventoryEntity,
     (characterInventory) => characterInventory.member,
   )
-  character_inventories: CharacterInventory[];
+  character_inventories?: CharacterInventoryEntity[];
 
-  @OneToMany(() => ItemInventory, (eggInventory) => eggInventory.member)
-  item_inventories: ItemInventory[];
+  @OneToMany(() => ItemInventoryEntity, (eggInventory) => eggInventory.member)
+  item_inventories?: ItemInventoryEntity[];
 
-  @OneToMany(() => StudyCategory, (studyCategory) => studyCategory.member)
-  study_categories: StudyCategory[];
+  @OneToMany(() => StudyCategoryEntity, (studyCategory) => studyCategory.member)
+  study_categories?: StudyCategoryEntity[];
 
-  @OneToMany(() => StudyRecord, (studyRecord) => studyRecord.member)
-  study_records: StudyRecord[];
+  @OneToMany(() => StudyRecordEntity, (studyRecord) => studyRecord.member)
+  study_records?: StudyRecordEntity[];
 
   @OneToMany(
-    () => TransactionRecord,
+    () => TransactionRecordEntity,
     (transactionRecord) => transactionRecord.member,
   )
-  transaction_records: TransactionRecord[];
+  transaction_records?: TransactionRecordEntity[];
 
-  @OneToOne(() => StudyStreak, (studyStreak) => studyStreak.member, {})
+  @OneToOne(() => StudyStreakEntity, (studyStreak) => studyStreak.member)
   @JoinColumn({ name: 'study_streak_id' })
-  study_streak: StudyStreak;
+  study_streak?: StudyStreakEntity;
 
-  @OneToOne(() => Account, (account) => account.member, { nullable: true })
+  @OneToOne(() => AccountEntity, (account) => account.member, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'account_id' })
-  account: Account;
+  account?: AccountEntity | null;
 }

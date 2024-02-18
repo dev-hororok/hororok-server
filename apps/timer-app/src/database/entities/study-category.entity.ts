@@ -8,11 +8,14 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { Member } from './member.entity';
-import { StudyRecord } from './study-record.entity';
+import { StudyCategory } from '../domain/study-category';
+import { MemberEntity } from './member.entity';
+import { StudyRecordEntity } from './study-record.entity';
 
-@Entity()
-export class StudyCategory {
+@Entity({
+  name: 'study_category',
+})
+export class StudyCategoryEntity implements StudyCategory {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   study_category_id: number;
 
@@ -24,16 +27,19 @@ export class StudyCategory {
   @IsString()
   color: string;
 
-  @ManyToOne(() => Member, (member) => member.study_categories, {
+  @ManyToOne(() => MemberEntity, (member) => member.study_categories, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member?: MemberEntity;
 
-  @OneToMany(() => StudyRecord, (studyRecord) => studyRecord.study_category)
-  study_records: StudyRecord[];
+  @OneToMany(
+    () => StudyRecordEntity,
+    (studyRecord) => studyRecord.study_category,
+  )
+  study_records?: StudyRecordEntity[];
 
   @DeleteDateColumn()
-  deleted_at!: Date | null;
+  deleted_at: Date;
 }

@@ -14,9 +14,9 @@ import * as bcrypt from 'bcrypt';
 import { RoleEnum } from '../roles/roles.enum';
 import ms from 'ms';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
-import { Account } from '../database/entities/account.entity';
 import { AuthEmailRegisterDto } from './dtos/auth-email-register.dto';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload';
+import { Account } from '../database/domain/account';
 
 @Injectable()
 export class AuthService {

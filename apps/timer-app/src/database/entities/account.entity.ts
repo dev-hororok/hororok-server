@@ -10,10 +10,14 @@ import {
 import { AuthProvidersEnum } from '../../auth/auth-providers.enum';
 import { RoleEntity } from './role.entity';
 import { CommonEntity } from './common.entity';
-import { Member } from './member.entity';
+import { Exclude, Expose } from 'class-transformer';
+import { Account } from '../domain/account';
+import { MemberEntity } from './member.entity';
 
-@Entity()
-export class Account extends CommonEntity {
+@Entity({
+  name: 'account',
+})
+export class AccountEntity extends CommonEntity implements Account {
   @PrimaryGeneratedColumn('uuid')
   account_id: string;
 
@@ -21,13 +25,16 @@ export class Account extends CommonEntity {
   email: string | null;
 
   @Column({ nullable: true })
+  @Exclude({ toPlainOnly: true })
   password?: string;
 
   @Column({ default: AuthProvidersEnum.email })
+  @Expose({ groups: ['me', 'admin'] })
   provider: string;
 
   @Index()
   @Column({ type: String, nullable: true })
+  @Expose({ groups: ['me', 'admin'] })
   social_id?: string | null;
 
   @ManyToOne(() => RoleEntity, {
@@ -36,8 +43,8 @@ export class Account extends CommonEntity {
   @JoinColumn({ name: 'role_id' })
   role?: RoleEntity | null;
 
-  @OneToOne(() => Member, (member) => member.account, {
+  @OneToOne(() => MemberEntity, (member) => member.account, {
     nullable: true,
   })
-  member?: Member;
+  member?: MemberEntity | null;
 }

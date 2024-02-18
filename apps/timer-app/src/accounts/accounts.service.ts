@@ -6,7 +6,7 @@ import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from '../database/entities/account.entity';
+import { Account } from '../database/domain/account';
 
 @Injectable()
 export class AccountsService {

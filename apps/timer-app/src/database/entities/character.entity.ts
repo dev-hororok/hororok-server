@@ -1,10 +1,12 @@
-import { IsNumber, IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { CharacterInventory } from './character-inventory.entity';
 import { CommonEntity } from './common.entity';
+import { Character } from '../domain/character';
+import { CharacterInventoryEntity } from './character-inventory.entity';
 
-@Entity()
-export class Character extends CommonEntity {
+@Entity({
+  name: 'character',
+})
+export class CharacterEntity extends CommonEntity implements Character {
   @PrimaryGeneratedColumn()
   character_id: number;
 
@@ -12,31 +14,26 @@ export class Character extends CommonEntity {
     type: 'varchar',
     length: 100,
   })
-  @IsString()
   name: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  @IsString()
   description: string | null;
 
   @Column({
     type: 'varchar',
     length: 20,
   })
-  @IsString()
   grade: string;
 
   @Column()
-  @IsString()
   image_url: string;
 
   @Column()
-  @IsNumber()
   sell_price: number;
 
   @OneToMany(
-    () => CharacterInventory,
+    () => CharacterInventoryEntity,
     (characterInventory) => characterInventory.character,
   )
-  character_inventories: CharacterInventory[];
+  character_inventories?: CharacterInventoryEntity[];
 }

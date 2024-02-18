@@ -6,28 +6,31 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { Member } from './member.entity';
-import { StudyCategory } from './study-category.entity';
 import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { MemberEntity } from './member.entity';
+import { StudyCategoryEntity } from './study-category.entity';
+import { StudyRecord } from '../domain/study-record';
 
-@Entity()
-export class StudyRecord {
+@Entity({
+  name: 'study_record',
+})
+export class StudyRecordEntity implements StudyRecord {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   study_record_id: number;
 
-  @ManyToOne(() => Member, (member) => member.study_records, {
+  @ManyToOne(() => MemberEntity, (member) => member.study_records, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member?: MemberEntity;
 
   @ManyToOne(
-    () => StudyCategory,
+    () => StudyCategoryEntity,
     (studyCategory) => studyCategory.study_records,
   )
   @JoinColumn({ name: 'study_category_id' })
-  study_category: StudyCategory;
+  study_category?: StudyCategoryEntity;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   @IsString()
@@ -44,5 +47,5 @@ export class StudyRecord {
 
   @DeleteDateColumn()
   @IsDate()
-  deleted_at!: Date | null;
+  deleted_at: Date;
 }

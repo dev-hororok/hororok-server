@@ -7,11 +7,14 @@ import {
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
 import { IsNumber, IsString } from 'class-validator';
-import { Member } from './member.entity';
-import { Item } from './item.entity';
+import { ItemInventory } from '../domain/item-inventory';
+import { ItemEntity } from './item.entity';
+import { MemberEntity } from './member.entity';
 
-@Entity()
-export class ItemInventory extends CommonEntity {
+@Entity({
+  name: 'item_inventory',
+})
+export class ItemInventoryEntity extends CommonEntity implements ItemInventory {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   item_inventory_id: number;
 
@@ -27,11 +30,11 @@ export class ItemInventory extends CommonEntity {
   @IsString()
   item_type: string; // Food, Consumable
 
-  @ManyToOne(() => Item, { nullable: false, onDelete: 'NO ACTION' })
+  @ManyToOne(() => ItemEntity, { nullable: false, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'item_id' })
-  item: Item;
+  item: ItemEntity;
 
-  @ManyToOne(() => Member, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => MemberEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member?: MemberEntity;
 }

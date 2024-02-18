@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { TimerAppModule } from './timer-app.module';
 import { CustomExceptionFilter, Interceptor } from '@app/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './config/config.type';
 
@@ -24,6 +24,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new Interceptor());
   app.useGlobalFilters(new CustomExceptionFilter());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableCors();
 
   const PORT = process.env.SERVER_PORT || 4000;

@@ -1,10 +1,13 @@
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { ItemInventory } from './item-inventory.entity';
+import { ItemInventoryEntity } from './item-inventory.entity';
+import { Item } from '../domain/item';
 
-@Entity()
-export class Item extends CommonEntity {
+@Entity({
+  name: 'item',
+})
+export class ItemEntity extends CommonEntity implements Item {
   @PrimaryGeneratedColumn()
   item_id: number;
 
@@ -45,8 +48,8 @@ export class Item extends CommonEntity {
   is_hidden: boolean; // 상점에 보이는 여부
 
   @OneToMany(
-    () => ItemInventory,
+    () => ItemInventoryEntity,
     (itemInventory) => itemInventory.item_inventory_id,
   )
-  item_inventories: ItemInventory[];
+  item_inventories?: ItemInventoryEntity[];
 }

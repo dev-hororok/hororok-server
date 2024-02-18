@@ -13,10 +13,10 @@ import {
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { AccountsService } from './accounts.service';
-import { Account } from '../database/entities/account.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { NullableType } from '../utils/types/nullable.type';
+import { Account } from '../database/domain/account';
 
 @Roles(RoleEnum.admin)
 @Controller('accounts')

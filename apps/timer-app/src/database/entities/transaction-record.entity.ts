@@ -7,10 +7,16 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { Member } from './member.entity';
+import { TransactionRecord } from '../domain/transaction';
+import { MemberEntity } from './member.entity';
 
-@Entity()
-export class TransactionRecord extends CommonEntity {
+@Entity({
+  name: 'transaction_record',
+})
+export class TransactionRecordEntity
+  extends CommonEntity
+  implements TransactionRecord
+{
   @PrimaryGeneratedColumn({ type: 'bigint' })
   transaction_record_id: number;
 
@@ -34,10 +40,10 @@ export class TransactionRecord extends CommonEntity {
   @IsString()
   notes: string;
 
-  @ManyToOne(() => Member, (member) => member.transaction_records, {
+  @ManyToOne(() => MemberEntity, (member) => member.transaction_records, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member?: MemberEntity;
 }

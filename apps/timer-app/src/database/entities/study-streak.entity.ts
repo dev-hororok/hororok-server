@@ -7,12 +7,15 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Palette } from './palette.entity';
 import { CommonEntity } from './common.entity';
-import { Member } from './member.entity';
+import { StudyStreak } from '../domain/study-streak';
+import { MemberEntity } from './member.entity';
+import { PaletteEntity } from './palette.entity';
 
-@Entity()
-export class StudyStreak extends CommonEntity {
+@Entity({
+  name: 'study_streak',
+})
+export class StudyStreakEntity extends CommonEntity implements StudyStreak {
   @PrimaryGeneratedColumn()
   study_streak_id: number;
 
@@ -24,19 +27,19 @@ export class StudyStreak extends CommonEntity {
   @IsNumber()
   longest_streak: number;
 
-  @OneToOne(() => Member, (member) => member.study_streak, {
+  @OneToOne(() => MemberEntity, (member) => member.study_streak, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member?: MemberEntity;
 
   @ManyToOne(
-    () => Palette,
+    () => PaletteEntity,
     (palette) => {
       palette.study_streaks;
     },
   )
   @JoinColumn({ name: 'palette_id' })
-  palette: Palette;
+  palette?: PaletteEntity;
 }

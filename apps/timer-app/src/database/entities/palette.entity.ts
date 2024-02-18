@@ -1,10 +1,13 @@
 import { IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { StudyStreak } from './study-streak.entity';
 import { CommonEntity } from './common.entity';
+import { Palette } from '../domain/palette';
+import { StudyStreakEntity } from './study-streak.entity';
 
-@Entity()
-export class Palette extends CommonEntity {
+@Entity({
+  name: 'palette',
+})
+export class PaletteEntity extends CommonEntity implements Palette {
   @PrimaryGeneratedColumn()
   palette_id: number;
 
@@ -32,6 +35,6 @@ export class Palette extends CommonEntity {
   @IsString()
   darker_color: string;
 
-  @OneToMany(() => StudyStreak, (studyStreak) => studyStreak.palette)
-  study_streaks: StudyStreak[];
+  @OneToMany(() => StudyStreakEntity, (studyStreak) => studyStreak.palette)
+  study_streaks?: StudyStreakEntity[];
 }

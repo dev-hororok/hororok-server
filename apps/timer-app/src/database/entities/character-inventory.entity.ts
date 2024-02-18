@@ -6,12 +6,18 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CommonEntity } from './common.entity';
-import { Member } from './member.entity';
 import { IsNumber } from 'class-validator';
-import { Character } from './character.entity';
+import { CharacterInventory } from '../domain/character-inventory';
+import { CharacterEntity } from './character.entity';
+import { MemberEntity } from './member.entity';
 
-@Entity()
-export class CharacterInventory extends CommonEntity {
+@Entity({
+  name: 'character_inventory',
+})
+export class CharacterInventoryEntity
+  extends CommonEntity
+  implements CharacterInventory
+{
   @PrimaryGeneratedColumn({ type: 'bigint' })
   character_inventory_id: number;
 
@@ -19,11 +25,11 @@ export class CharacterInventory extends CommonEntity {
   @IsNumber()
   quantity: number;
 
-  @ManyToOne(() => Character, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => CharacterEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'character_id' })
-  character: Character;
+  character?: CharacterEntity;
 
-  @ManyToOne(() => Member, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => MemberEntity, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'member_id' })
-  member: Member;
+  member?: MemberEntity;
 }

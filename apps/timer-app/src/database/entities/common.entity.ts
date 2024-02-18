@@ -8,5 +8,5 @@ export abstract class CommonEntity {
   updated_at: Date;
 
   @DeleteDateColumn()
-  deleted_at!: Date | null;
+  deleted_at: Date;
 }
