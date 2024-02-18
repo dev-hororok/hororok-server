@@ -28,7 +28,7 @@ async function bootstrap() {
   app.enableCors({
     origin: ['https://monta-pwa.vercel.app', 'http://localhost:5173'],
     credentials: true,
-    allowedHeaders: ['Authorization'],
+    allowedHeaders: ['Authorization', 'Content-Type'],
   });
 
   const PORT = process.env.SERVER_PORT || 4000;
