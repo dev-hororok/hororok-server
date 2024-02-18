@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ItemEntity } from '../database/entities/item.entity';
+import { QueryRunner } from 'typeorm';
 import { Item } from '../database/domain/item';
+import { ItemRepository } from './repositories/item.repository.interface';
 
 @Injectable()
 export class ItemsService {
-  constructor(
-    @InjectRepository(ItemEntity)
-    private readonly itemsRepository: Repository<ItemEntity>,
-  ) {}
+  constructor(private readonly itemsRepository: ItemRepository) {}
 
-  async findAll(options?: FindManyOptions<ItemEntity>): Promise<Item[]> {
-    return await this.itemsRepository.find(options);
+  async getShopItem(
+    itemType: 'Food' | 'Consumable',
+    queryRunner?: QueryRunner,
+  ): Promise<Item[]> {
+    return await this.itemsRepository.getShopItem(itemType, queryRunner);
   }
 }

@@ -7,6 +7,7 @@ import { Member } from 'apps/timer-app/src/database/domain/member';
 import { ItemInventoryRepository } from '../item-inventory.repository.interface';
 import { ItemInventoryEntity } from 'apps/timer-app/src/database/entities/item-inventory.entity';
 import { ItemInventoryMapper } from 'apps/timer-app/src/database/mappers/item-inventory.mapper';
+import { ItemInventory } from 'apps/timer-app/src/database/domain/item-inventory';
 
 @Injectable()
 export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
@@ -28,7 +29,7 @@ export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
     memberId: Member['member_id'],
     itemType: 'Food' | 'Consumable',
     queryRunner?: QueryRunner,
-  ): Promise<ItemInventoryEntity[]> {
+  ): Promise<ItemInventory[]> {
     const repository = this.getRepository(queryRunner);
 
     const entities = await repository.find({
@@ -46,9 +47,9 @@ export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
   }
 
   async findOne(
-    fields: EntityCondition<ItemInventoryEntity>,
+    fields: EntityCondition<ItemInventory>,
     queryRunner?: QueryRunner,
-  ): Promise<NullableType<ItemInventoryEntity>> {
+  ): Promise<NullableType<ItemInventory>> {
     const repository = this.getRepository(queryRunner);
 
     const entity = await repository.findOne({
@@ -59,10 +60,10 @@ export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
   }
 
   async update(
-    id: ItemInventoryEntity['item_inventory_id'],
-    payload: Partial<ItemInventoryEntity>,
+    id: ItemInventory['item_inventory_id'],
+    payload: Partial<ItemInventory>,
     queryRunner?: QueryRunner,
-  ): Promise<ItemInventoryEntity> {
+  ): Promise<ItemInventory> {
     const repository = this.getRepository(queryRunner);
     const entity = await repository.findOne({
       where: { item_inventory_id: id },
@@ -85,7 +86,7 @@ export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
   }
 
   async softDelete(
-    id: ItemInventoryEntity['item_inventory_id'],
+    id: ItemInventory['item_inventory_id'],
     queryRunner?: QueryRunner,
   ): Promise<void> {
     const repository = this.getRepository(queryRunner);

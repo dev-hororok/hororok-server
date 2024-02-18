@@ -1,18 +1,14 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ItemsService } from './items.service';
+import { ItemQueryDto } from './dto/item-query.dto';
 
 @Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Get()
-  async findByItemType(@Query('item_type') itemType: string) {
-    const items = await this.itemsService.findAll({
-      where: {
-        item_type: itemType,
-        is_hidden: false,
-      },
-    });
+  async findByItemType(@Query() queryDto: ItemQueryDto) {
+    const items = await this.itemsService.getShopItem(queryDto.item_type);
     return { items };
   }
 }

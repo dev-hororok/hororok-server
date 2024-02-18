@@ -5,7 +5,7 @@ import { Member } from '../../database/domain/member';
 import { ItemInventory } from '../../database/domain/item-inventory';
 
 export abstract class ItemInventoryRepository {
-  // quantity 0이상 조회, relation: [character]
+  // quantity 0이상 조회, relation: [item]
   abstract getMemeberInventory(
     memberId: Member['member_id'],
     itemType: 'Food' | 'Consumable',

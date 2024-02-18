@@ -1,6 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
 import { ItemInventory } from './item-inventory';
 
+export const itemType = ['Food', 'Consumable'] as const;
+export type ItemType = (typeof itemType)[number];
+
 export class Item {
   item_id: number;
   name: string;
