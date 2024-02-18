@@ -25,7 +25,11 @@ async function bootstrap() {
   app.useGlobalInterceptors(new Interceptor());
   app.useGlobalFilters(new CustomExceptionFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.enableCors();
+  app.enableCors({
+    origin: ['https://monta-pwa.vercel.app', 'http://localhost:5173'],
+    credentials: true,
+    allowedHeaders: ['Authorization'],
+  });
 
   const PORT = process.env.SERVER_PORT || 4000;
   await app.listen(PORT);
