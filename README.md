@@ -2,7 +2,6 @@
 
 ### Hororok Server
 
-- 업로드 API 작업 (+CDN)
 - OAuth 적용(구글, 카카오, 네이버)
 - Feed CRUD (Troubleshooting)
 
@@ -42,8 +41,8 @@
 
 - Prod 환경 분리
 
-  - DB분리 - Typeorm의 synchronize -> DB 마이그레이션 방식 전환
-  - 캐시서버 분리
+  - [x] DB분리 - Typeorm의 synchronize -> DB 마이그레이션 방식 전환
+  - [x] 캐시서버 분리 (elasticache redis)
 
 - 프로토타입 이후 버전관리
   - Nest와 Spring 별도로 수행
@@ -58,8 +57,6 @@
 
 #### 미진행
 
-- [ ] 업로드 API (hororok)
-
 - [ ] 통계
   - [x] 일일 통계 (ex. /members/{member_id}/statistics?date=2024-02-08)
   - [x] 월별 통계 (ex. /members/{member_id}/statistics/monthly?year=2024&month=2)
@@ -67,6 +64,7 @@
   - [ ] 통계 테이블로 계산량 최적화
 - [ ] 캐싱처리
   - [ ] 캐싱이 필요한 Services 메서드를 따로 생성 (서비스 객체의 CRUD가 범용성을 위해 options객체를 받도록 되어있어 캐싱처리 하기 힘듬)
+  - [ ] Redis 타임아웃 설정 및 대체 로직 작성
 - [ ] 테스트 코드
   - [ ] 비즈니스 로직 유닛테스트
   - [ ] api e2e 테스트
