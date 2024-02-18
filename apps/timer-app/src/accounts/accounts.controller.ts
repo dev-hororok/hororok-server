@@ -36,19 +36,18 @@ export class AccountsController {
   findOne(
     @Param('id') id: Account['account_id'],
   ): Promise<NullableType<Account>> {
-    return this.accountsService.findOne({ where: { account_id: id } });
+    return this.accountsService.findOne({ account_id: id });
   }
 
   @SerializeOptions({
     groups: ['admin'],
   })
   @Patch(':id')
-  async update(
+  update(
     @Param('id') id: Account['account_id'],
     @Body() updateAccountDto: UpdateAccountDto,
-  ): Promise<null> {
-    await this.accountsService.update(id, updateAccountDto);
-    return null;
+  ): Promise<NullableType<Account>> {
+    return this.accountsService.update(id, updateAccountDto);
   }
 
   @Delete(':id')

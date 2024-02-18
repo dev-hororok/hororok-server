@@ -28,7 +28,7 @@ export class AuthService {
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
     const account = await this.accountsService.findOne({
-      where: { email: loginDto.email },
+      email: loginDto.email,
     });
 
     if (!account) {
@@ -141,9 +141,7 @@ export class AuthService {
     data: Pick<JwtRefreshPayloadType, 'sub'>,
   ): Promise<Omit<LoginResponseType, 'account'>> {
     const account = await this.accountsService.findOne({
-      where: {
-        account_id: data.sub,
-      },
+      account_id: data.sub,
     });
 
     if (!account) {

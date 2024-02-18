@@ -2,19 +2,15 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import * as bcrypt from 'bcrypt';
 import { RoleEnum } from '../roles/roles.enum';
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { NullableType } from '../utils/types/nullable.type';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from '../database/domain/account';
-import { AccountEntity } from '../database/entities/account.entity';
+import { AccountsRepository } from './repositories/accounts.repository.interface';
+import { EntityCondition } from '../utils/types/entity-condition.type';
 
 @Injectable()
 export class AccountsService {
-  constructor(
-    @InjectRepository(AccountEntity)
-    private accountsRepository: Repository<AccountEntity>,
-  ) {}
+  constructor(private readonly accountsRepository: AccountsRepository) {}
 
   async create(createAccountDto: CreateAccountDto): Promise<Account> {
     const clonedPayload = {
@@ -27,9 +23,7 @@ export class AccountsService {
     }
     if (clonedPayload.email) {
       const accountObject = await this.accountsRepository.findOne({
-        where: {
-          email: clonedPayload.email,
-        },
+        email: clonedPayload.email,
       });
       if (accountObject) {
         throw new BadRequestException('이미 사용중인 이메일입니다.');
@@ -45,21 +39,17 @@ export class AccountsService {
       }
     }
 
-    return this.accountsRepository.save(
-      this.accountsRepository.create(clonedPayload),
-    );
+    return this.accountsRepository.create(clonedPayload);
   }
 
-  findOne(
-    options: FindOneOptions<AccountEntity>,
-  ): Promise<NullableType<Account>> {
-    return this.accountsRepository.findOne(options);
+  findOne(fields: EntityCondition<Account>): Promise<NullableType<Account>> {
+    return this.accountsRepository.findOne(fields);
   }
 
   async update(
     id: Account['account_id'],
-    payload: DeepPartial<Account>,
-  ): Promise<boolean> {
+    payload: Partial<Account>,
+  ): Promise<NullableType<Account>> {
     const clonedPayload = { ...payload };
 
     if (clonedPayload.password) {
@@ -69,7 +59,7 @@ export class AccountsService {
 
     if (clonedPayload.email) {
       const userObject = await this.accountsRepository.findOne({
-        where: { email: clonedPayload.email },
+        email: clonedPayload.email,
       });
 
       if (userObject?.account_id !== id) {
@@ -86,7 +76,7 @@ export class AccountsService {
       }
     }
     const result = await this.accountsRepository.update(id, clonedPayload);
-    return result.affected ? 0 < result.affected : false;
+    return result;
   }
 
   async softDelete(id: Account['account_id']): Promise<void> {
