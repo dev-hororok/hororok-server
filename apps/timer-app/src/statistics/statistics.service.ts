@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { endOfDay, startOfDay } from 'date-fns';
 import { Between, Repository } from 'typeorm';
-import { StudyRecord } from '../database/entities/study-record.entity';
+import { StudyRecordEntity } from '../database/entities/study-record.entity';
 
 @Injectable()
 export class StatisticsService {
   constructor(
-    @InjectRepository(StudyRecord)
-    private readonly studyRecordRepository: Repository<StudyRecord>,
+    @InjectRepository(StudyRecordEntity)
+    private readonly studyRecordRepository: Repository<StudyRecordEntity>,
   ) {}
 
   async getDailyStatistics(memberId: string, date: string): Promise<any> {

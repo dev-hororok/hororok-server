@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { AllConfigType } from '../config/config.type';
-import { Account } from './entities/account.entity';
-import { CharacterInventory } from './entities/character-inventory.entity';
-import { Character } from './entities/character.entity';
-import { ItemInventory } from './entities/item-inventory.entity';
-import { Item } from './entities/item.entity';
-import { Member } from './entities/member.entity';
-import { Palette } from './entities/palette.entity';
-import { StudyCategory } from './entities/study-category.entity';
-import { StudyRecord } from './entities/study-record.entity';
-import { StudyStreak } from './entities/study-streak.entity';
-import { TransactionRecord } from './entities/transaction-record.entity';
+import { AccountEntity } from './entities/account.entity';
+import { CharacterInventoryEntity } from './entities/character-inventory.entity';
+import { CharacterEntity } from './entities/character.entity';
+import { ItemInventoryEntity } from './entities/item-inventory.entity';
+import { ItemEntity } from './entities/item.entity';
+import { MemberEntity } from './entities/member.entity';
+import { PaletteEntity } from './entities/palette.entity';
+import { StudyCategoryEntity } from './entities/study-category.entity';
+import { StudyRecordEntity } from './entities/study-record.entity';
+import { StudyStreakEntity } from './entities/study-streak.entity';
+import { TransactionRecordEntity } from './entities/transaction-record.entity';
 import { RoleEntity } from './entities/role.entity';
 
 @Injectable()
@@ -35,18 +35,18 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         this.configService.get('app.nodeEnv', { infer: true }) !== 'production',
 
       entities: [
-        Account,
-        CharacterInventory,
-        Character,
-        ItemInventory,
-        Item,
-        Member,
-        Palette,
+        AccountEntity,
+        CharacterInventoryEntity,
+        CharacterEntity,
+        ItemInventoryEntity,
+        ItemEntity,
+        MemberEntity,
+        PaletteEntity,
         RoleEntity,
-        StudyCategory,
-        StudyRecord,
-        StudyStreak,
-        TransactionRecord,
+        StudyCategoryEntity,
+        StudyRecordEntity,
+        StudyStreakEntity,
+        TransactionRecordEntity,
       ],
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     } as TypeOrmModuleOptions;

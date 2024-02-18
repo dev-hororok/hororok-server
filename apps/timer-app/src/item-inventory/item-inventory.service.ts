@@ -1,23 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { FindManyOptions, QueryRunner, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ItemInventory } from '../database/entities/item-inventory.entity';
+import { ItemInventoryEntity } from '../database/entities/item-inventory.entity';
+import { ItemInventory } from '../database/domain/item-inventory';
 
 @Injectable()
 export class ItemInventoryService {
   constructor(
-    @InjectRepository(ItemInventory)
-    private itemInventoryRepository: Repository<ItemInventory>,
+    @InjectRepository(ItemInventoryEntity)
+    private itemInventoryRepository: Repository<ItemInventoryEntity>,
   ) {}
   /** queryRunner 여부에 따라 ItemInventory Repository를 생성 */
-  private getRepository(queryRunner?: QueryRunner): Repository<ItemInventory> {
+  private getRepository(
+    queryRunner?: QueryRunner,
+  ): Repository<ItemInventoryEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(ItemInventory)
+      ? queryRunner.manager.getRepository(ItemInventoryEntity)
       : this.itemInventoryRepository;
   }
 
   async findAll(
-    options?: FindManyOptions<ItemInventory>,
+    options?: FindManyOptions<ItemInventoryEntity>,
     queryRunner?: QueryRunner,
   ): Promise<ItemInventory[]> {
     const repository = this.getRepository(queryRunner);

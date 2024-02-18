@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  SerializeOptions,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
 import { LoginResponseType } from './types/login-response.type';
@@ -11,6 +17,9 @@ import { CurrentUser } from './decorators/current-user.decorator';
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Public()
   @Post('email/login')
   public login(
@@ -19,6 +28,9 @@ export class AuthController {
     return this.service.validateLogin(loginDto);
   }
 
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Public()
   @Post('email/register')
   async register(

@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Item } from '../database/entities/item.entity';
+import { ItemEntity } from '../database/entities/item.entity';
+import { Item } from '../database/domain/item';
 
 @Injectable()
 export class ItemsService {
   constructor(
-    @InjectRepository(Item)
-    private readonly itemsRepository: Repository<Item>,
+    @InjectRepository(ItemEntity)
+    private readonly itemsRepository: Repository<ItemEntity>,
   ) {}
 
-  async findAll(options?: FindManyOptions<Item>): Promise<Item[]> {
+  async findAll(options?: FindManyOptions<ItemEntity>): Promise<Item[]> {
     return await this.itemsRepository.find(options);
   }
 }

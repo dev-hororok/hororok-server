@@ -16,13 +16,14 @@ import { UpdateStudyCategoryInputDto } from './dtos/update-study-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudyRecordsService } from '../study-records/study-records.service';
 import { TransactionService } from '../common/transaction.service';
-import { StudyCategory } from '../database/entities/study-category.entity';
+import { StudyCategoryEntity } from '../database/entities/study-category.entity';
+import { StudyCategory } from '../database/domain/study-category';
 
 @Injectable()
 export class StudyCategoriesService {
   constructor(
-    @InjectRepository(StudyCategory)
-    private studyCategoryRepository: Repository<StudyCategory>,
+    @InjectRepository(StudyCategoryEntity)
+    private studyCategoryRepository: Repository<StudyCategoryEntity>,
     @Inject(forwardRef(() => StudyRecordsService))
     private studyRecordsService: StudyRecordsService,
 
@@ -30,14 +31,16 @@ export class StudyCategoriesService {
   ) {}
 
   /** queryRunner 여부에 따라 StudyCategory Repository를 생성 */
-  private getRepository(queryRunner?: QueryRunner): Repository<StudyCategory> {
+  private getRepository(
+    queryRunner?: QueryRunner,
+  ): Repository<StudyCategoryEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(StudyCategory)
+      ? queryRunner.manager.getRepository(StudyCategoryEntity)
       : this.studyCategoryRepository;
   }
 
   async findAll(
-    options: FindManyOptions<StudyCategory>,
+    options: FindManyOptions<StudyCategoryEntity>,
     queryRunner?: QueryRunner,
   ) {
     const repository = this.getRepository(queryRunner);
@@ -45,14 +48,14 @@ export class StudyCategoriesService {
   }
 
   async findOne(
-    options: FindOneOptions<StudyCategory>,
+    options: FindOneOptions<StudyCategoryEntity>,
     queryRunner?: QueryRunner,
   ) {
     const repository = this.getRepository(queryRunner);
     return repository.findOne(options);
   }
 
-  async delete(studyCategoryId: number, queryRunner?: QueryRunner) {
+  async softDelete(studyCategoryId: number, queryRunner?: QueryRunner) {
     const repository = this.getRepository(queryRunner);
     const result = await repository.softDelete(studyCategoryId);
     return result.affected ? 0 < result.affected : false;
@@ -69,25 +72,12 @@ export class StudyCategoriesService {
         throw new BadRequestException('이미 동일한 카테고리가 존재합니다.');
       }
 
-      if (existingCategory && existingCategory.deleted_at) {
-        // 카테고리 복원 로직
-        await queryRunner.manager.update(
-          StudyCategory,
-          existingCategory.study_category_id,
-          {
-            deleted_at: null,
-          },
-        );
-        existingCategory.deleted_at = null;
-        return existingCategory;
-      }
-
       // 새 카테고리 생성
-      const newCategory = queryRunner.manager.create(StudyCategory, {
+      const newCategory = queryRunner.manager.create(StudyCategoryEntity, {
         subject: subject,
         member: { member_id: memberId },
       });
-      await queryRunner.manager.insert(StudyCategory, newCategory);
+      await queryRunner.manager.insert(StudyCategoryEntity, newCategory);
       return newCategory;
     });
   }
@@ -136,11 +126,10 @@ export class StudyCategoriesService {
     targetCategory: StudyCategory,
     queryRunner?: QueryRunner,
   ) {
-    const repository = this.getRepository(queryRunner);
-    const studyRecordIds = existingCategory.study_records.map(
+    const studyRecordIds = existingCategory.study_records?.map(
       (record) => record.study_record_id,
     );
-    if (0 < studyRecordIds.length) {
+    if (studyRecordIds && 0 < studyRecordIds.length) {
       await this.studyRecordsService.updateCategoryOfRecords(
         studyRecordIds,
         targetCategory.study_category_id,
@@ -148,13 +137,7 @@ export class StudyCategoriesService {
       );
     }
 
-    await this.delete(existingCategory.study_category_id, queryRunner);
-    if (targetCategory.deleted_at) {
-      await repository.update(targetCategory.study_category_id, {
-        deleted_at: null,
-      });
-      targetCategory.deleted_at = null;
-    }
+    await this.softDelete(existingCategory.study_category_id, queryRunner);
 
     return targetCategory;
   }
@@ -196,7 +179,6 @@ export class StudyCategoriesService {
   ): Promise<StudyCategory | null> {
     const repository = this.getRepository(queryRunner);
     return repository.findOne({
-      withDeleted: true,
       where: {
         subject: subject,
         member: { member_id: memberId },

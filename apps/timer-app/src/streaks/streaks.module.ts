@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { StreaksService } from './streaks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransactionService } from '../common/transaction.service';
-import { StudyStreak } from '../database/entities/study-streak.entity';
+import { StudyStreakEntity } from '../database/entities/study-streak.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StudyStreak])],
+  imports: [TypeOrmModule.forFeature([StudyStreakEntity])],
   providers: [StreaksService, TransactionService],
   exports: [StreaksService],
 })

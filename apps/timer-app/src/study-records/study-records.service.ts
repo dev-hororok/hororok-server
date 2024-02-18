@@ -7,34 +7,36 @@ import {
   Repository,
 } from 'typeorm';
 import { CreateStudyRecordInputDto } from './dtos/create-study-record.dto';
-import { StudyRecord } from '../database/entities/study-record.entity';
+import { StudyRecordEntity } from '../database/entities/study-record.entity';
 
 @Injectable()
 export class StudyRecordsService {
   constructor(
-    @InjectRepository(StudyRecord)
-    private studyRecordRepository: Repository<StudyRecord>,
+    @InjectRepository(StudyRecordEntity)
+    private studyRecordRepository: Repository<StudyRecordEntity>,
   ) {}
 
   /** queryRunner 여부에 따라 StudyRecord Repository를 생성 */
-  private getRepository(queryRunner?: QueryRunner): Repository<StudyRecord> {
+  private getRepository(
+    queryRunner?: QueryRunner,
+  ): Repository<StudyRecordEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(StudyRecord)
+      ? queryRunner.manager.getRepository(StudyRecordEntity)
       : this.studyRecordRepository;
   }
 
   async findAll(
-    options?: FindManyOptions<StudyRecord>,
+    options?: FindManyOptions<StudyRecordEntity>,
     queryRunner?: QueryRunner,
-  ): Promise<StudyRecord[]> {
+  ): Promise<StudyRecordEntity[]> {
     const repository = this.getRepository(queryRunner);
     return repository.find(options);
   }
 
   async findOne(
-    options: FindOneOptions<StudyRecord>,
+    options: FindOneOptions<StudyRecordEntity>,
     queryRunner?: QueryRunner,
-  ): Promise<StudyRecord | null> {
+  ): Promise<StudyRecordEntity | null> {
     const repository = this.getRepository(queryRunner);
     return repository.findOne(options);
   }
@@ -42,7 +44,7 @@ export class StudyRecordsService {
   async findActiveRecordOrFail(
     activeRecordId: number | null,
     queryRunner?: QueryRunner,
-  ): Promise<StudyRecord> {
+  ): Promise<StudyRecordEntity> {
     if (activeRecordId === null) {
       throw new NotFoundException('진행중인 타이머가 없습니다.');
     }
@@ -78,7 +80,7 @@ export class StudyRecordsService {
 
   async update(
     id: number,
-    studyRecord: Partial<StudyRecord>,
+    studyRecord: Partial<StudyRecordEntity>,
     queryRunner?: QueryRunner,
   ): Promise<boolean> {
     const repository = this.getRepository(queryRunner);
@@ -99,11 +101,13 @@ export class StudyRecordsService {
     queryRunner?: QueryRunner,
   ): Promise<void> {
     const queryBuilder = queryRunner
-      ? queryRunner.manager.getRepository(StudyRecord).createQueryBuilder()
+      ? queryRunner.manager
+          .getRepository(StudyRecordEntity)
+          .createQueryBuilder()
       : this.studyRecordRepository.createQueryBuilder();
 
     await queryBuilder
-      .update(StudyRecord)
+      .update(StudyRecordEntity)
       .set({ study_category: { study_category_id: targetCategoryId } })
       .where('study_record_id In (:...recordIds)', { recordIds })
       .execute();
@@ -116,7 +120,7 @@ export class StudyRecordsService {
     queryRunner?: QueryRunner,
   ): Promise<void> {
     const repository = queryRunner
-      ? queryRunner.manager.getRepository(StudyRecord)
+      ? queryRunner.manager.getRepository(StudyRecordEntity)
       : this.studyRecordRepository;
     await repository.update(studyRecordId, {
       status: status,

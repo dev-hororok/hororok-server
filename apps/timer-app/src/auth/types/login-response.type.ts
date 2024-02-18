@@ -1,4 +1,4 @@
-import { Account } from '../../database/entities/account.entity';
+import { Account } from '../../database/domain/account';
 
 export type LoginResponseType = Readonly<{
   access_token: string;

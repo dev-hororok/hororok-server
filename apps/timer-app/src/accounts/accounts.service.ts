@@ -7,12 +7,13 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from '../database/domain/account';
+import { AccountEntity } from '../database/entities/account.entity';
 
 @Injectable()
 export class AccountsService {
   constructor(
-    @InjectRepository(Account)
-    private accountsRepository: Repository<Account>,
+    @InjectRepository(AccountEntity)
+    private accountsRepository: Repository<AccountEntity>,
   ) {}
 
   async create(createAccountDto: CreateAccountDto): Promise<Account> {
@@ -49,7 +50,9 @@ export class AccountsService {
     );
   }
 
-  findOne(options: FindOneOptions<Account>): Promise<NullableType<Account>> {
+  findOne(
+    options: FindOneOptions<AccountEntity>,
+  ): Promise<NullableType<Account>> {
     return this.accountsRepository.findOne(options);
   }
 

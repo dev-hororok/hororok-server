@@ -12,11 +12,11 @@ import { MemberInitializationService } from './services/member-initialization.se
 import { MemberStatisticsController } from './controllers/members-statistic.controller';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { TransactionService } from '../common/transaction.service';
-import { Member } from '../database/entities/member.entity';
+import { MemberEntity } from '../database/entities/member.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Member]),
+    TypeOrmModule.forFeature([MemberEntity]),
     StreaksModule,
     CharacterInventoryModule,
     ItemInventoryModule,

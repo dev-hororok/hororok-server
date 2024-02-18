@@ -6,26 +6,27 @@ import {
   QueryRunner,
   Repository,
 } from 'typeorm';
-import { CharacterInventory } from '../database/entities/character-inventory.entity';
+import { CharacterInventoryEntity } from '../database/entities/character-inventory.entity';
+import { CharacterInventory } from '../database/domain/character-inventory';
 
 @Injectable()
 export class CharacterInventoryService {
   constructor(
-    @InjectRepository(CharacterInventory)
-    private characterInventoryRepository: Repository<CharacterInventory>,
+    @InjectRepository(CharacterInventoryEntity)
+    private characterInventoryRepository: Repository<CharacterInventoryEntity>,
   ) {}
 
   /** queryRunner 여부에 따라 CharacterInventory Repository를 생성 */
   private getRepository(
     queryRunner?: QueryRunner,
-  ): Repository<CharacterInventory> {
+  ): Repository<CharacterInventoryEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(CharacterInventory)
+      ? queryRunner.manager.getRepository(CharacterInventoryEntity)
       : this.characterInventoryRepository;
   }
 
   async findAll(
-    options?: FindManyOptions<CharacterInventory>,
+    options?: FindManyOptions<CharacterInventoryEntity>,
     queryRunner?: QueryRunner,
   ): Promise<CharacterInventory[]> {
     const repository = this.getRepository(queryRunner);
@@ -33,7 +34,7 @@ export class CharacterInventoryService {
   }
 
   async findOne(
-    options: FindOneOptions<CharacterInventory>,
+    options: FindOneOptions<CharacterInventoryEntity>,
     queryRunner?: QueryRunner,
   ): Promise<CharacterInventory | null> {
     const repository = this.getRepository(queryRunner);

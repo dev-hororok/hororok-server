@@ -7,24 +7,27 @@ import {
   Repository,
 } from 'typeorm';
 import { TransactionService } from '../common/transaction.service';
-import { StudyStreak } from '../database/entities/study-streak.entity';
+import { StudyStreakEntity } from '../database/entities/study-streak.entity';
+import { StudyStreak } from '../database/domain/study-streak';
 
 @Injectable()
 export class StreaksService {
   constructor(
-    @InjectRepository(StudyStreak)
-    private streakRepository: Repository<StudyStreak>,
+    @InjectRepository(StudyStreakEntity)
+    private streakRepository: Repository<StudyStreakEntity>,
     private transactionService: TransactionService,
   ) {}
   /** queryRunner 여부에 따라 StudyStreak Repository를 생성 */
-  private getRepository(queryRunner?: QueryRunner): Repository<StudyStreak> {
+  private getRepository(
+    queryRunner?: QueryRunner,
+  ): Repository<StudyStreakEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(StudyStreak)
+      ? queryRunner.manager.getRepository(StudyStreakEntity)
       : this.streakRepository;
   }
 
   async findAll(
-    options?: FindManyOptions<StudyStreak>,
+    options?: FindManyOptions<StudyStreakEntity>,
     queryRunner?: QueryRunner,
   ): Promise<StudyStreak[]> {
     const repository = this.getRepository(queryRunner);

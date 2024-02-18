@@ -6,8 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  HttpStatus,
-  HttpCode,
   SerializeOptions,
 } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
@@ -35,7 +33,6 @@ export class AccountsController {
     groups: ['admin'],
   })
   @Get(':id')
-  @HttpCode(HttpStatus.OK)
   findOne(
     @Param('id') id: Account['account_id'],
   ): Promise<NullableType<Account>> {

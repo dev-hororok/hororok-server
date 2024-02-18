@@ -31,7 +31,7 @@ export class MemberStudyCategoriesController {
       createStudyCategoryDto,
     );
     return {
-      category: StudyCategoryMapper.toDto(newCategory),
+      category: StudyCategoryMapper.toDomain(newCategory),
     };
   }
 
@@ -42,14 +42,14 @@ export class MemberStudyCategoriesController {
     });
     return {
       study_categories: categories.map((category) =>
-        StudyCategoryMapper.toDto(category),
+        StudyCategoryMapper.toDomain(category),
       ),
     };
   }
 
   @Delete(':study_category_id')
   async deleteCategory(@Param('study_category_id') studyCategoryId: number) {
-    await this.studyCategoriesService.delete(studyCategoryId);
+    await this.studyCategoriesService.softDelete(studyCategoryId);
     return null;
   }
 

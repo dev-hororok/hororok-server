@@ -9,26 +9,27 @@ import * as crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { Member } from '../../database/entities/member.entity';
+import { MemberEntity } from '../../database/entities/member.entity';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
+import { Member } from '../../database/domain/member';
 
 @Injectable()
 export class MembersService {
   constructor(
-    @InjectRepository(Member)
-    private memberRepository: Repository<Member>,
+    @InjectRepository(MemberEntity)
+    private memberRepository: Repository<MemberEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   /** queryRunner 여부에 따라 Member Repository를 생성 */
-  private getRepository(queryRunner?: QueryRunner): Repository<Member> {
+  private getRepository(queryRunner?: QueryRunner): Repository<MemberEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(Member)
+      ? queryRunner.manager.getRepository(MemberEntity)
       : this.memberRepository;
   }
 
   async findAll(
-    options?: FindManyOptions<Member>,
+    options?: FindManyOptions<MemberEntity>,
     queryRunner?: QueryRunner,
   ): Promise<Member[]> {
     const repository = this.getRepository(queryRunner);

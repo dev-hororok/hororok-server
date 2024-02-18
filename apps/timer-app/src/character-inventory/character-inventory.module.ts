@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CharacterInventoryService } from './character-inventory.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CharacterInventory } from '../database/entities/character-inventory.entity';
+import { CharacterInventoryEntity } from '../database/entities/character-inventory.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CharacterInventory])],
+  imports: [TypeOrmModule.forFeature([CharacterInventoryEntity])],
   providers: [CharacterInventoryService],
   exports: [CharacterInventoryService],
 })

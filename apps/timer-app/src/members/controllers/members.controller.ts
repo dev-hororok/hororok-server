@@ -54,7 +54,7 @@ export class MembersController {
       member = await this.memberInitializationService.initializeMember(user);
     }
 
-    return { member: MemberMapper.toDto(member) };
+    return { member: MemberMapper.toDomain(member) };
   }
 
   // 유저 정보 수정
@@ -80,7 +80,7 @@ export class MembersController {
   async getMemberStudyStreak(@Param('member_id') memberId: string) {
     const streak = await this.streaksService.findOrCreate(memberId);
 
-    return StudyStreakMapper.toDto(streak);
+    return StudyStreakMapper.toDomain(streak);
   }
 
   // 유저 아이템 인벤토리 조회
@@ -105,7 +105,7 @@ export class MembersController {
 
     return {
       item_inventory: item_inventory.map((itemInventory) =>
-        ItemInventoryMapper.toDto(itemInventory),
+        ItemInventoryMapper.toDomain(itemInventory),
       ),
     };
   }
@@ -123,7 +123,7 @@ export class MembersController {
 
     return {
       character_inventory: character_inventory.map((ci) =>
-        CharacterInventoryMapper.toDto(ci),
+        CharacterInventoryMapper.toDomain(ci),
       ),
     };
   }
@@ -142,7 +142,7 @@ export class MembersController {
       relations: { study_category: true },
     });
     return {
-      study_records: study_records.map((sr) => StudyRecordMapper.toDto(sr)),
+      study_records: study_records.map((sr) => StudyRecordMapper.toDomain(sr)),
     };
   }
 }
