@@ -35,9 +35,9 @@ export class AccountsService {
       }
     }
 
-    if (clonedPayload.role?.id) {
+    if (clonedPayload.role?.role_id) {
       const roleObject = Object.values(RoleEnum).includes(
-        clonedPayload.role.id,
+        clonedPayload.role.role_id,
       );
       if (!roleObject) {
         throw new BadRequestException('존재하지 않은 role입니다.');
@@ -74,9 +74,9 @@ export class AccountsService {
       }
     }
 
-    if (clonedPayload.role?.id) {
+    if (clonedPayload.role?.role_id) {
       const roleObject = Object.values(RoleEnum).includes(
-        clonedPayload.role.id,
+        clonedPayload.role.role_id,
       );
       if (!roleObject) {
         throw new BadRequestException('존재하지 않은 role입니다.');

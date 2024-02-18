@@ -14,14 +14,14 @@ export class RoleSeedService {
   async run() {
     const countUser = await this.repository.count({
       where: {
-        id: RoleEnum.user,
+        role_id: RoleEnum.user,
       },
     });
 
     if (!countUser) {
       await this.repository.save(
         this.repository.create({
-          id: RoleEnum.user,
+          role_id: RoleEnum.user,
           name: 'User',
         }),
       );
@@ -29,14 +29,14 @@ export class RoleSeedService {
 
     const countAdmin = await this.repository.count({
       where: {
-        id: RoleEnum.admin,
+        role_id: RoleEnum.admin,
       },
     });
 
     if (!countAdmin) {
       await this.repository.save(
         this.repository.create({
-          id: RoleEnum.admin,
+          role_id: RoleEnum.admin,
           name: 'Admin',
         }),
       );

@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -32,6 +33,7 @@ export class Account extends CommonEntity {
   @ManyToOne(() => RoleEntity, {
     eager: true,
   })
+  @JoinColumn({ name: 'role_id' })
   role?: RoleEntity | null;
 
   @OneToOne(() => Member, (member) => member.account, {

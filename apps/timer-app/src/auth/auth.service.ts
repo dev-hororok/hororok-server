@@ -74,7 +74,7 @@ export class AuthService {
       ...dto,
       email: dto.email,
       role: {
-        id: RoleEnum.user,
+        role_id: RoleEnum.user,
       },
     });
     const { accessToken, refreshToken, tokenExpires } =

@@ -6,15 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   HttpStatus,
   HttpCode,
   SerializeOptions,
 } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../roles/roles.guard';
 import { AccountsService } from './accounts.service';
 import { Account } from '../database/entities/account.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -22,7 +19,6 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 import { NullableType } from '../utils/types/nullable.type';
 
 @Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}

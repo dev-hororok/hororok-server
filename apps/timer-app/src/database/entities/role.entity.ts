@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 })
 export class RoleEntity {
   @PrimaryColumn()
-  id: number;
+  role_id: number;
 
   @Column()
   name?: string;

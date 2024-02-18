@@ -2,5 +2,5 @@ import { IsNumber } from 'class-validator';
 
 export class RoleDto {
   @IsNumber()
-  id: number;
+  role_id: number;
 }
