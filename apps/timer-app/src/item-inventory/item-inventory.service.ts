@@ -1,64 +1,68 @@
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, QueryRunner, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ItemInventoryEntity } from '../database/entities/item-inventory.entity';
+import { QueryRunner } from 'typeorm';
 import { ItemInventory } from '../database/domain/item-inventory';
+import { ItemInventoryRepository } from './repositories/item-inventory.repository.interface';
+import { Member } from '../database/domain/member';
 
 @Injectable()
 export class ItemInventoryService {
   constructor(
-    @InjectRepository(ItemInventoryEntity)
-    private itemInventoryRepository: Repository<ItemInventoryEntity>,
+    private readonly itemInventoryRepository: ItemInventoryRepository,
   ) {}
-  /** queryRunner 여부에 따라 ItemInventory Repository를 생성 */
-  private getRepository(
-    queryRunner?: QueryRunner,
-  ): Repository<ItemInventoryEntity> {
-    return queryRunner
-      ? queryRunner.manager.getRepository(ItemInventoryEntity)
-      : this.itemInventoryRepository;
-  }
 
-  async findAll(
-    options?: FindManyOptions<ItemInventoryEntity>,
+  async getMemeberInventory(
+    memberId: Member['member_id'],
+    itemType: 'Food' | 'Consumable',
     queryRunner?: QueryRunner,
   ): Promise<ItemInventory[]> {
-    const repository = this.getRepository(queryRunner);
-    return repository.find(options);
+    return this.itemInventoryRepository.getMemeberInventory(
+      memberId,
+      itemType,
+      queryRunner,
+    );
   }
 
   async update(
     id: number,
     itemInventory: Partial<ItemInventory>,
     queryRunner?: QueryRunner,
-  ): Promise<boolean> {
-    const repository = this.getRepository(queryRunner);
-    const result = await repository.update(id, itemInventory);
-    return result.affected ? 0 < result.affected : false;
+  ): Promise<ItemInventory | null> {
+    return await this.itemInventoryRepository.update(
+      id,
+      itemInventory,
+      queryRunner,
+    );
   }
 
-  async delete(id: string, queryRunner?: QueryRunner): Promise<void> {
-    const repository = this.getRepository(queryRunner);
-    await repository.delete(id);
+  async softDelete(
+    id: ItemInventory['item_inventory_id'],
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    await this.itemInventoryRepository.softDelete(id, queryRunner);
   }
 
   /** 멤버가 소유한 모든 FoodInventory의 progress값을 experience만큼 감소 */
   async decreaseFoodProgressByExperience(
-    memberId: string,
+    memberId: Member['member_id'],
     experience: number,
     queryRunner?: QueryRunner,
   ): Promise<void> {
-    const repository = this.getRepository(queryRunner);
-    const memberFoods = await repository.find({
-      where: { member: { member_id: memberId }, item_type: 'Food' },
-    });
+    const memberFoods = await this.getMemeberInventory(
+      memberId,
+      'Food',
+      queryRunner,
+    );
 
     for (const food of memberFoods) {
       if (food.progress && 0 < food.progress) {
         const newProgress = Math.max(0, food.progress - experience);
-        await repository.update(food.item_inventory_id, {
-          progress: newProgress,
-        });
+        await this.update(
+          food.item_inventory_id,
+          {
+            progress: newProgress,
+          },
+          queryRunner,
+        );
       }
     }
   }

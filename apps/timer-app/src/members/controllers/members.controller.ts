@@ -17,15 +17,15 @@ import { StudyRecordsService } from '../../study-records/study-records.service';
 import { CharacterInventoryService } from '../../character-inventory/character-inventory.service';
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { MemberInitializationService } from '../services/member-initialization.service';
-import { IsNull, MoreThan, Not } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 import { MemberMapper } from '../../database/mappers/member.mapper';
 import { StudyStreakMapper } from '../../database/mappers/study-streak.mapper';
-import { ItemInventoryMapper } from '../../database/mappers/item-inventory.mapper';
 import { StudyRecordMapper } from '../../database/mappers/study-record.mapper';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
 import { RoleEnum } from '../../roles/roles.enum';
 import { Roles } from '../../roles/roles.decorator';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { ItemInventoryQueryDto } from '../../item-inventory/dto/item-inventory-query.dto';
 
 @Controller('members')
 export class MembersController {
@@ -87,25 +87,15 @@ export class MembersController {
   @UseGuards(PermissionsGuard)
   async getMemberItemInventory(
     @Param('member_id') memberId: string,
-    @Query('item_type') itemType: string,
+    @Query() queryDto: ItemInventoryQueryDto,
   ) {
-    const item_inventory = await this.itemInventoryService.findAll({
-      where: {
-        member: {
-          member_id: memberId,
-        },
-        quantity: MoreThan(0),
-        item_type: itemType,
-      },
-      relations: {
-        item: true,
-      },
-    });
+    const item_inventory = await this.itemInventoryService.getMemeberInventory(
+      memberId,
+      queryDto.item_type,
+    );
 
     return {
-      item_inventory: item_inventory.map((itemInventory) =>
-        ItemInventoryMapper.toDomain(itemInventory),
-      ),
+      item_inventory,
     };
   }
 
