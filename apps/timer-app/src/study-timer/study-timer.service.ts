@@ -24,7 +24,7 @@ export class StudyTimerService {
       );
 
       if (member.active_record_id) {
-        await this.studyRecordsService.delete(
+        await this.studyRecordsService.softDelete(
           member.active_record_id,
           queryRunner,
         );

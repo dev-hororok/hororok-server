@@ -55,11 +55,14 @@ export class TypeOrmStudyRecordRepository implements StudyRecordRepository {
         member: {
           member_id: data.member_id,
         },
-        study_category: {
-          study_category_id: data.category_id,
-        },
+        study_category: data.category_id
+          ? {
+              study_category_id: data.category_id,
+            }
+          : undefined,
       }),
     );
+
     return StudyRecordMapper.toDomain(newEntity);
   }
 

@@ -17,5 +17,5 @@ export class CreateStudyRecordInputDto {
 
   @IsNumber()
   @IsOptional()
-  category_id: number;
+  category_id?: number;
 }
