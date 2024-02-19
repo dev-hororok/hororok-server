@@ -13,6 +13,8 @@ import { MemberStatisticsController } from './controllers/members-statistic.cont
 import { StatisticsModule } from '../statistics/statistics.module';
 import { TransactionService } from '../common/transaction.service';
 import { MemberEntity } from '../database/entities/member.entity';
+import { MemberRepository } from './repositories/member.repository.interface';
+import { TypeOrmMemberRepository } from './repositories/typeorm/member.repository';
 
 @Module({
   imports: [
@@ -24,7 +26,15 @@ import { MemberEntity } from '../database/entities/member.entity';
     StudyCategoriesModule,
     StatisticsModule,
   ],
-  providers: [MembersService, MemberInitializationService, TransactionService],
+  providers: [
+    MembersService,
+    MemberInitializationService,
+    TransactionService,
+    {
+      provide: MemberRepository,
+      useClass: TypeOrmMemberRepository,
+    },
+  ],
   controllers: [
     MembersController,
     MemberStudyCategoriesController,

@@ -56,4 +56,57 @@ export class MemberMapper {
 
     return dto;
   }
+
+  static toPersistence(member: Member): MemberEntity {
+    const character_inventories = member.character_inventories
+      ? member.character_inventories.map((n) =>
+          CharacterInventoryMapper.toPersistence(n),
+        )
+      : undefined;
+    const item_inventories = member.item_inventories
+      ? member.item_inventories.map((n) => ItemInventoryMapper.toPersistence(n))
+      : undefined;
+
+    const study_categories = member.study_categories
+      ? member.study_categories.map((n) => StudyCategoryMapper.toPersistence(n))
+      : undefined;
+    const study_records = member.study_records
+      ? member.study_records.map((n) => StudyRecordMapper.toPersistence(n))
+      : undefined;
+    const transaction_records = member.transaction_records
+      ? member.transaction_records.map((n) =>
+          TransactionRecordMapper.toPersistence(n),
+        )
+      : undefined;
+
+    const study_streak = member.study_streak
+      ? StudyStreakMapper.toPersistence(member.study_streak)
+      : undefined;
+    const account = member.account
+      ? AccountMapper.toPersistence(member.account)
+      : undefined;
+
+    const memberEntity = new MemberEntity();
+
+    memberEntity.member_id = member.member_id;
+    memberEntity.email = member.email;
+    memberEntity.image_url = member.image_url;
+    memberEntity.nickname = member.nickname;
+    memberEntity.point = member.point;
+    memberEntity.active_record_id = member.active_record_id;
+
+    memberEntity.character_inventories = character_inventories;
+    memberEntity.item_inventories = item_inventories;
+    memberEntity.study_categories = study_categories;
+    memberEntity.study_records = study_records;
+    memberEntity.transaction_records = transaction_records;
+    memberEntity.study_streak = study_streak;
+    memberEntity.account = account;
+
+    memberEntity.created_at = member.created_at;
+    memberEntity.updated_at = member.updated_at;
+    memberEntity.deleted_at = member.deleted_at;
+
+    return memberEntity;
+  }
 }
