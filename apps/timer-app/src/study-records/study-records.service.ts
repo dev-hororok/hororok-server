@@ -1,57 +1,36 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import {
-  FindManyOptions,
-  FindOneOptions,
-  QueryRunner,
-  Repository,
-} from 'typeorm';
+import { QueryRunner } from 'typeorm';
 import { CreateStudyRecordInputDto } from './dtos/create-study-record.dto';
 import { StudyRecordEntity } from '../database/entities/study-record.entity';
+import { StudyRecordRepository } from './repositories/study-record.repository.interface';
+import { EntityCondition } from '../utils/types/entity-condition.type';
+import { StudyRecord } from '../database/domain/study-record';
+import { NullableType } from '../utils/types/nullable.type';
+import { Member } from '../database/domain/member';
+import { StudyCategory } from '../database/domain/study-category';
 
 @Injectable()
 export class StudyRecordsService {
-  constructor(
-    @InjectRepository(StudyRecordEntity)
-    private studyRecordRepository: Repository<StudyRecordEntity>,
-  ) {}
-
-  /** queryRunner 여부에 따라 StudyRecord Repository를 생성 */
-  private getRepository(
-    queryRunner?: QueryRunner,
-  ): Repository<StudyRecordEntity> {
-    return queryRunner
-      ? queryRunner.manager.getRepository(StudyRecordEntity)
-      : this.studyRecordRepository;
-  }
-
-  async findAll(
-    options?: FindManyOptions<StudyRecordEntity>,
-    queryRunner?: QueryRunner,
-  ): Promise<StudyRecordEntity[]> {
-    const repository = this.getRepository(queryRunner);
-    return repository.find(options);
-  }
+  constructor(private readonly studyRecordRepository: StudyRecordRepository) {}
 
   async findOne(
-    options: FindOneOptions<StudyRecordEntity>,
+    fields: EntityCondition<StudyRecord>,
     queryRunner?: QueryRunner,
   ): Promise<StudyRecordEntity | null> {
-    const repository = this.getRepository(queryRunner);
-    return repository.findOne(options);
+    return this.studyRecordRepository.findOne(fields, queryRunner);
   }
 
   async findActiveRecordOrFail(
-    activeRecordId: number | null,
+    activeRecordId: Member['active_record_id'],
     queryRunner?: QueryRunner,
   ): Promise<StudyRecordEntity> {
     if (activeRecordId === null) {
       throw new NotFoundException('진행중인 타이머가 없습니다.');
     }
-    const repository = this.getRepository(queryRunner);
-    const record = await repository.findOne({
-      where: { study_record_id: activeRecordId },
-    });
+    const record = await this.findOne(
+      { study_record_id: activeRecordId },
+      queryRunner,
+    );
 
     if (!record) {
       throw new NotFoundException('진행중인 타이머가 없습니다.');
@@ -60,71 +39,51 @@ export class StudyRecordsService {
     return record;
   }
 
-  async create(
-    { start_time, member_id, category_id }: CreateStudyRecordInputDto,
-    queryRunner?: QueryRunner,
-  ) {
-    const repository = this.getRepository(queryRunner);
-
-    const newRecord = repository.create({
-      start_time: start_time,
-      study_category: {
-        study_category_id: category_id,
-      },
-      member: { member_id },
-    });
-
-    await repository.insert(newRecord);
-    return newRecord;
+  async create(data: CreateStudyRecordInputDto, queryRunner?: QueryRunner) {
+    return this.studyRecordRepository.create(data, queryRunner);
   }
 
   async update(
-    id: number,
-    studyRecord: Partial<StudyRecordEntity>,
+    id: StudyRecord['study_record_id'],
+    payload: Partial<StudyRecord>,
     queryRunner?: QueryRunner,
-  ): Promise<boolean> {
-    const repository = this.getRepository(queryRunner);
-    const result = await repository.update(id, studyRecord);
-    return result.affected ? 0 < result.affected : false;
+  ): Promise<NullableType<StudyRecord>> {
+    return this.studyRecordRepository.update(id, payload, queryRunner);
   }
 
-  async delete(id: number, queryRunner?: QueryRunner): Promise<boolean> {
-    const repository = this.getRepository(queryRunner);
-    const result = await repository.softDelete(id);
-    return result.affected ? 0 < result.affected : false;
+  async softDelete(
+    id: StudyRecord['study_record_id'],
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    return this.studyRecordRepository.softDelete(id, queryRunner);
   }
 
   /** 주어진 RecordIds에 연결된 카테고리를 targetCategoryId로 모두 업데이트 */
   async updateCategoryOfRecords(
-    recordIds: number[],
-    targetCategoryId: number,
+    recordIds: StudyRecord['study_record_id'][],
+    targetCategoryId: StudyCategory['study_category_id'],
     queryRunner?: QueryRunner,
   ): Promise<void> {
-    const queryBuilder = queryRunner
-      ? queryRunner.manager
-          .getRepository(StudyRecordEntity)
-          .createQueryBuilder()
-      : this.studyRecordRepository.createQueryBuilder();
-
-    await queryBuilder
-      .update(StudyRecordEntity)
-      .set({ study_category: { study_category_id: targetCategoryId } })
-      .where('study_record_id In (:...recordIds)', { recordIds })
-      .execute();
+    return this.studyRecordRepository.updateCategoryOfRecords(
+      recordIds,
+      targetCategoryId,
+      queryRunner,
+    );
   }
 
   /** 레코드의 status를 업데이트 시켜줌 (status : "Completed" | "Incompleted") */
   async completeStudyRecord(
-    studyRecordId: number,
+    studyRecordId: StudyRecord['study_record_id'],
     status: string,
     queryRunner?: QueryRunner,
-  ): Promise<void> {
-    const repository = queryRunner
-      ? queryRunner.manager.getRepository(StudyRecordEntity)
-      : this.studyRecordRepository;
-    await repository.update(studyRecordId, {
-      status: status,
-      end_time: new Date(),
-    });
+  ): Promise<NullableType<StudyRecord>> {
+    return this.studyRecordRepository.update(
+      studyRecordId,
+      {
+        status,
+        end_time: new Date(),
+      },
+      queryRunner,
+    );
   }
 }

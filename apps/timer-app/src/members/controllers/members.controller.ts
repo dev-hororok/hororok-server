@@ -13,14 +13,11 @@ import { MembersService } from '../services/members.service';
 import { UpdateMemberInputDto } from '../dtos/update-member.dto';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { MemberExistsGuard } from '../guards/exists.guard';
-import { StudyRecordsService } from '../../study-records/study-records.service';
 import { CharacterInventoryService } from '../../character-inventory/character-inventory.service';
 import { ItemInventoryService } from '../../item-inventory/item-inventory.service';
 import { MemberInitializationService } from '../services/member-initialization.service';
-import { IsNull, Not } from 'typeorm';
 import { MemberMapper } from '../../database/mappers/member.mapper';
 import { StudyStreakMapper } from '../../database/mappers/study-streak.mapper';
-import { StudyRecordMapper } from '../../database/mappers/study-record.mapper';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
 import { RoleEnum } from '../../roles/roles.enum';
 import { Roles } from '../../roles/roles.decorator';
@@ -35,7 +32,6 @@ export class MembersController {
     private readonly streaksService: StreaksService,
     private readonly itemInventoryService: ItemInventoryService,
     private readonly characterInventoryService: CharacterInventoryService,
-    private readonly studyRecordsService: StudyRecordsService,
   ) {}
 
   @Roles(RoleEnum.admin)
@@ -108,24 +104,6 @@ export class MembersController {
 
     return {
       character_inventory,
-    };
-  }
-
-  // 유저 공부 기록들 조회
-  @Get(':member_id/study-records')
-  @UseGuards(MemberExistsGuard)
-  async getMemberStudyRecords(@Param('member_id') memberId: string) {
-    const study_records = await this.studyRecordsService.findAll({
-      where: {
-        member: {
-          member_id: memberId,
-        },
-        end_time: Not(IsNull()),
-      },
-      relations: { study_category: true },
-    });
-    return {
-      study_records: study_records.map((sr) => StudyRecordMapper.toDomain(sr)),
     };
   }
 }
