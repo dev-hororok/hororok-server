@@ -1,88 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import {
-  FindManyOptions,
-  FindOneOptions,
-  QueryRunner,
-  Repository,
-} from 'typeorm';
+import { QueryRunner } from 'typeorm';
 import { TransactionService } from '../common/transaction.service';
-import { StudyStreakEntity } from '../database/entities/study-streak.entity';
 import { StudyStreak } from '../database/domain/study-streak';
+import { StudyStreakRepository } from './repositories/study-streak.repository.interface';
+import { Member } from '../database/domain/member';
+import { NullableType } from '../utils/types/nullable.type';
 
 @Injectable()
 export class StreaksService {
   constructor(
-    @InjectRepository(StudyStreakEntity)
-    private streakRepository: Repository<StudyStreakEntity>,
-    private transactionService: TransactionService,
+    private readonly studyStreakRepository: StudyStreakRepository,
+    private readonly transactionService: TransactionService,
   ) {}
-  /** queryRunner 여부에 따라 StudyStreak Repository를 생성 */
-  private getRepository(
-    queryRunner?: QueryRunner,
-  ): Repository<StudyStreakEntity> {
-    return queryRunner
-      ? queryRunner.manager.getRepository(StudyStreakEntity)
-      : this.streakRepository;
-  }
-
-  async findAll(
-    options?: FindManyOptions<StudyStreakEntity>,
-    queryRunner?: QueryRunner,
-  ): Promise<StudyStreak[]> {
-    const repository = this.getRepository(queryRunner);
-    return repository.find(options);
-  }
-
-  async findOne(
-    options: FindOneOptions<StudyStreak>,
-    queryRunner?: QueryRunner,
-  ): Promise<StudyStreak | null> {
-    const repository = this.getRepository(queryRunner);
-    return repository.findOne(options);
-  }
 
   async findOneWithPaletteByMemberId(
-    memberId: string,
+    memberId: Member['member_id'],
     queryRunner?: QueryRunner,
   ) {
-    const repository = this.getRepository(queryRunner);
-    return repository.findOne({
-      where: {
-        member: { member_id: memberId },
-      },
-      relations: ['palette'],
-    });
+    return this.studyStreakRepository.findOneWithPaletteByMemberId(
+      memberId,
+      queryRunner,
+    );
   }
 
   async create(
-    memberId: string,
+    memberId: Member['member_id'],
     queryRunner?: QueryRunner,
   ): Promise<StudyStreak> {
-    const repository = this.getRepository(queryRunner);
-
-    const newStreak = repository.create({
-      longest_streak: 0,
-      current_streak: 0,
-      member: { member_id: memberId },
-    });
-
-    return this.streakRepository.save(newStreak);
+    return this.studyStreakRepository.create(memberId, queryRunner);
   }
 
   async update(
-    id: number,
-    streak: Partial<StudyStreak>,
+    id: StudyStreak['study_streak_id'],
+    payload: Partial<StudyStreak>,
     queryRunner?: QueryRunner,
-  ): Promise<boolean> {
-    const repository = this.getRepository(queryRunner);
-    const result = await repository.update(id, streak);
-    return result.affected ? 0 < result.affected : false;
-  }
-
-  async delete(id: number, queryRunner?: QueryRunner): Promise<void> {
-    const repository = this.getRepository(queryRunner);
-    await repository.delete(id);
+  ): Promise<NullableType<StudyStreak>> {
+    return this.studyStreakRepository.update(id, payload, queryRunner);
   }
 
   async findOrCreate(memberId: string): Promise<StudyStreak> {

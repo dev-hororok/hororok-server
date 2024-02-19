@@ -58,7 +58,7 @@ export class AuthService {
       await this.getTokensData({
         id: account.account_id,
         email: account.email,
-        role: account.role?.name || 'User',
+        role: account.role,
       });
 
     return {
@@ -81,7 +81,7 @@ export class AuthService {
       await this.getTokensData({
         id: account.account_id,
         email: account.email,
-        role: account.role?.name || 'User',
+        role: account.role,
       });
 
     return {
@@ -95,7 +95,7 @@ export class AuthService {
   private async getTokensData(data: {
     id: Account['account_id'];
     email: Account['email'];
-    role: string;
+    role: Account['role'];
   }) {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
@@ -151,7 +151,7 @@ export class AuthService {
       await this.getTokensData({
         id: account.account_id,
         email: account.email,
-        role: account?.role?.name || 'User',
+        role: account.role,
       });
 
     return {

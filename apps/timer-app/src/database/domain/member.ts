@@ -6,8 +6,10 @@ import { StudyCategory } from './study-category';
 import { StudyRecord } from './study-record';
 import { StudyStreak } from './study-streak';
 import { TransactionRecord } from './transaction-record';
+import { Allow } from 'class-validator';
 
 export class Member {
+  @Allow()
   member_id: string;
   nickname: string;
   email: string;

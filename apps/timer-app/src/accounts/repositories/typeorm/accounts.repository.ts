@@ -36,7 +36,7 @@ export class TypeOrmAccountsRepository implements AccountsRepository {
   async update(
     id: Account['account_id'],
     payload: Partial<Account>,
-  ): Promise<Account> {
+  ): Promise<NullableType<Account>> {
     const entity = await this.accountsRepository.findOne({
       where: { account_id: id },
     });
