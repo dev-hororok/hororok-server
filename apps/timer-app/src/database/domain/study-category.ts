@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Member } from './member';
 import { StudyRecord } from './study-record';
 
@@ -8,5 +9,6 @@ export class StudyCategory {
   member?: Member;
   study_records?: StudyRecord[];
 
+  @Expose({ groups: ['admin'] })
   deleted_at: Date;
 }
