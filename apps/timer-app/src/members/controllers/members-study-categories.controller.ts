@@ -37,9 +37,8 @@ export class MemberStudyCategoriesController {
 
   @Get()
   async getStudyCategories(@Param('member_id') memberId: string) {
-    const categories = await this.studyCategoriesService.findAll({
-      where: { member: { member_id: memberId } },
-    });
+    const categories =
+      await this.studyCategoriesService.getMemberCategories(memberId);
     return {
       study_categories: categories.map((category) =>
         StudyCategoryMapper.toDomain(category),
