@@ -26,7 +26,11 @@ async function bootstrap() {
   app.useGlobalFilters(new CustomExceptionFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableCors({
-    origin: ['https://monta-pwa.vercel.app', 'http://localhost:5173'],
+    origin: [
+      'https://monta-pwa.vercel.app',
+      'http://localhost:5173',
+      'http://192.168.1.208:5173',
+    ],
     credentials: true,
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
