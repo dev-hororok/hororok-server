@@ -9,7 +9,7 @@ export class MemberStatisticsController {
 
   @Get()
   getDailyStatistics(
-    @Param('memberId') memberId: string,
+    @Param('member_id') memberId: string,
     @Query('date') date: string,
   ) {
     return this.statisticsService.getDailyStatistics(memberId, date);
@@ -17,7 +17,7 @@ export class MemberStatisticsController {
 
   @Get('/monthly')
   getMonthlyStatistics(
-    @Param('memberId') memberId: string,
+    @Param('member_id') memberId: string,
     @Query('year') year: number,
     @Query('month') month: number,
   ) {
@@ -26,7 +26,7 @@ export class MemberStatisticsController {
 
   @Get('/heat-map')
   getHeatMapData(
-    @Param('memberId') memberId: string,
+    @Param('member_id') memberId: string,
     @Query('start') start: string,
     @Query('end') end: string,
   ) {

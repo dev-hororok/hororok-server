@@ -50,6 +50,7 @@ export class StatisticsService {
         start_time: Between(startOfDay(startDate), endOfDay(endDate)),
       },
     });
+    console.log(memberId);
 
     const uniqueDays = new Set();
     const monthlyTotal = records.reduce((acc, record) => {

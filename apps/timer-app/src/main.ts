@@ -17,7 +17,6 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
   );
