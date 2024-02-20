@@ -10,7 +10,7 @@ import { TransactionRecord } from './transaction-record';
 export class Member {
   member_id: string;
   nickname: string;
-  email: string;
+  status_message: string;
   image_url: string | null;
   active_record_id: number | null;
   point: number;

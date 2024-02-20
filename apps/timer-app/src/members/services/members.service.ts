@@ -86,7 +86,7 @@ export class MembersService {
     const newMember = this.membersRepository.create(
       jwtPayload.sub,
       {
-        email: jwtPayload.email || '',
+        status_message: '',
         nickname: crypto.randomBytes(10).toString('hex'),
         image_url: '',
         point: 500,

@@ -13,7 +13,7 @@ export class MemberMapper {
     const dto = new Member();
 
     dto.member_id = raw.member_id;
-    dto.email = raw.email;
+    dto.status_message = raw.status_message;
     dto.image_url = raw.image_url;
     dto.nickname = raw.nickname;
     dto.point = raw.point;
@@ -89,7 +89,7 @@ export class MemberMapper {
     const memberEntity = new MemberEntity();
 
     memberEntity.member_id = member.member_id;
-    memberEntity.email = member.email;
+    memberEntity.status_message = member.status_message;
     memberEntity.image_url = member.image_url;
     memberEntity.nickname = member.nickname;
     memberEntity.point = member.point;
