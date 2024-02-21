@@ -98,50 +98,58 @@ export class MembersService {
   }
 
   async update(
-    id: string,
+    id: Member['member_id'],
     member: Partial<Member>,
     queryRunner?: QueryRunner,
   ): Promise<NullableType<Member>> {
     const result = await this.membersRepository.update(id, member, queryRunner);
     await this.cacheManager.del(`member_${id}`);
+    if (result?.account?.account_id) {
+      await this.cacheManager.del(
+        `account-member_${result.account.account_id}`,
+      );
+    }
     return result;
   }
 
-  async delete(id: string, queryRunner?: QueryRunner): Promise<void> {
+  async delete(
+    id: Member['member_id'],
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
     await this.cacheManager.del(`member_${id}`);
     await this.membersRepository.softDelete(id, queryRunner);
   }
 
   /** 유저의 현재 공부중인 테이블 필드를 비워줌 */
   async clearActiveRecordId(
-    memberId: string,
+    id: Member['member_id'],
     queryRunner?: QueryRunner,
   ): Promise<NullableType<Member>> {
     const result = await this.membersRepository.update(
-      memberId,
+      id,
       {
         active_record_id: null,
       },
       queryRunner,
     );
-    await this.cacheManager.del(`member_${memberId}`);
+    await this.cacheManager.del(`member_${id}`);
     return result;
   }
 
   /** 유저의 activeRecord 필드를 업데이트 시켜줌 */
   async updateActiveRecordId(
-    memberId: string,
+    id: Member['member_id'],
     activeRecordId: number,
     queryRunner?: QueryRunner,
   ): Promise<NullableType<Member>> {
     const result = await this.membersRepository.update(
-      memberId,
+      id,
       {
         active_record_id: activeRecordId,
       },
       queryRunner,
     );
-    await this.cacheManager.del(`member_${memberId}`);
+    await this.cacheManager.del(`member_${id}`);
     return result;
   }
 

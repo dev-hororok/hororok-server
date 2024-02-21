@@ -108,6 +108,7 @@ export class TypeOrmMemberRepository implements MemberRepository {
     const repository = this.getRepository(queryRunner);
     const entity = await repository.findOne({
       where: { member_id: id },
+      relations: { account: true }, // account-member 캐시 초기화를 위함
     });
 
     if (!entity) {

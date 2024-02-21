@@ -60,8 +60,9 @@ export class MembersController {
     @Body() updateMemberInputDto: UpdateMemberInputDto,
   ) {
     if (
-      !updateMemberInputDto.nicknmae &&
-      updateMemberInputDto.image_url === undefined
+      updateMemberInputDto.nickname === undefined &&
+      updateMemberInputDto.image_url === undefined &&
+      updateMemberInputDto.status_message === undefined
     ) {
       throw new BadRequestException('변경할 내용이 없습니다.');
     }
