@@ -1,8 +1,6 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 import * as crypto from 'crypto';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload';
 import { Member } from '../../database/domain/member';
 import { EntityCondition } from '../../utils/types/entity-condition.type';
@@ -11,10 +9,7 @@ import { NullableType } from '../../utils/types/nullable.type';
 
 @Injectable()
 export class MembersService {
-  constructor(
-    private readonly membersRepository: MemberRepository,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  constructor(private readonly membersRepository: MemberRepository) {}
 
   async findAll(
     options?: EntityCondition<Member>,
@@ -30,23 +25,14 @@ export class MembersService {
     return this.membersRepository.findOne(options, queryRunner);
   }
 
-  /** 캐싱: `member_${memberId}` */
   async findOneById(memberId: string, queryRunner?: QueryRunner) {
-    const cacheKey = `member_${memberId}`;
-    const cache = await this.getCachedMember(cacheKey);
-    if (cache) return cache;
-
     const member = await this.membersRepository.findOneById(
       memberId,
       queryRunner,
     );
-    if (member) {
-      await this.setCachedMember(cacheKey, member, 3000);
-    }
 
     return member;
   }
-  /** 캐싱: `member_${memberId}` */
   async findOneByIdOrFail(memberId: string, queryRunner?: QueryRunner) {
     const member = await this.findOneById(memberId, queryRunner);
     if (!member) {
@@ -54,23 +40,14 @@ export class MembersService {
     }
     return member;
   }
-  /** 캐싱: account-member_${accountId} */
   async findOneByAccountId(accountId: string, queryRunner?: QueryRunner) {
-    const cacheKey = `account-member_${accountId}`;
-    const cache = await this.getCachedMember(cacheKey);
-    if (cache) return cache;
-
     const member = await this.membersRepository.findOneByAccountId(
       accountId,
       queryRunner,
     );
-    if (member) {
-      await this.setCachedMember(cacheKey, member, 3000);
-    }
 
     return member;
   }
-  /** 캐싱: account-member_${accountId} */
   async findOneByAccountIdOrFail(accountId: string, queryRunner?: QueryRunner) {
     const member = await this.findOneByAccountId(accountId, queryRunner);
     if (!member) {
@@ -103,12 +80,6 @@ export class MembersService {
     queryRunner?: QueryRunner,
   ): Promise<NullableType<Member>> {
     const result = await this.membersRepository.update(id, member, queryRunner);
-    await this.cacheManager.del(`member_${id}`);
-    if (result?.account?.account_id) {
-      await this.cacheManager.del(
-        `account-member_${result.account.account_id}`,
-      );
-    }
     return result;
   }
 
@@ -116,7 +87,6 @@ export class MembersService {
     id: Member['member_id'],
     queryRunner?: QueryRunner,
   ): Promise<void> {
-    await this.cacheManager.del(`member_${id}`);
     await this.membersRepository.softDelete(id, queryRunner);
   }
 
@@ -132,7 +102,6 @@ export class MembersService {
       },
       queryRunner,
     );
-    await this.cacheManager.del(`member_${id}`);
     return result;
   }
 
@@ -149,31 +118,6 @@ export class MembersService {
       },
       queryRunner,
     );
-    await this.cacheManager.del(`member_${id}`);
     return result;
-  }
-
-  // **** 캐시관련 ****
-
-  private async getCachedMember(key: string): Promise<Member | null> {
-    const cachedMember = await this.cacheManager.get<Member>(key);
-    if (cachedMember) {
-      console.log('캐시에서 조회:', key);
-      return cachedMember;
-    }
-    return null;
-  }
-
-  private async setCachedMember(
-    key: string,
-    member: Member,
-    ttl: number = 3000,
-  ): Promise<void> {
-    await this.cacheManager.set(key, member, ttl);
-  }
-
-  /** 해당 캐시키에 새 멤버로 값을 업데이트 */
-  async updateMemberCache(key: string, member: Member) {
-    await this.cacheManager.set(key, member);
   }
 }
