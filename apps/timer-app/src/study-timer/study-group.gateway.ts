@@ -15,10 +15,12 @@ import { JwtService } from '@nestjs/jwt';
 import { AllConfigType } from '../config/config.type';
 import { MembersService } from '../members/services/members.service';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload';
+import { Member } from '../database/domain/member';
 
 interface MemberInfo {
-  image_url: string;
-  nickname: string;
+  member_id: Member['member_id'];
+  image_url: Member['image_url'];
+  nickname: Member['nickname'];
 }
 
 // (string)  group:{groupId}:count      - 현재 그룹 인원 (number)
@@ -69,7 +71,6 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     @MessageBody() data: { jwtToken: string },
   ) {
     try {
-      console.log(this.configService.get('auth.secret', { infer: true })); // 테스트
       const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
         secret: this.configService.get('auth.secret', { infer: true }),
       });
@@ -97,7 +98,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
 
       // 새 멤버 정보를 그룹의 모든 기존 멤버들에게 방송
       this.server.to(groupId).emit('newMember', {
-        memberId: member.member_id,
+        member_id: member.member_id,
         image_url: member.image_url,
         nickname: member.nickname,
       });
@@ -163,7 +164,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
   // 멤버 정보 저장
   private async saveMemberInfo(
     memberId: string,
-    memberInfo: MemberInfo,
+    memberInfo: Omit<MemberInfo, 'member_id'>,
   ): Promise<void> {
     await this.redisClient.hset(`member:${memberId}`, memberInfo);
   }
@@ -181,6 +182,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
           `member:${memberId}`,
         );
         return {
+          member_id: memberId,
           image_url: info.image_url || '',
           nickname: info.nickname || '',
         };
