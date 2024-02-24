@@ -39,22 +39,12 @@ export class StudyTimerService {
         queryRunner,
       );
 
-      const isUpdated = await this.membersService.updateActiveRecordId(
+      await this.membersService.updateActiveRecordId(
         member.member_id,
         newRecord.study_record_id,
         queryRunner,
       );
 
-      // account-member의 키값은 직접 업데이트 해야함
-      if (isUpdated) {
-        await this.membersService.updateMemberCache(
-          `account-member_${accountId}`,
-          {
-            ...member,
-            active_record_id: newRecord.study_record_id,
-          },
-        );
-      }
       return null;
     });
   }
@@ -77,21 +67,10 @@ export class StudyTimerService {
         data.status,
         queryRunner,
       );
-      const isUpdated = await this.membersService.clearActiveRecordId(
+      await this.membersService.clearActiveRecordId(
         member.member_id,
         queryRunner,
       );
-
-      // account-member의 키값은 직접 업데이트 해야함
-      if (isUpdated) {
-        await this.membersService.updateMemberCache(
-          `account-member_${accountId}`,
-          {
-            ...member,
-            active_record_id: null,
-          },
-        );
-      }
 
       await this.itemInventoryService.decreaseFoodProgressByExperience(
         member.member_id,
