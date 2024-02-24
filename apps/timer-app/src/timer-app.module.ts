@@ -9,9 +9,7 @@ import { StudyCategoriesModule } from './study-categories/study-categories.modul
 import { StudyTimerModule } from './study-timer/study-timer.module';
 import { ItemsModule } from './items/items.module';
 import { ItemInventoryModule } from './item-inventory/item-inventory.module';
-import { CacheModule } from '@nestjs/cache-manager';
 import { StatisticsModule } from './statistics/statistics.module';
-import * as redisStore from 'cache-manager-redis-store';
 import appConfig from './config/app.config';
 import databaseConfig from './database/config/database-config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -29,12 +27,6 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
       isGlobal: true,
       load: [appConfig, databaseConfig, authConfig],
       envFilePath: ['.env'],
-    }),
-    CacheModule.register({
-      isGlobal: true,
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,

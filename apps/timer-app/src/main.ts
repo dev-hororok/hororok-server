@@ -4,11 +4,17 @@ import { CustomExceptionFilter, Interceptor } from '@app/config';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './config/config.type';
+import { RedisIoAdapter } from './config/redis-io.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(TimerAppModule);
 
   const configService = app.get(ConfigService<AllConfigType>);
+
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+
+  app.useWebSocketAdapter(redisIoAdapter);
 
   app.useGlobalPipes(
     new ValidationPipe({
