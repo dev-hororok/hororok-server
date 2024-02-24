@@ -25,7 +25,18 @@ export class RedisIoAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: ServerOptions): any {
-    const server = super.createIOServer(port, options);
+    const server = super.createIOServer(port, {
+      ...options,
+      cors: {
+        origin: [
+          'https://monta-pwa.vercel.app',
+          'http://localhost:5173',
+          'http://192.168.1.208:5173',
+        ],
+        credentials: true,
+        allowedHeaders: ['Authorization', 'Content-Type'],
+      },
+    });
     server.adapter(this.adapterConstructor);
     return server;
   }
