@@ -9,10 +9,11 @@ import {
 } from '@nestjs/websockets';
 import Redis from 'ioredis';
 import { Server, Socket } from 'socket.io';
-import { AllConfigType } from '../config/config.type';
 import { v4 as uuidv4 } from 'uuid';
-import { MembersService } from '../members/services/members.service';
 import { JwtService } from '@nestjs/jwt';
+
+import { AllConfigType } from '../config/config.type';
+import { MembersService } from '../members/services/members.service';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload';
 
 interface MemberInfo {
@@ -37,8 +38,8 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     private readonly membersService: MembersService,
   ) {
     this.redisClient = new Redis({
-      host: this.configService.get('redis.host', { infer: true }),
-      port: this.configService.get('redis.port', { infer: true }),
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT || '0', 10),
     });
   }
 
@@ -62,13 +63,13 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
   }
 
   // jwtToken으로 멤버를 조회하여 8명 미만인 그룹에 참여
-  //
   @SubscribeMessage('joinGroup')
   async handleJoinGroup(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { jwtToken: string },
   ) {
     try {
+      console.log(this.configService.get('auth.secret', { infer: true })); // 테스트
       const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
         secret: this.configService.get('auth.secret', { infer: true }),
       });
