@@ -11,6 +11,8 @@ import {
   MonthlySummary,
 } from './types/summary.type';
 
+const DEFAULT_TIME_ZONE = 'Asia/Seoul';
+
 @Injectable()
 export class StatisticsService {
   constructor(
@@ -21,7 +23,7 @@ export class StatisticsService {
   async getDailyStatistics(
     memberId: string,
     clientDate: string,
-    timeZone: string = 'Asia/Seoul',
+    timeZone: string = DEFAULT_TIME_ZONE,
   ): Promise<DailySummary> {
     const { startDateUTC, endDateUTC } = this.getDateRangeInUTC(
       clientDate,
@@ -36,7 +38,7 @@ export class StatisticsService {
     memberId: string,
     year: number,
     month: number, // 1 ~ 12
-    timeZone: string = 'Asia/Seoul',
+    timeZone: string = DEFAULT_TIME_ZONE,
   ): Promise<MonthlySummary> {
     const startDate = new Date(year, month - 1, 1); // month: 0 ~ 11
     const endDate = new Date(year, month, 0); // 월 마지막 날
@@ -53,7 +55,7 @@ export class StatisticsService {
     memberId: string,
     start: string,
     end: string,
-    timeZone: string = 'Asia/Seoul',
+    timeZone: string = DEFAULT_TIME_ZONE,
   ): Promise<HeatMapData[]> {
     const { startDateUTC, endDateUTC } = this.getDateRangeInUTC(
       start,

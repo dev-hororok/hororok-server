@@ -11,18 +11,19 @@ import Redis from 'ioredis';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
+import { ForbiddenException } from '@nestjs/common';
 
 import { AllConfigType } from '../config/config.type';
 import { MembersService } from '../members/services/members.service';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload';
 import { Member } from '../database/domain/member';
 import { RoleEnum } from '../roles/roles.enum';
-import { ForbiddenException } from '@nestjs/common';
 
 interface MemberInfo {
   member_id: Member['member_id'];
   image_url: Member['image_url'];
   nickname: Member['nickname'];
+  joinedAtUTC: string;
 }
 
 // (string)  group:{groupId}:count      - 현재 그룹 인원 (number)
@@ -122,6 +123,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
       await this.saveMemberInfo(member.member_id, {
         image_url: member.image_url || '',
         nickname: member.nickname,
+        joinedAtUTC: new Date().toISOString(),
       });
 
       let groupId = await this.findAvailableGroup();
@@ -227,6 +229,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
           member_id: memberId,
           image_url: info.image_url || '',
           nickname: info.nickname || '',
+          joinedAtUTC: info.joinedAtUTC,
         };
       }),
     );
