@@ -119,13 +119,6 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
       );
       client.data.memberId = member.member_id; // 그룹에서 나갈때 사용
 
-      // 멤버 정보를 Redis에 저장
-      await this.saveMemberInfo(member.member_id, {
-        image_url: member.image_url || '',
-        nickname: member.nickname,
-        joinedAtUTC: new Date().toISOString(),
-      });
-
       let groupId = await this.findAvailableGroup();
       if (!groupId) {
         groupId = await this.createGroupWithFirstMember(member.member_id);
@@ -133,6 +126,14 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         await this.addMemberToGroup(member.member_id, groupId);
       }
       client.join(groupId);
+      const joinedAtUTC = new Date().toISOString(); // 입장 시간
+
+      // 멤버 정보를 Redis에 저장
+      await this.saveMemberInfo(member.member_id, {
+        image_url: member.image_url || '',
+        nickname: member.nickname,
+        joinedAtUTC,
+      });
 
       console.log(`member ${member.member_id}가 ${groupId}방에 입장`);
 
@@ -141,9 +142,10 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         member_id: member.member_id,
         image_url: member.image_url,
         nickname: member.nickname,
+        joinedAtUTC,
       });
 
-      // 새 멤버에게만 현재 그룹의 모든 유저 목록을 발송
+      // 새 멤버에게 현재 그룹의 모든 유저 목록을 발송
       const members = await this.redisClient.smembers(
         `group:${groupId}:members`,
       );
