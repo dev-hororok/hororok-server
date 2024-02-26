@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { MemberEntity } from '../../entities/member.entity';
-import { AccountSeeds } from '../accounts.seed';
+import { AccountSeeds } from '../seed';
 import { AccountEntity } from '../../entities/account.entity';
 import { StudyStreakEntity } from '../../entities/study-streak.entity';
 

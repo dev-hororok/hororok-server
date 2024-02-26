@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { AccountEntity } from '../../entities/account.entity';
-import { AccountSeeds } from '../accounts.seed';
+import { AccountSeeds } from '../seed';
 
 @Injectable()
 export class AccountSeedService {
