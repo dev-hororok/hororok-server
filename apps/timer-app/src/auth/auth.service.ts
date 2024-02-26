@@ -17,6 +17,7 @@ import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
 import { AuthEmailRegisterDto } from './dtos/auth-email-register.dto';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload';
 import { Account } from '../database/domain/account';
+import { JwtPayloadType } from './strategies/types/jwt-payload';
 
 @Injectable()
 export class AuthService {
@@ -90,6 +91,10 @@ export class AuthService {
       expires_in: tokenExpires,
       account,
     };
+  }
+
+  async softDelete(token: JwtPayloadType): Promise<void> {
+    await this.accountsService.softDelete(token.sub);
   }
 
   private async getTokensData(data: {

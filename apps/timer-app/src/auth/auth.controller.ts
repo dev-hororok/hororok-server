@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Post,
   SerializeOptions,
   UseGuards,
@@ -48,5 +49,10 @@ export class AuthController {
     return this.service.refreshToken({
       sub: user.sub,
     });
+  }
+
+  @Delete('me')
+  public async delete(@CurrentUser() user): Promise<void> {
+    return this.service.softDelete(user);
   }
 }

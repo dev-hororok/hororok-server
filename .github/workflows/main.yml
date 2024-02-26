@@ -5,22 +5,36 @@ on:
     branches: ['main']
 
 jobs:
-  test:
+  test-e2e:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v3
+
       - name: Setup node.js 20.9.0
         uses: actions/setup-node@v3
         with:
           node-version: 20.9.0
           cache: 'yarn'
-      - run: yarn install
-      - run: yarn test
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Install Redis And Start
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-server
+          sudo service redis-server start
+
+      - name: Run Tests
+        run: yarn test:e2e
+
+      - name: Stop Redis Server
+        run: redis-cli shutdown
 
   build:
-    needs: test
+    needs: test-e2e
     runs-on: ubuntu-latest
 
     steps:
