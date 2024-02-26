@@ -5,7 +5,7 @@ import { validateConfig } from '../utils/validate-config';
 
 enum Environment {
   Development = 'development',
-  Production = 'production',
+  Production = 'prod',
   Test = 'test',
 }
 

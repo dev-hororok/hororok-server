@@ -1,33 +1,30 @@
 {
-  "name": "hororok-server",
+  "name": "timer-app",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "yarn build:timer-app && yarn build:timer-app ",
-    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/timer-app/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "start:timer-app:local": "cross-env NODE_ENV=development nest start timer-app --debug --watch",
+    "start:timer-app:test": "cross-env NODE_ENV=test nest start timer-app",
+    "start:timer-app:prod": "cross-env NODE_ENV=prod node dist/apps/timer-app/main",
+    "build:timer-app": "cross-env NODE_ENV=prod nest build timer-app",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e:local": "env-cmd jest --config ./apps/timer-app/test/jest-e2e.json",
-    "test:e2e": "yarn start:timer-app:local & sleep 10; yarn test:e2e:local; kill $!",
-    "start:timer-app:local": "nest start timer-app --debug --watch",
-    "build:timer-app": "nest build timer-app",
-    "start:redis": "docker-compose -f docker-compose.redis.yml up -d",
-    "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "test:e2e:local": "env-cmd -f .env.test jest --config ./apps/timer-app/test/jest-e2e.json",
+    "test:e2e:test": "env-cmd -f .env.test yarn start:timer-app:local & sleep 10; yarn test:e2e:local; kill $!",
+    "typeorm": "env-cmd -f .env.development ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/member-streak-cascade",
     "migration:create": "yarn typeorm -- migration:create",
     "migration:run": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:run",
     "migration:revert": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:revert",
-    "seed:run": "ts-node -r tsconfig-paths/register ./apps/timer-app/src/database/seeds/run-seed.ts"
+    "seed:run": "ts-node -r tsconfig-paths/register ./apps/timer-app/src/database/seeds/run-seed.ts",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "start:redis": "docker-compose -f docker-compose.redis.yml up -d"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -104,9 +101,7 @@
     },
     "moduleNameMapper": {
       "^@src/(.*)$": "<rootDir>/$1",
-      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
-      "^@app/database(|/.*)$": "<rootDir>/libs/database/src/$1",
-      "^@app/auth(|/.*)$": "<rootDir>/libs/auth/src/$1"
+      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

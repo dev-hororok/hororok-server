@@ -18,6 +18,11 @@ jobs:
           node-version: 20.9.0
           cache: 'yarn'
 
+      - name: Create .env.test file
+        run: |
+          sudo rm -rf .env.test
+          echo ${{ secrets.ENV_TEST }} >> .env.test
+
       - name: Install Dependencies
         run: yarn install
 
@@ -28,7 +33,7 @@ jobs:
           sudo service redis-server start
 
       - name: Run Tests
-        run: yarn test:e2e
+        run: yarn test:e2e:test
 
       - name: Stop Redis Server
         run: redis-cli shutdown
@@ -39,23 +44,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Create .env file
+      - name: Create .env.prod file
         run: |
-          echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
-          echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
-          echo API_PREFIX=${{ secrets.API_PREFIX }} >> .env
-          echo AUTH_JWT_SECRET=${{ secrets.AUTH_JWT_SECRET }} >> .env
-          echo AUTH_JWT_TOKEN_EXPIRES_IN=${{ secrets.AUTH_JWT_TOKEN_EXPIRES_IN }} >> .env
-          echo AUTH_REFRESH_SECRET=${{ secrets.AUTH_REFRESH_SECRET }} >> .env
-          echo AUTH_REFRESH_TOKEN_EXPIRES_IN=${{ secrets.AUTH_REFRESH_TOKEN_EXPIRES_IN }} >> .env
-          echo DB_TYPE=${{ secrets.DB_TYPE }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
-          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+          sudo rm -rf .env.prod
+          echo ${{ secrets.ENV_PROD }} >> .env.prod
 
       - name: Login Dockerhub
         env:
@@ -76,24 +68,10 @@ jobs:
       # ########### docker-compose.yml, nginx.conf 수정시엔 ec2 직접가서 수정)
       # - uses: actions/checkout@v3
       #############################
-      - name: Create .env file
+      - name: Create .env.prod file
         run: |
-          sudo rm -rf .env
-          echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
-          echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
-          echo API_PREFIX=${{ secrets.API_PREFIX }} >> .env
-          echo AUTH_JWT_SECRET=${{ secrets.AUTH_JWT_SECRET }} >> .env
-          echo AUTH_JWT_TOKEN_EXPIRES_IN=${{ secrets.AUTH_JWT_TOKEN_EXPIRES_IN }} >> .env
-          echo AUTH_REFRESH_SECRET=${{ secrets.AUTH_REFRESH_SECRET }} >> .env
-          echo AUTH_REFRESH_TOKEN_EXPIRES_IN=${{ secrets.AUTH_REFRESH_TOKEN_EXPIRES_IN }} >> .env
-          echo DB_TYPE=${{ secrets.DB_TYPE }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
-          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+          sudo rm -rf .env.prod
+          echo ${{ secrets.ENV_PROD }} >> .env.prod
 
       - name: Login to DockerHub
         env:
