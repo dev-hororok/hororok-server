@@ -6,10 +6,14 @@ import { TypeOrmConfigService } from '../typeorm-config.service';
 import databaseConfig from '../config/database-config';
 import appConfig from '../../config/app.config';
 import { RoleSeedModule } from './roles/roles.seed.module';
+import { AccountSeedModule } from './accounts/accounts.seed.module';
+import { MemberSeedModule } from './members/members.seed.module';
 
 @Module({
   imports: [
     RoleSeedModule,
+    AccountSeedModule,
+    MemberSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
