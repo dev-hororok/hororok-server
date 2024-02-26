@@ -96,12 +96,9 @@ describe('Auth Module', () => {
         .send({ email: newUserEmail, password: newUserPassword })
         .then(({ body }) => body.data.access_token);
 
-      await request(app)
-        .delete('/timer-api/auth/me')
-        .auth(accessToken, {
-          type: 'bearer',
-        })
-        .then((data) => console.log(data));
+      await request(app).delete('/timer-api/auth/me').auth(accessToken, {
+        type: 'bearer',
+      });
 
       return request(app)
         .post('/timer-api/auth/email/login')
