@@ -29,9 +29,11 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options: DataSourceOptions) => {
-        return new DataSource(options).initialize();
+        const dataSource = new DataSource(options).initialize();
+        return dataSource;
       },
     }),
     AuthModule,

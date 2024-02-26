@@ -1,10 +1,11 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { TimerAppModule } from './timer-app.module';
-import { CustomExceptionFilter, Interceptor } from '@app/config';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './config/config.type';
 import { RedisIoAdapter } from './config/redis-io.adapter';
+import { Interceptor } from './config/interceptor';
+import { CustomExceptionFilter } from './config/filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(TimerAppModule);
