@@ -18,6 +18,7 @@ import { MembersService } from '../members/services/members.service';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload';
 import { Member } from '../database/domain/member';
 import { RoleEnum } from '../roles/roles.enum';
+import { InjectRedis } from '@nestjs-modules/ioredis';
 
 interface MemberInfo {
   member_id: Member['member_id'];
@@ -35,22 +36,16 @@ interface MemberInfo {
 export class StudyGroupGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
-  private redisClient: Redis;
 
   constructor(
     private configService: ConfigService<AllConfigType>,
     private readonly jwtService: JwtService,
     private readonly membersService: MembersService,
-  ) {
-    this.redisClient = new Redis({
-      host: process.env.REDIS_HOST,
-      port: parseInt(process.env.REDIS_PORT || '0', 10),
-    });
-  }
+    @InjectRedis() private readonly redis: Redis,
+  ) {}
 
-  // 앱이 종료될때 연결 끊기
   async onApplicationShutdown() {
-    await this.redisClient.quit();
+    await this.redis.quit();
   }
 
   // 연결이 종료되면 client의 memberId를 조회하여 그룹에서 나가고,
@@ -70,7 +65,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     }
 
     await this.removeMemberFromGroup(memberId, groupId);
-    await this.redisClient.del(`member:${memberId}`);
+    await this.redis.del(`member:${memberId}`);
 
     console.log(`member ${memberId}가 ${groupId}방에서 퇴장`);
   }
@@ -86,21 +81,21 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     if (decoded.role?.role_id !== RoleEnum.admin) {
       throw new ForbiddenException('권한 없음');
     }
-    const groupCounts = await this.redisClient.keys('group:*:count');
+    const groupCounts = await this.redis.keys('group:*:count');
     for (const groupKey of groupCounts) {
-      await this.redisClient.del(groupKey);
+      await this.redis.del(groupKey);
     }
-    const groupMembers = await this.redisClient.keys('group:*:members');
+    const groupMembers = await this.redis.keys('group:*:members');
     for (const groupMemberKey of groupMembers) {
-      await this.redisClient.del(groupMemberKey);
+      await this.redis.del(groupMemberKey);
     }
-    const memberGroups = await this.redisClient.keys('member:*:group');
+    const memberGroups = await this.redis.keys('member:*:group');
     for (const memberGroupKey of memberGroups) {
-      await this.redisClient.del(memberGroupKey);
+      await this.redis.del(memberGroupKey);
     }
-    const members = await this.redisClient.keys('member:*');
+    const members = await this.redis.keys('member:*');
     for (const member of members) {
-      await this.redisClient.del(member);
+      await this.redis.del(member);
     }
 
     console.log('모든 studyGroup 데이터 제거완료');
@@ -151,9 +146,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
       });
 
       // 새 멤버에게 현재 그룹의 모든 유저 목록을 발송
-      const members = await this.redisClient.smembers(
-        `group:${groupId}:members`,
-      );
+      const members = await this.redis.smembers(`group:${groupId}:members`);
       const membersInfo = await this.getMembersInfo(members);
 
       client.emit('groupInfo', {
@@ -167,9 +160,9 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
 
   // 8명 미만인 그룹 찾기
   private async findAvailableGroup(): Promise<string | null> {
-    const groupCounts = await this.redisClient.keys('group:*:count');
+    const groupCounts = await this.redis.keys('group:*:count');
     for (const countKey of groupCounts) {
-      const membersCount = (await this.redisClient.get(countKey)) || '0';
+      const membersCount = (await this.redis.get(countKey)) || '0';
       if (parseInt(membersCount, 10) < 8) {
         return countKey.split(':')[1];
       }
@@ -192,9 +185,9 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     groupId: string,
   ): Promise<void> {
     // 멤버가 참여한 그룹 ID를 저장
-    await this.redisClient.set(`member:${memberId}:group`, groupId);
-    await this.redisClient.sadd(`group:${groupId}:members`, memberId);
-    await this.redisClient.incr(`group:${groupId}:count`); // incr은 해당 키가 없으면 자동으로 0을 할당 후 1을 증가시킴
+    await this.redis.set(`member:${memberId}:group`, groupId);
+    await this.redis.sadd(`group:${groupId}:members`, memberId);
+    await this.redis.incr(`group:${groupId}:count`); // incr은 해당 키가 없으면 자동으로 0을 할당 후 1을 증가시킴
   }
 
   // 그룹에서 멤버 제거 및 memberLeft broadcast
@@ -202,11 +195,11 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     memberId: string,
     groupId: string,
   ): Promise<void> {
-    await this.redisClient.srem(`group:${groupId}:members`, memberId);
-    const membersCount = await this.redisClient.decr(`group:${groupId}:count`);
+    await this.redis.srem(`group:${groupId}:members`, memberId);
+    const membersCount = await this.redis.decr(`group:${groupId}:count`);
     if (membersCount <= 0) {
-      await this.redisClient.del(`group:${groupId}:members`);
-      await this.redisClient.del(`group:${groupId}:count`);
+      await this.redis.del(`group:${groupId}:members`);
+      await this.redis.del(`group:${groupId}:count`);
     } else {
       this.server.to(groupId).emit('memberLeft', { memberId });
     }
@@ -217,19 +210,19 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     memberId: string,
     memberInfo: Omit<MemberInfo, 'member_id'>,
   ): Promise<void> {
-    await this.redisClient.hset(`member:${memberId}`, memberInfo);
+    await this.redis.hset(`member:${memberId}`, memberInfo);
   }
 
   // 멤버가 참여중인 그룹 조회
   private async findGroupByMemberId(memberId: string): Promise<string | null> {
-    return await this.redisClient.get(`member:${memberId}:group`);
+    return await this.redis.get(`member:${memberId}:group`);
   }
 
   // 멤버리스트 정보 조회 (string[] => MemberInfo[])
   private async getMembersInfo(members: string[]): Promise<MemberInfo[]> {
     return Promise.all(
       members.map(async (memberId) => {
-        const info: Record<string, string> = await this.redisClient.hgetall(
+        const info: Record<string, string> = await this.redis.hgetall(
           `member:${memberId}`,
         );
         return {

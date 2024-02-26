@@ -26,6 +26,7 @@
     "start:redis": "docker-compose -f docker-compose.redis.yml up -d"
   },
   "dependencies": {
+    "@nestjs-modules/ioredis": "^2.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",

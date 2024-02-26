@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { MembersModule } from './members/members.module';
 import { StreaksModule } from './streaks/streaks.module';
@@ -20,12 +20,15 @@ import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { RolesGuard } from './roles/roles.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { AllConfigType } from './config/config.type';
+import redisConfig from './config/redis-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, authConfig],
+      load: [appConfig, databaseConfig, authConfig, redisConfig],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
     TypeOrmModule.forRootAsync({
@@ -34,6 +37,15 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
         const dataSource = new DataSource(options).initialize();
         return dataSource;
       },
+    }),
+    RedisModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService<AllConfigType>) => ({
+        type: 'single',
+        url: `redis://${configService.get('redis').host}:${
+          configService.get('redis').port
+        }`,
+      }),
     }),
     AuthModule,
     AccountsModule,

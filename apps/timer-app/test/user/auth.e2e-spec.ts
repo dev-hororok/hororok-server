@@ -21,7 +21,6 @@ describe('Auth Module', () => {
     }).compile();
 
     app = module.createNestApplication();
-
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
