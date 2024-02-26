@@ -21,8 +21,7 @@ jobs:
       - name: Create .env.test file
         run: |
           sudo rm -rf .env.test
-          echo ${{ secrets.ENV_TEST }} >> .env.test
-          cat .env.test
+          echo "${{ secrets.ENV_TEST }}" >> .env.test
 
       - name: Install Dependencies
         run: yarn install
@@ -48,7 +47,7 @@ jobs:
       - name: Create .env.prod file
         run: |
           sudo rm -rf .env.prod
-          echo ${{ secrets.ENV_PROD }} >> .env.prod
+          echo "${{ secrets.ENV_PROD }}" >> .env.prod
 
       - name: Login Dockerhub
         env:
@@ -72,7 +71,7 @@ jobs:
       - name: Create .env.prod file
         run: |
           sudo rm -rf .env.prod
-          echo ${{ secrets.ENV_PROD }} >> .env.prod
+          echo "${{ secrets.ENV_PROD }}" >> .env.prod
 
       - name: Login to DockerHub
         env:
