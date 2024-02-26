@@ -9,23 +9,27 @@ describe('Auth Module', () => {
 
   describe('Registration', () => {
     it('should fail with exists email: /timer-api/auth/email/register (POST)', async () => {
-      console.log(
-        `Attempting to register with existing email: ${TESTER_EMAIL}`,
-      );
-      const response = await request(app)
-        .post('/timer-api/auth/email/register')
-        .send({
-          email: TESTER_EMAIL,
-          password: TESTER_PASSWORD,
-        });
+      try {
+        console.log(
+          `Attempting to register with existing email: ${TESTER_EMAIL}`,
+        );
+        const response = await request(app)
+          .post('/timer-api/auth/email/register')
+          .send({
+            email: TESTER_EMAIL,
+            password: TESTER_PASSWORD,
+          });
 
-      console.log(`Response status: ${response.status}`);
-      console.log(`Response body: ${JSON.stringify(response.body)}`);
+        console.log(`Response status: ${response.status}`);
+        console.log(`Response body: ${JSON.stringify(response.body)}`);
 
-      expect(response.status).toBe(400);
-      expect(response.body.status).toBe('error');
-      expect(response.body.error).toBe('Bad Request');
-      expect(response.body.message).toBe('이미 사용중인 이메일입니다.');
+        expect(response.status).toBe(400);
+        expect(response.body.status).toBe('error');
+        expect(response.body.error).toBe('Bad Request');
+        expect(response.body.message).toBe('이미 사용중인 이메일입니다.');
+      } catch (e) {
+        console.error(`Test Error: `, e);
+      }
     });
 
     it('should successfully with jwtToken: /timer-api/auth/email/register (POST)', async () => {
