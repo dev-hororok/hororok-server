@@ -6,9 +6,6 @@ describe('Auth Module', () => {
   const newUserEmail = `testUser.${Date.now()}@test.com`;
   const newUserPassword = `qwer1234`;
 
-  console.log(app);
-  console.log(process.env.REDIS_PORT);
-
   describe('Registration', () => {
     it('should fail with exists email: /timer-api/auth/email/register (POST)', () => {
       return request(app)
@@ -19,6 +16,7 @@ describe('Auth Module', () => {
         })
         .expect(400)
         .expect(({ body }) => {
+          console.log(body);
           expect(body.status).toBe('error');
           expect(body.error).toBe('Bad Request');
           expect(body.message).toBe('이미 사용중인 이메일입니다.');
