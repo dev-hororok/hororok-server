@@ -48,6 +48,11 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     });
   }
 
+  // 앱이 종료될때 연결 끊기
+  async onApplicationShutdown() {
+    await this.redisClient.quit();
+  }
+
   // 연결이 종료되면 client의 memberId를 조회하여 그룹에서 나가고,
   // 그룹에 남은 인원이 있으면 그룹에 memberLeft 이벤트를 broadcast
   async handleDisconnect(client: Socket) {

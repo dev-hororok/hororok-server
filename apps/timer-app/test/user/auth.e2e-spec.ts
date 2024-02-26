@@ -9,8 +9,8 @@ import { Reflector } from '@nestjs/core';
 
 import { TESTER_EMAIL, TESTER_PASSWORD } from '../utils/constants';
 import { Interceptor } from 'apps/timer-app/src/config/interceptor';
-import { TimerAppModule } from 'apps/timer-app/src/timer-app.module';
 import { CustomExceptionFilter } from 'apps/timer-app/src/config/filter';
+import { TimerAppModule } from 'apps/timer-app/src/timer-app.module';
 
 describe('Auth Module', () => {
   let app: INestApplication<any>;
