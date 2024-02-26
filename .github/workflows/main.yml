@@ -22,6 +22,7 @@ jobs:
         run: |
           sudo rm -rf .env.test
           echo ${{ secrets.ENV_TEST }} >> .env.test
+          cat .env.test
 
       - name: Install Dependencies
         run: yarn install
