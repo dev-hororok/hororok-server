@@ -18,7 +18,7 @@ export class SuccessResponse<T> {
 }
 
 @Injectable()
-export class Interceptor implements NestInterceptor {
+export class CustomSuccessInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler,

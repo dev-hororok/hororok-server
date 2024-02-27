@@ -23,6 +23,7 @@ import { RoleEnum } from '../../roles/roles.enum';
 import { Roles } from '../../roles/roles.decorator';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { ItemInventoryQueryDto } from '../../item-inventory/dto/item-inventory-query.dto';
+import { STATUS_MESSAGES } from '../../utils/constants';
 
 @Controller('members')
 export class MembersController {
@@ -64,7 +65,7 @@ export class MembersController {
       updateMemberInputDto.image_url === undefined &&
       updateMemberInputDto.status_message === undefined
     ) {
-      throw new BadRequestException('변경할 내용이 없습니다.');
+      throw new BadRequestException(STATUS_MESSAGES.VALIDATION.NO_CONTENT);
     }
     await this.membersService.update(memberId, updateMemberInputDto);
     return null;

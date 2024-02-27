@@ -4,8 +4,8 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './config/config.type';
 import { RedisIoAdapter } from './config/redis-io.adapter';
-import { Interceptor } from './config/interceptor';
-import { CustomExceptionFilter } from './config/filter';
+import { CustomSuccessInterceptor } from './config/custom-success-interceptor';
+import { CustomExceptionFilter } from './config/custom-exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(TimerAppModule);
@@ -28,7 +28,7 @@ async function bootstrap() {
     configService.getOrThrow('app.apiPrefix', { infer: true }),
   );
 
-  app.useGlobalInterceptors(new Interceptor());
+  app.useGlobalInterceptors(new CustomSuccessInterceptor());
   app.useGlobalFilters(new CustomExceptionFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableCors({

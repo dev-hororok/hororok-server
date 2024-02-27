@@ -8,6 +8,7 @@ import { EntityCondition } from 'apps/timer-app/src/utils/types/entity-condition
 import { MemberMapper } from 'apps/timer-app/src/database/mappers/member.mapper';
 import { NullableType } from 'apps/timer-app/src/utils/types/nullable.type';
 import { Account } from 'apps/timer-app/src/database/domain/account';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmMemberRepository implements MemberRepository {
@@ -112,7 +113,7 @@ export class TypeOrmMemberRepository implements MemberRepository {
     });
 
     if (!entity) {
-      throw new NotFoundException('멤버를 찾을 수 없습니다.');
+      throw new NotFoundException(STATUS_MESSAGES.MEMBER.MEMBER_NOT_FOUND);
     }
 
     const updatedEntity = await repository.save(
