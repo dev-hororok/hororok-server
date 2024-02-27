@@ -79,7 +79,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
       secret: this.configService.get('auth.secret', { infer: true }),
     });
     if (decoded.role?.role_id !== RoleEnum.admin) {
-      throw new ForbiddenException('권한 없음');
+      throw new ForbiddenException();
     }
     const groupCounts = await this.redis.keys('group:*:count');
     for (const groupKey of groupCounts) {

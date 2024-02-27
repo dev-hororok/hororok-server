@@ -6,6 +6,7 @@ import { Member } from '../../database/domain/member';
 import { EntityCondition } from '../../utils/types/entity-condition.type';
 import { MemberRepository } from '../repositories/member.repository.interface';
 import { NullableType } from '../../utils/types/nullable.type';
+import { STATUS_MESSAGES } from '../../utils/constants';
 
 @Injectable()
 export class MembersService {
@@ -36,7 +37,7 @@ export class MembersService {
   async findOneByIdOrFail(memberId: string, queryRunner?: QueryRunner) {
     const member = await this.findOneById(memberId, queryRunner);
     if (!member) {
-      throw new NotFoundException('유저가 존재하지 않습니다.');
+      throw new NotFoundException(STATUS_MESSAGES.MEMBER.MEMBER_NOT_FOUND);
     }
     return member;
   }
@@ -51,7 +52,7 @@ export class MembersService {
   async findOneByAccountIdOrFail(accountId: string, queryRunner?: QueryRunner) {
     const member = await this.findOneByAccountId(accountId, queryRunner);
     if (!member) {
-      throw new NotFoundException('유저가 존재하지 않습니다.');
+      throw new NotFoundException(STATUS_MESSAGES.MEMBER.MEMBER_NOT_FOUND);
     }
     return member;
   }

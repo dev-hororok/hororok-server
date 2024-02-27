@@ -8,6 +8,7 @@ import { StudyRecord } from '../database/domain/study-record';
 import { NullableType } from '../utils/types/nullable.type';
 import { Member } from '../database/domain/member';
 import { StudyCategory } from '../database/domain/study-category';
+import { STATUS_MESSAGES } from '../utils/constants';
 
 @Injectable()
 export class StudyRecordsService {
@@ -25,7 +26,9 @@ export class StudyRecordsService {
     queryRunner?: QueryRunner,
   ): Promise<StudyRecordEntity> {
     if (activeRecordId === null) {
-      throw new NotFoundException('진행중인 타이머가 없습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('진행중인 타이머'),
+      );
     }
     const record = await this.findOne(
       { study_record_id: activeRecordId },
@@ -33,7 +36,9 @@ export class StudyRecordsService {
     );
 
     if (!record) {
-      throw new NotFoundException('진행중인 타이머가 없습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('진행중인 타이머'),
+      );
     }
 
     return record;

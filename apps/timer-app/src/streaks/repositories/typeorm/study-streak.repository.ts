@@ -7,6 +7,7 @@ import { StudyStreak } from 'apps/timer-app/src/database/domain/study-streak';
 import { StudyStreakMapper } from 'apps/timer-app/src/database/mappers/study-streak.mapper';
 import { NullableType } from 'apps/timer-app/src/utils/types/nullable.type';
 import { Member } from 'apps/timer-app/src/database/domain/member';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmStudyStreakRepository implements StudyStreakRepository {
@@ -68,7 +69,7 @@ export class TypeOrmStudyStreakRepository implements StudyStreakRepository {
     });
 
     if (!entity) {
-      throw new NotFoundException('스트릭을 찾을 수 없습니다.');
+      throw new NotFoundException(STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND);
     }
 
     const updatedEntity = await repository.save(

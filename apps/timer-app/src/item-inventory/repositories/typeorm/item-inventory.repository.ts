@@ -8,6 +8,7 @@ import { ItemInventoryRepository } from '../item-inventory.repository.interface'
 import { ItemInventoryEntity } from 'apps/timer-app/src/database/entities/item-inventory.entity';
 import { ItemInventoryMapper } from 'apps/timer-app/src/database/mappers/item-inventory.mapper';
 import { ItemInventory } from 'apps/timer-app/src/database/domain/item-inventory';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
@@ -70,7 +71,9 @@ export class TypeOrmItemInventoryRepository implements ItemInventoryRepository {
     });
 
     if (!entity) {
-      throw new NotFoundException('아이템 인벤토리를 찾을 수 없습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('아이템 인벤토리'),
+      );
     }
 
     const updatedEntity = await repository.save(

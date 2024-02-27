@@ -7,6 +7,7 @@ import { EntityCondition } from '../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { AccountsRepository } from '../accounts.repository.interface';
 import { AccountMapper } from '../../../database/mappers/account.mapper';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmAccountsRepository implements AccountsRepository {
@@ -42,7 +43,7 @@ export class TypeOrmAccountsRepository implements AccountsRepository {
     });
 
     if (!entity) {
-      throw new NotFoundException('계정을 찾을 수 없습니다.');
+      throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.ACCOUNT_NOT_FOUND);
     }
 
     const updatedEntity = await this.accountsRepository.save(

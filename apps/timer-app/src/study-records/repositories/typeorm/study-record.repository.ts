@@ -8,6 +8,7 @@ import { StudyRecord } from 'apps/timer-app/src/database/domain/study-record';
 import { EntityCondition } from 'apps/timer-app/src/utils/types/entity-condition.type';
 import { StudyRecordMapper } from 'apps/timer-app/src/database/mappers/study-record.mapper';
 import { CreateStudyRecordInputDto } from '../../dtos/create-study-record.dto';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmStudyRecordRepository implements StudyRecordRepository {
@@ -77,7 +78,9 @@ export class TypeOrmStudyRecordRepository implements StudyRecordRepository {
     });
 
     if (!entity) {
-      throw new NotFoundException('기록을 찾을 수 없습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('기록'),
+      );
     }
 
     const updatedEntity = await repository.save(

@@ -7,6 +7,7 @@ import { StudyCategory } from 'apps/timer-app/src/database/domain/study-category
 import { StudyCategoryRepository } from '../study-category.repository.interface';
 import { StudyCategoryEntity } from 'apps/timer-app/src/database/entities/study-category.entity';
 import { StudyCategoryMapper } from 'apps/timer-app/src/database/mappers/study-category.mapper';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmStudyCategoryRepository implements StudyCategoryRepository {
@@ -67,7 +68,9 @@ export class TypeOrmStudyCategoryRepository implements StudyCategoryRepository {
     });
 
     if (!entity) {
-      throw new NotFoundException('스트릭을 찾을 수 없습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('카테고리'),
+      );
     }
 
     const updatedEntity = await repository.save(

@@ -8,6 +8,7 @@ import { CharacterInventoryEntity } from 'apps/timer-app/src/database/entities/c
 import { CharacterInventoryRepository } from '../character-inventory.repository.interface';
 import { CharacterInventoryMapper } from 'apps/timer-app/src/database/mappers/character-inventory.mapper';
 import { Member } from 'apps/timer-app/src/database/domain/member';
+import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 @Injectable()
 export class TypeOrmCharacterInventoryRepository
@@ -67,7 +68,9 @@ export class TypeOrmCharacterInventoryRepository
     });
 
     if (!entity) {
-      throw new NotFoundException('캐릭터 인벤토리를 찾을 수 없습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('캐릭터 인벤토리'),
+      );
     }
 
     const updatedEntity = await this.characterInventoryRepository.save(

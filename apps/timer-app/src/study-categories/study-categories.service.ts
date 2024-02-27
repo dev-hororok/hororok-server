@@ -14,6 +14,7 @@ import { StudyCategoryEntity } from '../database/entities/study-category.entity'
 import { StudyCategory } from '../database/domain/study-category';
 import { StudyCategoryRepository } from './repositories/study-category.repository.interface';
 import { Member } from '../database/domain/member';
+import { STATUS_MESSAGES } from '../utils/constants';
 
 @Injectable()
 export class StudyCategoriesService {
@@ -54,7 +55,9 @@ export class StudyCategoriesService {
           queryRunner,
         );
       if (existingCategory && !existingCategory.deleted_at) {
-        throw new BadRequestException('이미 동일한 카테고리가 존재합니다.');
+        throw new BadRequestException(
+          STATUS_MESSAGES.RESOURCE.RESOURCE_ALREADY_EXISTS('카테고리'),
+        );
       }
 
       // 새 카테고리 생성
@@ -78,7 +81,7 @@ export class StudyCategoriesService {
         queryRunner,
       );
       if (existingCategory.subject === subject) {
-        throw new BadRequestException('변경된 내용이 없습니다.');
+        throw new BadRequestException(STATUS_MESSAGES.VALIDATION.NO_CONTENT);
       }
 
       const targetCategory =
@@ -139,7 +142,9 @@ export class StudyCategoriesService {
         queryRunner,
       );
     if (!category) {
-      throw new NotFoundException('해당 카테고리가 존재하지 않습니다.');
+      throw new NotFoundException(
+        STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('카테고리'),
+      );
     }
     return category;
   }
