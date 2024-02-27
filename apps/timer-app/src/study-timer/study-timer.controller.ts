@@ -14,7 +14,7 @@ export class StudyTimerController {
     @CurrentUser() user: JwtPayloadType,
     @Body() body: StartStudyTimerInputDto,
   ) {
-    this.studyTimerService.start(user.sub, body);
+    await this.studyTimerService.start(user.sub, body);
     return null;
   }
 
