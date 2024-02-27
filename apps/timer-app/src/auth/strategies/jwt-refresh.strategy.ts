@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { OrNeverType } from '../../utils/types/or-never.type';
 import { AllConfigType } from '../../config/config.type';
 import { JwtRefreshPayloadType } from './types/jwt-refresh-payload';
+import { STATUS_MESSAGES } from '../../utils/constants';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -22,7 +23,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
     payload: JwtRefreshPayloadType,
   ): OrNeverType<JwtRefreshPayloadType> {
     if (!payload.sub) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(STATUS_MESSAGES.AUTH.INVALID_TOKEN); // 토큰의 페이로드가 잘못됨
     }
 
     return payload;

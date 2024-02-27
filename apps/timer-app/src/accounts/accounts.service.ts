@@ -7,6 +7,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { Account } from '../database/domain/account';
 import { AccountsRepository } from './repositories/accounts.repository.interface';
 import { EntityCondition } from '../utils/types/entity-condition.type';
+import { STATUS_MESSAGES } from '../utils/constants';
 
 @Injectable()
 export class AccountsService {
@@ -26,7 +27,9 @@ export class AccountsService {
         email: clonedPayload.email,
       });
       if (accountObject) {
-        throw new BadRequestException('이미 사용중인 이메일입니다.');
+        throw new BadRequestException(
+          STATUS_MESSAGES.ACCOUNT.EMAIL_ALREADY_EXISTS,
+        );
       }
     }
 
@@ -35,7 +38,9 @@ export class AccountsService {
         clonedPayload.role.role_id,
       );
       if (!roleObject) {
-        throw new BadRequestException('존재하지 않은 role입니다.');
+        throw new BadRequestException(
+          STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('role'),
+        );
       }
     }
 
@@ -63,7 +68,9 @@ export class AccountsService {
       });
 
       if (userObject?.account_id !== id) {
-        throw new BadRequestException('이미 존재하는 이메일입니다.');
+        throw new BadRequestException(
+          STATUS_MESSAGES.ACCOUNT.EMAIL_ALREADY_EXISTS,
+        );
       }
     }
 
@@ -72,7 +79,9 @@ export class AccountsService {
         clonedPayload.role.role_id,
       );
       if (!roleObject) {
-        throw new BadRequestException('존재하지 않은 role입니다.');
+        throw new BadRequestException(
+          STATUS_MESSAGES.RESOURCE.RESOURCE_NOT_FOUND('role'),
+        );
       }
     }
     const result = await this.accountsRepository.update(id, clonedPayload);

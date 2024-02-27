@@ -18,6 +18,7 @@ import { AuthEmailRegisterDto } from './dtos/auth-email-register.dto';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload';
 import { Account } from '../database/domain/account';
 import { JwtPayloadType } from './strategies/types/jwt-payload';
+import { STATUS_MESSAGES } from '../utils/constants';
 
 @Injectable()
 export class AuthService {
@@ -33,17 +34,15 @@ export class AuthService {
     });
 
     if (!account) {
-      throw new NotFoundException('계정을 찾을 수 없습니다.');
+      throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.ACCOUNT_NOT_FOUND);
     }
 
     if (account.provider !== AuthProvidersEnum.email) {
-      throw new BadRequestException(
-        `간편 로그인 계정이 존재합니다. - ${account.provider}`,
-      );
+      throw new BadRequestException(STATUS_MESSAGES.ACCOUNT.PROVIDER_MISMATCH);
     }
 
     if (!account.password) {
-      throw new BadRequestException('비밀번호가 일치하지 않습니다.');
+      throw new UnauthorizedException(STATUS_MESSAGES.ACCOUNT.NO_PASSWORD);
     }
 
     const isValidPassword = await bcrypt.compare(
@@ -52,7 +51,9 @@ export class AuthService {
     );
 
     if (!isValidPassword) {
-      throw new BadRequestException('비밀번호가 일치하지 않습니다.');
+      throw new UnauthorizedException(
+        STATUS_MESSAGES.ACCOUNT.PASSWORD_MISMATCH,
+      );
     }
 
     const { accessToken, refreshToken, tokenExpires } =
@@ -150,7 +151,7 @@ export class AuthService {
     });
 
     if (!account) {
-      throw new UnauthorizedException();
+      throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.ACCOUNT_NOT_FOUND);
     }
     const { accessToken, refreshToken, tokenExpires } =
       await this.getTokensData({
