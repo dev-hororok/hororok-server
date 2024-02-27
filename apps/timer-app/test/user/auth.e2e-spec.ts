@@ -129,6 +129,24 @@ describe('Auth Module', () => {
           expect(body.data.account.password).not.toBeDefined();
         });
     });
+
+    it('새 계정에 로그인 후 처음 member를 조회하면 member가 생성됨', async () => {
+      const { accessToken } = await loginUser(
+        app,
+        newUserEmail,
+        newUserPassword,
+      );
+      await request(app.getHttpServer())
+        .get('/members/me')
+        .auth(accessToken, {
+          type: 'bearer',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.status).toBe('success');
+          expect(body.data.member).toBeDefined();
+        });
+    });
   });
 
   describe('POST /auth/refresh - jwt토큰 리프레시', () => {
