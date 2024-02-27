@@ -45,12 +45,14 @@
 
 ### ⚙️ 배포 환경
 
-- 운영 DB - `AWS RDS(이창우)`
-- 개발 및 테스트 DB - `AWS RDS(이지선)`
-- WebSocket 어댑터 및 간단한 DB - `AWS Elasticache Redis(이창우)`
+- 공유
 
-- Nest Application - `AWS EC2(이창우)`
+  - 운영 DB - `AWS RDS(이창우)`
+  - 개발 및 테스트 DB - `AWS RDS(이지선)`
 
+- Nest 서버 - `AWS EC2(이창우)`
+
+  - WebSocket 어댑터 및 DB - `AWS Elasticache Redis(이창우)`
   - `git-actions`
     - e2e-test
     - build
@@ -60,7 +62,7 @@
     - `nginx`
     - `certbot`
 
-- Spring Application - `AWS EC2(이지선)`
+- Spring 서버 - `AWS EC2(이지선)`
 
   - `git-actions`
     - build
