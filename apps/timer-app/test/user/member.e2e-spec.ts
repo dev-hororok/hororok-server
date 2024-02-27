@@ -1,31 +1,23 @@
 import request from 'supertest';
-import { INestApplication } from '@nestjs/common';
 
-import { TESTER_EMAIL, TESTER_PASSWORD } from '../utils/constants';
-import { closeTestApp, initializeTestApp } from '../utils/test-utils';
+import { API_URL, TESTER_EMAIL, TESTER_PASSWORD } from '../utils/constants';
 import { loginUser } from '../utils/account-utils';
 import { Member } from 'apps/timer-app/src/database/domain/member';
 import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
-describe('Auth Module', () => {
-  let app: INestApplication<any>;
+describe('Member Module', () => {
   let accessToken: string;
   let member: Member;
 
   beforeAll(async () => {
-    app = await initializeTestApp();
-    const userAccessToken = await loginUser(app, TESTER_EMAIL, TESTER_PASSWORD);
+    const userAccessToken = await loginUser(TESTER_EMAIL, TESTER_PASSWORD);
     accessToken = userAccessToken.accessToken;
-  });
-
-  afterAll(async () => {
-    await closeTestApp();
   });
 
   describe('GET /members/me - 현재 유저 정보 조회', () => {
     it('토큰이 유효하지 않은경우', async () => {
-      await request(app.getHttpServer())
-        .get('/members/me')
+      await request(API_URL)
+        .get('/timer-api/members/me')
         .auth('expiredToken', {
           type: 'bearer',
         })
@@ -38,8 +30,8 @@ describe('Auth Module', () => {
     });
 
     it('성공', async () => {
-      await request(app.getHttpServer())
-        .get('/members/me')
+      await request(API_URL)
+        .get('/timer-api/members/me')
         .auth(accessToken, {
           type: 'bearer',
         })
@@ -65,8 +57,8 @@ describe('Auth Module', () => {
     };
 
     it('토큰이 유효하지 않은경우', async () => {
-      await request(app.getHttpServer())
-        .patch(`/members/${member.member_id}`)
+      await request(API_URL)
+        .patch(`/timer-api/members/${member.member_id}`)
         .auth('expiredToken', {
           type: 'bearer',
         })
@@ -79,8 +71,8 @@ describe('Auth Module', () => {
     });
 
     it('내 member_id가 아닌 다른 member_id로 수정을 시도하는 경우', async () => {
-      await request(app.getHttpServer())
-        .patch(`/members/testtet2132`)
+      await request(API_URL)
+        .patch(`/timer-api/members/testtet2132`)
         .auth(accessToken, {
           type: 'bearer',
         })
@@ -94,8 +86,8 @@ describe('Auth Module', () => {
     });
 
     it('body가 비어있는 경우', async () => {
-      await request(app.getHttpServer())
-        .patch(`/members/${member.member_id}`)
+      await request(API_URL)
+        .patch(`/timer-api/members/${member.member_id}`)
         .auth(accessToken, {
           type: 'bearer',
         })
@@ -108,16 +100,16 @@ describe('Auth Module', () => {
     });
 
     it('성공', async () => {
-      await request(app.getHttpServer())
-        .patch(`/members/${member.member_id}`)
+      await request(API_URL)
+        .patch(`/timer-api/members/${member.member_id}`)
         .auth(accessToken, {
           type: 'bearer',
         })
         .send(updateData)
         .expect(200);
 
-      await request(app.getHttpServer())
-        .get('/members/me')
+      await request(API_URL)
+        .get('/timer-api/members/me')
         .auth(accessToken, {
           type: 'bearer',
         })

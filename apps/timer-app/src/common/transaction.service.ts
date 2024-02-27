@@ -14,6 +14,7 @@ export class TransactionService {
 
     try {
       const result = await work(queryRunner);
+
       await queryRunner.commitTransaction();
       return result;
     } catch (error) {

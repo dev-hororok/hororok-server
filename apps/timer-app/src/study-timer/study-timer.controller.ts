@@ -14,8 +14,7 @@ export class StudyTimerController {
     @CurrentUser() user: JwtPayloadType,
     @Body() body: StartStudyTimerInputDto,
   ) {
-    const result = await this.studyTimerService.start(user.sub, body);
-    result;
+    this.studyTimerService.start(user.sub, body);
     return null;
   }
 
@@ -24,8 +23,7 @@ export class StudyTimerController {
     @CurrentUser() user: JwtPayloadType,
     @Body() body: EndStudyTimerInputDto,
   ) {
-    const result = await this.studyTimerService.end(user.sub, body);
-    result;
+    await this.studyTimerService.end(user.sub, body);
     return null;
   }
 }

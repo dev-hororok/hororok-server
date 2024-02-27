@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const AppDataSource = new DataSource({
@@ -10,7 +9,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
 
-  logging: process.env.NODE_ENV !== 'production',
+  logging: process.env.NODE_ENV !== 'prod',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
 } as DataSourceOptions);

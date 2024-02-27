@@ -1,28 +1,17 @@
 import request from 'supertest';
-import { INestApplication } from '@nestjs/common';
 
-import { TESTER_EMAIL, TESTER_PASSWORD } from '../utils/constants';
-import { closeTestApp, initializeTestApp } from '../utils/test-utils';
+import { API_URL, TESTER_EMAIL, TESTER_PASSWORD } from '../utils/constants';
 import { loginUser } from '../utils/account-utils';
 import { STATUS_MESSAGES } from 'apps/timer-app/src/utils/constants';
 
 describe('Auth Module', () => {
-  let app: INestApplication<any>;
-
-  beforeAll(async () => {
-    app = await initializeTestApp();
-  });
-
-  afterAll(async () => {
-    await closeTestApp();
-  });
   const newUserEmail = `testUser.${Date.now()}@test.com`;
   const newUserPassword = `qwer1234`;
 
   describe('POST /auth/email/register - 회원가입', () => {
     it('class-validator 확인', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/register')
+      return request(API_URL)
+        .post('/timer-api/auth/email/register')
         .send({ email: 'wrongEmail', password: '' })
         .expect(400)
         .expect(({ body }) => {
@@ -33,8 +22,8 @@ describe('Auth Module', () => {
     });
 
     it('이미 사용중인 이메일로 가입할 경우', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/register')
+      return request(API_URL)
+        .post('/timer-api/auth/email/register')
         .send({
           email: TESTER_EMAIL,
           password: TESTER_PASSWORD,
@@ -50,8 +39,8 @@ describe('Auth Module', () => {
     });
 
     it('회원가입 성공', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/register')
+      return request(API_URL)
+        .post('/timer-api/auth/email/register')
         .send({
           email: newUserEmail,
           password: newUserPassword,
@@ -75,8 +64,8 @@ describe('Auth Module', () => {
 
   describe('POST /auth/email/login - 로그인', () => {
     it('class-validator 확인', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/login')
+      return request(API_URL)
+        .post('/timer-api/auth/email/login')
         .send({ email: 'wrongEmail', password: '' })
         .expect(400)
         .expect(({ body }) => {
@@ -87,8 +76,8 @@ describe('Auth Module', () => {
     });
 
     it('잘못된 이메일로 로그인요청', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/login')
+      return request(API_URL)
+        .post('/timer-api/auth/email/login')
         .send({ email: 'wrongEmail@test.com', password: newUserPassword })
         .expect(404)
         .expect(({ body }) => {
@@ -99,8 +88,8 @@ describe('Auth Module', () => {
     });
 
     it('패스워드가 틀림', async () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/login')
+      return request(API_URL)
+        .post('/timer-api/auth/email/login')
         .send({ email: newUserEmail, password: 'wrongPassword' })
         .expect(401)
         .expect(({ body }) => {
@@ -111,8 +100,8 @@ describe('Auth Module', () => {
     });
 
     it('로그인 성공', () => {
-      return request(app.getHttpServer())
-        .post('/auth/email/login')
+      return request(API_URL)
+        .post('/timer-api/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
         .expect(200)
         .expect(({ body }) => {
@@ -131,13 +120,9 @@ describe('Auth Module', () => {
     });
 
     it('새 계정에 로그인 후 처음 member를 조회하면 member가 생성됨', async () => {
-      const { accessToken } = await loginUser(
-        app,
-        newUserEmail,
-        newUserPassword,
-      );
-      await request(app.getHttpServer())
-        .get('/members/me')
+      const { accessToken } = await loginUser(newUserEmail, newUserPassword);
+      await request(API_URL)
+        .get('/timer-api/members/me')
         .auth(accessToken, {
           type: 'bearer',
         })
@@ -151,13 +136,13 @@ describe('Auth Module', () => {
 
   describe('POST /auth/refresh - jwt토큰 리프레시', () => {
     it('리프레시 성공', async () => {
-      const newUserRefreshToken = await request(app.getHttpServer())
-        .post('/auth/email/login')
+      const newUserRefreshToken = await request(API_URL)
+        .post('/timer-api/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
         .then(({ body }) => body.data.refresh_token);
 
-      await request(app.getHttpServer())
-        .post('/auth/refresh')
+      await request(API_URL)
+        .post('/timer-api/auth/refresh')
         .auth(newUserRefreshToken, {
           type: 'bearer',
         })
@@ -173,8 +158,8 @@ describe('Auth Module', () => {
 
   describe('DELETE /auth/me - 계정 탈퇴', () => {
     it('잘못된 토큰', async () => {
-      return request(app.getHttpServer())
-        .delete('/auth/me')
+      return request(API_URL)
+        .delete('/timer-api/auth/me')
         .auth('wrongToken', { type: 'bearer' })
         .expect(401)
         .expect(({ body }) => {
@@ -185,21 +170,17 @@ describe('Auth Module', () => {
     });
 
     it('계정 탈퇴 성공', async () => {
-      const { accessToken } = await loginUser(
-        app,
-        newUserEmail,
-        newUserPassword,
-      );
+      const { accessToken } = await loginUser(newUserEmail, newUserPassword);
 
-      await request(app.getHttpServer())
-        .delete('/auth/me')
+      await request(API_URL)
+        .delete('/timer-api/auth/me')
         .auth(accessToken, {
           type: 'bearer',
         })
         .expect(200);
 
-      return request(app.getHttpServer())
-        .post('/auth/email/login')
+      return request(API_URL)
+        .post('/timer-api/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
         .expect(404);
     });
