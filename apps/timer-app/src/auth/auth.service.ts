@@ -35,7 +35,6 @@ export class AuthService {
     const account = await this.accountsService.findOne({
       email: loginDto.email,
     });
-
     if (!account) {
       throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.ACCOUNT_NOT_FOUND);
     }

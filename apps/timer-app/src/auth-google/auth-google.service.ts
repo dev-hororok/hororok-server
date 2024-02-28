@@ -14,7 +14,6 @@ export class AuthGoogleService {
     this.google = new OAuth2Client(
       configService.get('google.clientId', { infer: true }),
       configService.get('google.clientSecret', { infer: true }),
-      'postmessage',
     );
   }
 
@@ -44,7 +43,6 @@ export class AuthGoogleService {
     return {
       id: data.sub,
       email: data.email,
-      name: data.name,
     };
   }
 }
