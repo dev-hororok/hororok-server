@@ -4,6 +4,7 @@
 
   - 로그인 `POST /auth/email/login`
   - 회원가입 `POST /auth/email/register`
+  - 구글 OAuth 로그인 `POST /auth/google/login`
   - 토큰 리프레시 `POST /auth/refresh`
   - 회원 탈퇴 `DELETE /auth/me`
 
