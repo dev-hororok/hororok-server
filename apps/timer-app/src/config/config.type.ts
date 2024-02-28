@@ -1,3 +1,4 @@
+import { GoogleConfig } from '../auth-google/config/auth-config.type';
 import { AuthConfig } from '../auth/config/auth-config.type';
 import { DatabaseConfig } from '../database/config/database-config.type';
 import { AppConfig } from './app-config.type';
@@ -8,4 +9,5 @@ export type AllConfigType = {
   database: DatabaseConfig;
   auth: AuthConfig;
   redis: RedisConfig;
+  google: GoogleConfig;
 };

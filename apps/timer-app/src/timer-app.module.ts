@@ -23,12 +23,14 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { AllConfigType } from './config/config.type';
 import redisConfig from './config/redis-config';
+import googleConfig from './auth-google/config/auth-config';
+import { AuthGoogleModule } from './auth-google/auth-google.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, authConfig, redisConfig],
+      load: [appConfig, databaseConfig, authConfig, redisConfig, googleConfig],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
     TypeOrmModule.forRootAsync({
@@ -48,6 +50,7 @@ import redisConfig from './config/redis-config';
       }),
     }),
     AuthModule,
+    AuthGoogleModule,
     AccountsModule,
     MembersModule,
     StreaksModule,

@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AccountsService } from '../accounts/accounts.service';
@@ -19,6 +20,8 @@ import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload';
 import { Account } from '../database/domain/account';
 import { JwtPayloadType } from './strategies/types/jwt-payload';
 import { STATUS_MESSAGES } from '../utils/constants';
+import { SocialInterface } from './types/social.interface';
+import { NullableType } from '../utils/types/nullable.type';
 
 @Injectable()
 export class AuthService {
@@ -56,6 +59,59 @@ export class AuthService {
       );
     }
 
+    const { accessToken, refreshToken, tokenExpires } =
+      await this.getTokensData({
+        id: account.account_id,
+        email: account.email,
+        role: account.role,
+      });
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      expires_in: tokenExpires,
+      account,
+    };
+  }
+
+  async validateSocialLogin(
+    authProvider: string,
+    socialData: SocialInterface,
+  ): Promise<LoginResponseType> {
+    let account: NullableType<Account> = null;
+    const socialEmail = socialData.email?.toLowerCase();
+
+    // 계정이 존재하나 확인
+    if (socialData.id) {
+      account = await this.accountsService.findOne({
+        social_id: socialData.id,
+        provider: authProvider,
+      });
+    }
+
+    // 없으면 새로 생성
+    if (!account) {
+      const role = {
+        id: RoleEnum.user,
+      };
+
+      account = await this.accountsService.create({
+        email: socialEmail ?? null,
+        social_id: socialData.id,
+        provider: authProvider,
+        role: { role_id: role.id },
+      });
+
+      account = await this.accountsService.findOne({
+        account_id: account.account_id,
+      });
+    }
+
+    if (!account) {
+      throw new UnprocessableEntityException(
+        STATUS_MESSAGES.ERROR.OPERATION_FAILED,
+      );
+    }
     const { accessToken, refreshToken, tokenExpires } =
       await this.getTokensData({
         id: account.account_id,
