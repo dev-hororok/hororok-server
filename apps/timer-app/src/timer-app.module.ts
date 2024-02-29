@@ -25,8 +25,10 @@ import { AllConfigType } from './config/config.type';
 import redisConfig from './config/redis-config';
 import googleConfig from './auth-google/config/auth-google-config';
 import kakaoConfig from './auth-kakao/config/auth-kakao-config';
+import naverConfig from './auth-naver/config/auth-naver-config';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
+import { AuthNaverModule } from './auth-naver/auth-naver.module';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
         redisConfig,
         googleConfig,
         kakaoConfig,
+        naverConfig,
       ],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
@@ -61,6 +64,7 @@ import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
     AuthModule,
     AuthGoogleModule,
     AuthKakaoModule,
+    AuthNaverModule,
     AccountsModule,
     MembersModule,
     StreaksModule,
