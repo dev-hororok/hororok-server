@@ -17,6 +17,7 @@ import { MemberEntity } from './member.entity';
 @Entity({
   name: 'account',
 })
+@Index(['social_id', 'provider'], { unique: true })
 export class AccountEntity extends CommonEntity implements Account {
   @PrimaryGeneratedColumn('uuid')
   account_id: string;
@@ -32,7 +33,6 @@ export class AccountEntity extends CommonEntity implements Account {
   @Expose({ groups: ['me', 'admin'] })
   provider: string;
 
-  @Index()
   @Column({ type: String, nullable: true })
   @Expose({ groups: ['me', 'admin'] })
   social_id?: string | null;
