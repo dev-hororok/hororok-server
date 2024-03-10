@@ -7,6 +7,7 @@ import { AccountsModule } from '../accounts/accounts.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { MembersModule } from '../members/members.module';
+import { TransactionService } from '../common/transaction.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { MembersModule } from '../members/members.module';
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, TransactionService],
   exports: [AuthService],
 })
 export class AuthModule {}
