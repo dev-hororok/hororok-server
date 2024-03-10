@@ -84,7 +84,7 @@ export class MembersService {
     return result;
   }
 
-  async delete(
+  async softDelete(
     id: Member['member_id'],
     queryRunner?: QueryRunner,
   ): Promise<void> {

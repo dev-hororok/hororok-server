@@ -22,13 +22,17 @@ import { JwtPayloadType } from './strategies/types/jwt-payload';
 import { STATUS_MESSAGES } from '../utils/constants';
 import { SocialInterface } from './types/social.interface';
 import { NullableType } from '../utils/types/nullable.type';
+import { MembersService } from '../members/services/members.service';
+import { TransactionService } from '../common/transaction.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private accountsService: AccountsService,
+    private membersService: MembersService,
     private configService: ConfigService<AllConfigType>,
+    private transactionService: TransactionService,
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
@@ -150,7 +154,16 @@ export class AuthService {
   }
 
   async softDelete(token: JwtPayloadType): Promise<void> {
-    await this.accountsService.softDelete(token.sub);
+    await this.transactionService.executeInTransaction(async (queryRunner) => {
+      const member = await this.membersService.findOneByAccountId(
+        token.sub,
+        queryRunner,
+      );
+      if (member) {
+        await this.membersService.softDelete(member.member_id, queryRunner);
+      }
+      await this.accountsService.softDelete(token.sub, queryRunner);
+    });
   }
 
   private async getTokensData(data: {

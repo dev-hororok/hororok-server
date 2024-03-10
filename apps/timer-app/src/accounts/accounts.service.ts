@@ -1,6 +1,8 @@
+import { QueryRunner } from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import * as bcrypt from 'bcrypt';
+
+import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import { RoleEnum } from '../roles/roles.enum';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { NullableType } from '../utils/types/nullable.type';
@@ -88,7 +90,10 @@ export class AccountsService {
     return result;
   }
 
-  async softDelete(id: Account['account_id']): Promise<void> {
-    await this.accountsRepository.softDelete(id);
+  async softDelete(
+    id: Account['account_id'],
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    await this.accountsRepository.softDelete(id, queryRunner);
   }
 }

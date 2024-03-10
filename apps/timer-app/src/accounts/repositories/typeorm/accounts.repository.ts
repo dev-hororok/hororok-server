@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { AccountEntity } from '../../../database/entities/account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, QueryRunner, Repository } from 'typeorm';
 import { Account } from '../../../database/domain/account';
 import { EntityCondition } from '../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../utils/types/nullable.type';
@@ -15,6 +15,12 @@ export class TypeOrmAccountsRepository implements AccountsRepository {
     @InjectRepository(AccountEntity)
     private accountsRepository: Repository<AccountEntity>,
   ) {}
+  /** queryRunner 여부에 따라 account Repository를 생성 */
+  private getRepository(queryRunner?: QueryRunner): Repository<AccountEntity> {
+    return queryRunner
+      ? queryRunner.manager.getRepository(AccountEntity)
+      : this.accountsRepository;
+  }
 
   async create(data: Account): Promise<Account> {
     const persistenceModel = AccountMapper.toPersistence(data);
@@ -58,7 +64,11 @@ export class TypeOrmAccountsRepository implements AccountsRepository {
     return AccountMapper.toDomain(updatedEntity);
   }
 
-  async softDelete(id: Account['account_id']): Promise<void> {
-    await this.accountsRepository.softDelete(id);
+  async softDelete(
+    id: Account['account_id'],
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    const repository = this.getRepository(queryRunner);
+    await repository.softDelete(id);
   }
 }
