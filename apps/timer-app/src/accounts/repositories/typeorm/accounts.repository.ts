@@ -69,6 +69,7 @@ export class TypeOrmAccountsRepository implements AccountsRepository {
     queryRunner?: QueryRunner,
   ): Promise<void> {
     const repository = this.getRepository(queryRunner);
+    await repository.update(id, { email: null, social_id: null });
     await repository.softDelete(id);
   }
 }
