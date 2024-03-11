@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { StudyRecordsService } from '../study-records/study-records.service';
-import { StartStudyTimerInputDto } from './dtos/start-study-timer.dto';
 import { MembersService } from '../members/services/members.service';
 import { ItemInventoryService } from '../item-inventory/item-inventory.service';
 import { EndStudyTimerInputDto } from './dtos/end.study-timer.dto';
@@ -16,7 +15,7 @@ export class StudyTimerService {
     private transactionService: TransactionService,
   ) {}
 
-  async start(accountId: string, body: StartStudyTimerInputDto) {
+  async start(accountId: string) {
     return this.transactionService.executeInTransaction(async (queryRunner) => {
       const member = await this.membersService.findOneByAccountIdOrFail(
         accountId,
@@ -33,7 +32,6 @@ export class StudyTimerService {
       const newRecord = await this.studyRecordsService.create(
         {
           member_id: member.member_id,
-          category_id: body.category_id,
           start_time: new Date(),
         },
         queryRunner,

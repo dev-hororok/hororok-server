@@ -17,7 +17,7 @@ import { MemberSeedModule } from './members/members.seed.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
-      envFilePath: ['.env'],
+      envFilePath: ['.env.development'],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,

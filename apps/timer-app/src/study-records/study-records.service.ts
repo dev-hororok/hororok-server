@@ -7,7 +7,6 @@ import { EntityCondition } from '../utils/types/entity-condition.type';
 import { StudyRecord } from '../database/domain/study-record';
 import { NullableType } from '../utils/types/nullable.type';
 import { Member } from '../database/domain/member';
-import { StudyCategory } from '../database/domain/study-category';
 import { STATUS_MESSAGES } from '../utils/constants';
 
 @Injectable()
@@ -61,19 +60,6 @@ export class StudyRecordsService {
     queryRunner?: QueryRunner,
   ): Promise<void> {
     return this.studyRecordRepository.softDelete(id, queryRunner);
-  }
-
-  /** 주어진 RecordIds에 연결된 카테고리를 targetCategoryId로 모두 업데이트 */
-  async updateCategoryOfRecords(
-    recordIds: StudyRecord['study_record_id'][],
-    targetCategoryId: StudyCategory['study_category_id'],
-    queryRunner?: QueryRunner,
-  ): Promise<void> {
-    return this.studyRecordRepository.updateCategoryOfRecords(
-      recordIds,
-      targetCategoryId,
-      queryRunner,
-    );
   }
 
   /** 레코드의 status를 업데이트 시켜줌 (status : "Completed" | "Incompleted") */

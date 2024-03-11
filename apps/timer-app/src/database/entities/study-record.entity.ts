@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 import { MemberEntity } from './member.entity';
-import { StudyCategoryEntity } from './study-category.entity';
 import { StudyRecord } from '../domain/study-record';
 
 @Entity({
@@ -24,13 +23,6 @@ export class StudyRecordEntity implements StudyRecord {
   })
   @JoinColumn({ name: 'member_id' })
   member?: MemberEntity;
-
-  @ManyToOne(
-    () => StudyCategoryEntity,
-    (studyCategory) => studyCategory.study_records,
-  )
-  @JoinColumn({ name: 'study_category_id' })
-  study_category?: StudyCategoryEntity;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   @IsString()

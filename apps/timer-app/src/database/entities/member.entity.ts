@@ -11,7 +11,6 @@ import { CommonEntity } from './common.entity';
 import { Member } from '../domain/member';
 import { CharacterInventoryEntity } from './character-inventory.entity';
 import { ItemInventoryEntity } from './item-inventory.entity';
-import { StudyCategoryEntity } from './study-category.entity';
 import { StudyRecordEntity } from './study-record.entity';
 import { TransactionRecordEntity } from './transaction-record.entity';
 import { StudyStreakEntity } from './study-streak.entity';
@@ -61,9 +60,6 @@ export class MemberEntity extends CommonEntity implements Member {
 
   @OneToMany(() => ItemInventoryEntity, (eggInventory) => eggInventory.member)
   item_inventories?: ItemInventoryEntity[];
-
-  @OneToMany(() => StudyCategoryEntity, (studyCategory) => studyCategory.member)
-  study_categories?: StudyCategoryEntity[];
 
   @OneToMany(() => StudyRecordEntity, (studyRecord) => studyRecord.member)
   study_records?: StudyRecordEntity[];

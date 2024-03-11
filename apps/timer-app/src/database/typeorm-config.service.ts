@@ -9,7 +9,6 @@ import { ItemInventoryEntity } from './entities/item-inventory.entity';
 import { ItemEntity } from './entities/item.entity';
 import { MemberEntity } from './entities/member.entity';
 import { PaletteEntity } from './entities/palette.entity';
-import { StudyCategoryEntity } from './entities/study-category.entity';
 import { StudyRecordEntity } from './entities/study-record.entity';
 import { StudyStreakEntity } from './entities/study-streak.entity';
 import { TransactionRecordEntity } from './entities/transaction-record.entity';
@@ -44,7 +43,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         MemberEntity,
         PaletteEntity,
         RoleEntity,
-        StudyCategoryEntity,
         StudyRecordEntity,
         StudyStreakEntity,
         TransactionRecordEntity,

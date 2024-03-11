@@ -56,11 +56,6 @@ export class TypeOrmStudyRecordRepository implements StudyRecordRepository {
         member: {
           member_id: data.member_id,
         },
-        study_category: data.category_id
-          ? {
-              study_category_id: data.category_id,
-            }
-          : undefined,
       }),
     );
 
@@ -93,20 +88,5 @@ export class TypeOrmStudyRecordRepository implements StudyRecordRepository {
     );
 
     return StudyRecordMapper.toDomain(updatedEntity);
-  }
-
-  async updateCategoryOfRecords(
-    recordIds: number[],
-    targetCategoryId: number,
-    queryRunner?: QueryRunner,
-  ): Promise<void> {
-    const repository = this.getRepository(queryRunner);
-
-    await repository
-      .createQueryBuilder()
-      .update(StudyRecordEntity)
-      .set({ study_category: { study_category_id: targetCategoryId } })
-      .where('study_record_id IN (:...recordIds)', { recordIds })
-      .execute();
   }
 }

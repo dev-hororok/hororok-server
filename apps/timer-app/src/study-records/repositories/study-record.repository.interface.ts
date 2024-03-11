@@ -3,7 +3,6 @@ import { NullableType } from '../../utils/types/nullable.type';
 import { StudyRecord } from '../../database/domain/study-record';
 import { EntityCondition } from '../../utils/types/entity-condition.type';
 import { CreateStudyRecordInputDto } from '../dtos/create-study-record.dto';
-import { StudyCategory } from '../../database/domain/study-category';
 
 export abstract class StudyRecordRepository {
   abstract findOne(
@@ -26,10 +25,4 @@ export abstract class StudyRecordRepository {
     payload: Partial<StudyRecord>,
     queryRunner?: QueryRunner,
   ): Promise<NullableType<StudyRecord>>;
-
-  abstract updateCategoryOfRecords(
-    recordIds: StudyRecord['study_record_id'][],
-    targetCategoryId: StudyCategory['study_category_id'],
-    queryRunner?: QueryRunner,
-  ): Promise<void>;
 }

@@ -1,10 +1,4 @@
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateStudyRecordInputDto {
   @IsDate()
@@ -14,8 +8,4 @@ export class CreateStudyRecordInputDto {
   @IsString()
   @IsNotEmpty()
   member_id: string;
-
-  @IsNumber()
-  @IsOptional()
-  category_id?: number;
 }

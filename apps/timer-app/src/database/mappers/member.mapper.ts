@@ -3,7 +3,6 @@ import { MemberEntity } from '../entities/member.entity';
 import { AccountMapper } from './account.mapper';
 import { CharacterInventoryMapper } from './character-inventory.mapper';
 import { ItemInventoryMapper } from './item-inventory.mapper';
-import { StudyCategoryMapper } from './study-category.mapper';
 import { StudyRecordMapper } from './study-record.mapper';
 import { StudyStreakMapper } from './study-streak.mapper';
 import { TransactionRecordMapper } from './transactionrecord.mapper';
@@ -29,11 +28,7 @@ export class MemberMapper {
         ItemInventoryMapper.toDomain(n),
       );
     }
-    if (raw.study_categories) {
-      dto.study_categories = raw.study_categories.map((n) =>
-        StudyCategoryMapper.toDomain(n),
-      );
-    }
+
     if (raw.study_records) {
       dto.study_records = raw.study_records.map((n) =>
         StudyRecordMapper.toDomain(n),
@@ -67,9 +62,6 @@ export class MemberMapper {
       ? member.item_inventories.map((n) => ItemInventoryMapper.toPersistence(n))
       : undefined;
 
-    const study_categories = member.study_categories
-      ? member.study_categories.map((n) => StudyCategoryMapper.toPersistence(n))
-      : undefined;
     const study_records = member.study_records
       ? member.study_records.map((n) => StudyRecordMapper.toPersistence(n))
       : undefined;
@@ -97,7 +89,6 @@ export class MemberMapper {
 
     memberEntity.character_inventories = character_inventories;
     memberEntity.item_inventories = item_inventories;
-    memberEntity.study_categories = study_categories;
     memberEntity.study_records = study_records;
     memberEntity.transaction_records = transaction_records;
     memberEntity.study_streak = study_streak;

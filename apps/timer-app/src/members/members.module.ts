@@ -4,8 +4,6 @@ import { MembersController } from './controllers/members.controller';
 import { StreaksModule } from '../streaks/streaks.module';
 import { StudyRecordsModule } from '../study-records/study-records.module';
 import { CharacterInventoryModule } from '../character-inventory/character-inventory.module';
-import { StudyCategoriesModule } from '../study-categories/study-categories.module';
-import { MemberStudyCategoriesController } from './controllers/members-study-categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemInventoryModule } from '../item-inventory/item-inventory.module';
 import { MemberInitializationService } from './services/member-initialization.service';
@@ -23,7 +21,6 @@ import { TypeOrmMemberRepository } from './repositories/typeorm/member.repositor
     CharacterInventoryModule,
     ItemInventoryModule,
     StudyRecordsModule,
-    StudyCategoriesModule,
     StatisticsModule,
   ],
   providers: [
@@ -35,11 +32,7 @@ import { TypeOrmMemberRepository } from './repositories/typeorm/member.repositor
       useClass: TypeOrmMemberRepository,
     },
   ],
-  controllers: [
-    MembersController,
-    MemberStudyCategoriesController,
-    MemberStatisticsController,
-  ],
+  controllers: [MembersController, MemberStatisticsController],
   exports: [MembersService],
 })
 export class MembersModule {}
