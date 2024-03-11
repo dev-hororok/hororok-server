@@ -38,12 +38,8 @@
     - 월별 통계 `GET /members/{member_id}/statistics/monthly?year=2024&month=2`
     - 히트맵 데이터 조회 `GET /members/{member_id}/statistic/heat-map?start=2023-02-08&end=2024-02-08`
 
-  - 스터디 카테고리
-
-    - 조회 `GET members/:member_id/study-categories`
-    - 생성 `POST members/:member_id/study-categories`
-    - 수정 `PATCH members/:member_id/study-categories/{study_category_id}`
-    - 삭제 `DELETE members/:member_id/study-categories/{study_category_id}`
+- 파일 업로드
+  - 단일 업로드(이미지) `POST /uploads/file`
 
 ### ⚙️ 배포 환경
 
