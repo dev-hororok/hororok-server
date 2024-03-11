@@ -29,6 +29,7 @@ import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
 import { AuthNaverModule } from './auth-naver/auth-naver.module';
 import uploadConfig from './uploads/config/upload-config';
+import { UploadModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import uploadConfig from './uploads/config/upload-config';
     ItemsModule,
     ItemInventoryModule,
     StatisticsModule,
+    UploadModule,
   ],
   providers: [
     {

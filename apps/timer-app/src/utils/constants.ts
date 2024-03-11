@@ -34,4 +34,7 @@ export const STATUS_MESSAGES = {
     RESOURCE_ALREADY_EXISTS: (resource: string) =>
       `${resource}이(가) 이미 존재합니다.`,
   },
+  UPLOAD: {
+    INVALID_FILE_TYPE: '지원하지 않는 파일타입 입니다.',
+  },
 };
