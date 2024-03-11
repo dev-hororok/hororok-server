@@ -28,6 +28,7 @@ import naverConfig from './auth-naver/config/auth-naver-config';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
 import { AuthNaverModule } from './auth-naver/auth-naver.module';
+import uploadConfig from './uploads/config/upload-config';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuthNaverModule } from './auth-naver/auth-naver.module';
         googleConfig,
         kakaoConfig,
         naverConfig,
+        uploadConfig,
       ],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
