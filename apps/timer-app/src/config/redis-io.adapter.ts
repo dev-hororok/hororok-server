@@ -29,7 +29,7 @@ export class RedisIoAdapter extends IoAdapter {
       ...options,
       cors: {
         origin: [
-          'https://monta-pwa.vercel.app',
+          'https://pomodak.com',
           'http://localhost:5173',
           'http://192.168.1.208:5173',
         ],
