@@ -64,7 +64,8 @@ export class StatisticsService {
     );
 
     const records = await this.getRecords(memberId, startDateUTC, endDateUTC);
-    return this.calculateHeatMapData(records, timeZone);
+    const result = this.calculateHeatMapData(records, timeZone);
+    return result;
   }
 
   // 타임존을 고려하여 날짜 범위를 UTC로 변환하는 공통 로직
@@ -97,13 +98,18 @@ export class StatisticsService {
     records: StudyRecordEntity[],
     clientDate: string,
   ): DailySummary {
-    const totalSeconds = records.reduce((acc, record) => {
-      if (!record.end_time) return acc;
-      acc += (record.end_time.getTime() - record.start_time.getTime()) / 1000;
-      return acc;
-    }, 0);
+    const [totalSeconds, totalCompleted] = records.reduce(
+      ([totalSeconds, totalCompleted], record) => {
+        if (!record.end_time) return [totalSeconds, totalCompleted];
+        totalSeconds +=
+          (record.end_time.getTime() - record.start_time.getTime()) / 1000;
+        if (record.status === 'Completed') totalCompleted += 1;
+        return [totalSeconds, totalCompleted];
+      },
+      [0, 0],
+    );
 
-    return { date: clientDate, totalSeconds };
+    return { date: clientDate, totalSeconds, totalCompleted };
   }
   // 월별 통계 계산
   private calculateMonthlySummary(
@@ -112,18 +118,24 @@ export class StatisticsService {
     year: number,
   ): MonthlySummary {
     const uniqueDays = new Set<string>();
-    const totalSeconds = records.reduce((acc, record) => {
-      if (!record.end_time) return acc;
-      const dateKey = format(record.start_time, 'yyyy-MM-dd');
-      uniqueDays.add(dateKey);
-      acc += (record.end_time.getTime() - record.start_time.getTime()) / 1000;
-      return acc;
-    }, 0);
+    const [totalSeconds, totalCompleted] = records.reduce(
+      ([totalSeconds, totalCompleted], record) => {
+        if (!record.end_time) return [totalSeconds, totalCompleted];
+        const dateKey = format(record.start_time, 'yyyy-MM-dd');
+        uniqueDays.add(dateKey);
+        totalSeconds +=
+          (record.end_time.getTime() - record.start_time.getTime()) / 1000;
+        if (record.status === 'Completed') totalCompleted += 1;
+        return [totalSeconds, totalCompleted];
+      },
+      [0, 0],
+    );
 
     return {
       month,
       year,
       totalSeconds,
+      totalCompleted,
       uniqueStudyDays: uniqueDays.size,
     };
   }
@@ -133,7 +145,9 @@ export class StatisticsService {
     records: StudyRecordEntity[],
     timeZone: string,
   ): HeatMapData[] {
-    const dailyTotals: { [key: string]: number } = {};
+    const dailyTotals: {
+      [key: string]: { totalSeconds: number; totalCompleted: number };
+    } = {};
     records.forEach((record) => {
       if (record.end_time) {
         const dateKey = format(
@@ -142,13 +156,19 @@ export class StatisticsService {
         );
         const duration =
           (record.end_time.getTime() - record.start_time.getTime()) / 1000;
-        dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + duration;
+        const completed = record.status === 'Completed' ? 1 : 0;
+
+        dailyTotals[dateKey] = {
+          totalSeconds: (dailyTotals[dateKey]?.totalSeconds || 0) + duration,
+          totalCompleted:
+            (dailyTotals[dateKey]?.totalCompleted || 0) + completed,
+        };
       }
     });
-
-    return Object.entries(dailyTotals).map(([date, totalSeconds]) => ({
+    return Object.entries(dailyTotals).map(([date, data]) => ({
       date,
-      totalSeconds,
+      totalSeconds: data.totalSeconds,
+      totalCompleted: data.totalCompleted,
     }));
   }
 }
