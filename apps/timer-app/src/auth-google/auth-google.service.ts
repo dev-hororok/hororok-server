@@ -14,7 +14,8 @@ export class AuthGoogleService {
     this.google = new OAuth2Client(
       configService.get('google.clientId', { infer: true }),
       configService.get('google.clientSecret', { infer: true }),
-      configService.get('google.callbackUri', { infer: true }),
+      'postmessage',
+      // configService.get('google.callbackUri', { infer: true }),
     );
   }
 
