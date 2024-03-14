@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { NotificationService } from '../../notification/notification.service';
 import { MembersService } from '../services/members.service';
@@ -13,7 +13,7 @@ export class MemberPushController {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Get('/enable')
+  @Post('/enable')
   async enablePush(
     @Param('member_id') memberId: string,
     @Body() createDto: CreateNotificationTokenDto,
@@ -22,7 +22,7 @@ export class MemberPushController {
     return this.notificationService.acceptPushNotification(member, createDto);
   }
 
-  @Get('/disable')
+  @Post('/disable')
   async disablePush(
     @Param('member_id') memberId: string,
     @Body() updateDto: UpdateNotificationTokenDto,
