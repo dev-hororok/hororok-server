@@ -63,20 +63,29 @@ export class TypeormNotificationTokenRepository
     const newEntity = await repository.save(
       repository.create({
         ...data,
+        last_used_at: new Date(),
       }),
     );
 
     return newEntity;
   }
 
-  async update(
+  async updateById(
     id: number,
     payload: Partial<NotificationToken>,
     queryRunner?: QueryRunner | undefined,
-  ): Promise<NullableType<NotificationToken>> {
+  ): Promise<void> {
     const repository = this.getRepository(queryRunner);
     await repository.update(id, payload);
-    return repository.findOne({ where: { notification_token_id: id } });
+  }
+
+  async updateByMemberId(
+    id: string,
+    payload: Partial<NotificationToken>,
+    queryRunner?: QueryRunner | undefined,
+  ): Promise<void> {
+    const repository = this.getRepository(queryRunner);
+    await repository.update({ member: { member_id: id } }, payload);
   }
 
   async softDelete(

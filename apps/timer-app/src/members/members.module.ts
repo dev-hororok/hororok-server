@@ -13,6 +13,8 @@ import { TransactionService } from '../common/transaction.service';
 import { MemberEntity } from '../database/entities/member.entity';
 import { MemberRepository } from './repositories/member.repository.interface';
 import { TypeOrmMemberRepository } from './repositories/typeorm/member.repository';
+import { MemberPushController } from './controllers/members-push.controller';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { TypeOrmMemberRepository } from './repositories/typeorm/member.repositor
     ItemInventoryModule,
     StudyRecordsModule,
     StatisticsModule,
+    NotificationModule,
   ],
   providers: [
     MembersService,
@@ -32,7 +35,11 @@ import { TypeOrmMemberRepository } from './repositories/typeorm/member.repositor
       useClass: TypeOrmMemberRepository,
     },
   ],
-  controllers: [MembersController, MemberStatisticsController],
+  controllers: [
+    MembersController,
+    MemberStatisticsController,
+    MemberPushController,
+  ],
   exports: [MembersService],
 })
 export class MembersModule {}

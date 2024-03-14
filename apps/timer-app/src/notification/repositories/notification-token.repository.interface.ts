@@ -20,11 +20,17 @@ export abstract class NotificationTokenRepository {
     queryRunner?: QueryRunner,
   ): Promise<NotificationToken>;
 
-  abstract update(
+  abstract updateById(
     id: NotificationToken['notification_token_id'],
     payload: Partial<NotificationToken>,
     queryRunner?: QueryRunner,
-  ): Promise<NullableType<NotificationToken>>;
+  ): Promise<void>;
+
+  abstract updateByMemberId(
+    id: Member['member_id'],
+    payload: Partial<NotificationToken>,
+    queryRunner?: QueryRunner,
+  ): Promise<void>;
 
   abstract softDelete(
     id: NotificationToken['notification_token_id'],
