@@ -21,6 +21,24 @@ export class TypeormNotificationTokenRepository
       : this.notificationTokenRepository;
   }
 
+  async findActiveTokenByMemberId(
+    memberId: string,
+    queryRunner?: QueryRunner | undefined,
+  ): Promise<NullableType<NotificationTokenEntity>> {
+    const repository = this.getRepository(queryRunner);
+
+    const entity = await repository.findOne({
+      where: {
+        member: {
+          member_id: memberId,
+        },
+        status: 'Active',
+      },
+    });
+
+    return entity;
+  }
+
   async findOneById(
     id: number,
     queryRunner?: QueryRunner | undefined,

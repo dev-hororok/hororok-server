@@ -30,4 +30,10 @@ export class MemberPushController {
     const member = await this.membersService.findOneByIdOrFail(memberId);
     return this.notificationService.disablePushNotification(member, updateDto);
   }
+
+  @Post('/test')
+  async sendPush(@Param('member_id') memberId: string) {
+    const member = await this.membersService.findOneByIdOrFail(memberId);
+    return this.notificationService.sendPush(member, '테스트', 'ㅎㅇ');
+  }
 }

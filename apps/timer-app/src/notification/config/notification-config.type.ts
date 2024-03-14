@@ -1,4 +1,6 @@
 export type NotificationConfig = {
-  vapidPublicKey?: string;
-  vapidSecretKey?: string;
+  publicKey?: string;
+  projectId?: string;
+  clientEmail?: string;
+  privateKey?: string;
 };

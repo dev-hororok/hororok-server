@@ -15,7 +15,7 @@ export class NotificationController {
   getPublicKey() {
     const publicKey = this.configService.getOrThrow('notification', {
       infer: true,
-    }).vapidPublicKey;
+    }).publicKey;
 
     if (!publicKey) {
       throw new InternalServerErrorException(

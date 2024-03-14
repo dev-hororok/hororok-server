@@ -5,17 +5,22 @@ import { NotificationConfig } from './notification-config.type';
 
 class EnvironmentVariablesValidator {
   @IsString()
-  VAPID_PUBLIC_KEY: string;
-
+  FIREBASE_PUBLIC_KEY: string;
   @IsString()
-  VAPID_SECRET_KEY: string;
+  FIREBASE_PROJECT_ID: string;
+  @IsString()
+  FIREBASE_PRIVATE_KEY: string;
+  @IsString()
+  FIREBASE_CLIENT_EMAIL: string;
 }
 
 export default registerAs<NotificationConfig>('notification', () => {
   validateConfig(process.env, EnvironmentVariablesValidator);
 
   return {
-    vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
-    vapidSecretKey: process.env.VAPID_SECRET_KEY,
+    publicKey: process.env.FIREBASE_PUBLIC_KEY,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   };
 });

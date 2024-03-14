@@ -15,6 +15,11 @@ export abstract class NotificationTokenRepository {
     queryRunner?: QueryRunner,
   ): Promise<NullableType<NotificationToken>>;
 
+  abstract findActiveTokenByMemberId(
+    memberId: Member['member_id'],
+    queryRunner?: QueryRunner,
+  ): Promise<NullableType<NotificationToken>>;
+
   abstract create(
     data: Omit<NotificationToken, 'notification_token_id' | 'last_used_at'>,
     queryRunner?: QueryRunner,
