@@ -7,15 +7,27 @@ import { ItemInventoryModule } from '../item-inventory/item-inventory.module';
 import { TransactionService } from '../common/transaction.service';
 import { StudyGroupGateway } from './study-group.gateway';
 import { JwtModule } from '@nestjs/jwt';
+import { BullModule } from '@nestjs/bull';
+import { NotificationModule } from '../notification/notification.module';
+import { PomodoroProcessor } from './pomodoro.processor';
 
 @Module({
   imports: [
     StudyRecordsModule,
     MembersModule,
     ItemInventoryModule,
+    NotificationModule,
+    BullModule.registerQueue({
+      name: 'pomodoro-timer',
+    }),
     JwtModule.register({}),
   ],
   controllers: [StudyTimerController],
-  providers: [StudyTimerService, TransactionService, StudyGroupGateway],
+  providers: [
+    StudyTimerService,
+    TransactionService,
+    StudyGroupGateway,
+    PomodoroProcessor,
+  ],
 })
 export class StudyTimerModule {}

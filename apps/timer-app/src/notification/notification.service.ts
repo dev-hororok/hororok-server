@@ -61,15 +61,13 @@ export class NotificationService {
   }
 
   sendPush = async (
-    member: Member,
+    memberId: string,
     title: string,
     body: string,
   ): Promise<void> => {
     try {
       const notificationToken =
-        await this.notificationTokenRepo.findActiveTokenByMemberId(
-          member.member_id,
-        );
+        await this.notificationTokenRepo.findActiveTokenByMemberId(memberId);
       if (notificationToken) {
         await this.firebaseAdmin
           .messaging()

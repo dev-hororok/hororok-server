@@ -30,7 +30,8 @@ export const STATUS_MESSAGES = {
     MEMBER_NOT_FOUND: '사용자를 찾을 수 없습니다.',
   },
   RESOURCE: {
-    RESOURCE_NOT_FOUND: (resource: string) => `${resource}를 찾을 수 없습니다.`,
+    RESOURCE_NOT_FOUND: (resource: string) =>
+      `${resource}을(를) 찾을 수 없습니다.`,
     RESOURCE_ALREADY_EXISTS: (resource: string) =>
       `${resource}이(가) 이미 존재합니다.`,
   },

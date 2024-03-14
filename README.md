@@ -9,10 +9,18 @@
   - 토큰 리프레시 `POST /auth/refresh`
   - 회원 탈퇴 `DELETE /auth/me`
 
+- 푸시 알림
+
+  - VAPID public 키 발급 `POST /notification/public-key`
+  - fcm 토큰 등록 or 활성화 `POST /members/:member_id/push/enable`
+  - fcm 토큰 비활성화 `POST /members/:member_id/push/disable`
+
 - 스터디 타이머
 
   - 타이머 시작 `POST /study-timer/start`
   - 타이머 종료 `POST /study-timer/end`
+  - 뽀모도로 타이머 푸시알림 예약 `POST /study-timer/push`
+  - 뽀모도로 타이머 푸시알림 예약취소 `POST /study-timer/cancel`
 
 - `WebSocket` (스터디 그룹)
 
