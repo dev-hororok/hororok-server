@@ -31,6 +31,7 @@ import { AuthNaverModule } from './auth-naver/auth-naver.module';
 import uploadConfig from './uploads/config/upload-config';
 import { UploadModule } from './uploads/uploads.module';
 import notificationConfig from './notification/config/notification-config';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -63,6 +64,20 @@ import notificationConfig from './notification/config/notification-config';
         url: `redis://${configService.get('redis').host}:${
           configService.get('redis').port
         }`,
+      }),
+    }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService<AllConfigType>) => ({
+        redis: {
+          host: configService.get('redis').host,
+          port: configService.get('redis').port,
+        },
+        queues: [
+          {
+            name: 'pomodoro-timer',
+          },
+        ],
       }),
     }),
     AuthModule,
