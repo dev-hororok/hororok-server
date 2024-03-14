@@ -30,6 +30,7 @@ import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
 import { AuthNaverModule } from './auth-naver/auth-naver.module';
 import uploadConfig from './uploads/config/upload-config';
 import { UploadModule } from './uploads/uploads.module';
+import notificationConfig from './notification/config/notification-config';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UploadModule } from './uploads/uploads.module';
         kakaoConfig,
         naverConfig,
         uploadConfig,
+        notificationConfig,
       ],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),

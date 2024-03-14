@@ -6,17 +6,13 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { CommonEntity } from './common.entity';
 import { NotificationToken } from '../domain/notification-token';
 import { MemberEntity } from './member.entity';
 
 @Entity({
   name: 'notification_token',
 })
-export class NotificationTokenEntity
-  extends CommonEntity
-  implements NotificationToken
-{
+export class NotificationTokenEntity implements NotificationToken {
   @PrimaryGeneratedColumn()
   @IsNumber()
   notification_token_id: number;
