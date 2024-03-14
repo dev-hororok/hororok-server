@@ -1,30 +1,30 @@
-import { NotificationToken } from 'apps/timer-app/src/database/domain/notification-token';
 import { NullableType } from 'apps/timer-app/src/utils/types/nullable.type';
 import { QueryRunner, Repository } from 'typeorm';
 import { NotificationTokenRepository } from '../notification-token.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotificationTokenEntity } from 'apps/timer-app/src/database/entities/notification-token.entity';
 
 export class TypeormNotificationTokenRepository
   implements NotificationTokenRepository
 {
   constructor(
-    @InjectRepository(NotificationToken)
-    private notificationTokenRepository: Repository<NotificationToken>,
+    @InjectRepository(NotificationTokenEntity)
+    private notificationTokenRepository: Repository<NotificationTokenEntity>,
   ) {}
 
   /** queryRunner 여부에 따라 notificationToken Repository를 생성 */
   private getRepository(
     queryRunner?: QueryRunner,
-  ): Repository<NotificationToken> {
+  ): Repository<NotificationTokenEntity> {
     return queryRunner
-      ? queryRunner.manager.getRepository(NotificationToken)
+      ? queryRunner.manager.getRepository(NotificationTokenEntity)
       : this.notificationTokenRepository;
   }
 
   async findOneById(
     id: number,
     queryRunner?: QueryRunner | undefined,
-  ): Promise<NullableType<NotificationToken>> {
+  ): Promise<NullableType<NotificationTokenEntity>> {
     const repository = this.getRepository(queryRunner);
 
     const entity = await repository.findOne({
@@ -40,7 +40,7 @@ export class TypeormNotificationTokenRepository
     memberId: string,
     deviceType: string,
     queryRunner?: QueryRunner | undefined,
-  ): Promise<NullableType<NotificationToken>> {
+  ): Promise<NullableType<NotificationTokenEntity>> {
     const repository = this.getRepository(queryRunner);
 
     const entity = await repository.findOne({
@@ -56,9 +56,12 @@ export class TypeormNotificationTokenRepository
   }
 
   async create(
-    data: Omit<NotificationToken, 'notification_token_id' | 'last_used_at'>,
+    data: Omit<
+      NotificationTokenEntity,
+      'notification_token_id' | 'last_used_at'
+    >,
     queryRunner?: QueryRunner | undefined,
-  ): Promise<NotificationToken> {
+  ): Promise<NotificationTokenEntity> {
     const repository = this.getRepository(queryRunner);
     const newEntity = await repository.save(
       repository.create({
@@ -72,7 +75,7 @@ export class TypeormNotificationTokenRepository
 
   async updateById(
     id: number,
-    payload: Partial<NotificationToken>,
+    payload: Partial<NotificationTokenEntity>,
     queryRunner?: QueryRunner | undefined,
   ): Promise<void> {
     const repository = this.getRepository(queryRunner);
@@ -81,11 +84,15 @@ export class TypeormNotificationTokenRepository
 
   async updateByMemberId(
     id: string,
-    payload: Partial<NotificationToken>,
+    payload: Partial<NotificationTokenEntity>,
     queryRunner?: QueryRunner | undefined,
   ): Promise<void> {
     const repository = this.getRepository(queryRunner);
-    await repository.update({ member: { member_id: id } }, payload);
+    try {
+      await repository.update({ member: { member_id: id } }, payload);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async softDelete(

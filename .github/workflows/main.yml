@@ -65,10 +65,10 @@ jobs:
     needs: build
     runs-on: [self-hosted, 'hororok']
     steps:
-      ###### 필요할때만 활성화 (파일전송시 ec2 폴더 초기화됨 (인증서 사라짐)) ######
-      ########### docker-compose.yml, nginx.conf 수정시엔 ec2 직접가서 수정)
-      - uses: actions/checkout@v3
-      ############################
+      # ###### 필요할때만 활성화 (파일전송시 ec2 폴더 초기화됨 (인증서 사라짐)) ######
+      # ########### docker-compose.yml, nginx.conf 수정시엔 ec2 직접가서 수정)
+      # - uses: actions/checkout@v3
+      #############################
       - name: Create .env.prod file
         run: |
           sudo rm -rf .env.prod

@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NotificationToken } from '../database/domain/notification-token';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
 import { ConfigService } from '@nestjs/config';
 import { NotificationTokenRepository } from './repositories/notification-token.repository.interface';
 import { TypeormNotificationTokenRepository } from './repositories/typeorm/notification-token.repository';
+import { NotificationTokenEntity } from '../database/entities/notification-token.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([NotificationToken])],
+  imports: [TypeOrmModule.forFeature([NotificationTokenEntity])],
   controllers: [NotificationController],
   providers: [
     NotificationService,

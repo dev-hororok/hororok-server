@@ -22,6 +22,6 @@ export class NotificationController {
         STATUS_MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
       );
     }
-    return { publicKey };
+    return { public_key: publicKey };
   }
 }
