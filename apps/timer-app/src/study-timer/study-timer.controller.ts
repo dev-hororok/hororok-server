@@ -24,7 +24,7 @@ export class StudyTimerController {
     return null;
   }
 
-  @Post('push')
+  @Post('schedule')
   async pushPomodoroNotification(
     @CurrentUser() user: JwtPayloadType,
     @Body() body: PushPomodoroDto,

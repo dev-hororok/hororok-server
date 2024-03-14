@@ -19,7 +19,7 @@
 
   - 타이머 시작 `POST /study-timer/start`
   - 타이머 종료 `POST /study-timer/end`
-  - 뽀모도로 타이머 푸시알림 예약 `POST /study-timer/push`
+  - 뽀모도로 타이머 푸시알림 예약 `POST /study-timer/schedule`
   - 뽀모도로 타이머 푸시알림 예약취소 `POST /study-timer/cancel`
 
 - `WebSocket` (스터디 그룹)

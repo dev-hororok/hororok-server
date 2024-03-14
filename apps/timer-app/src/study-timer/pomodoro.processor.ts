@@ -30,12 +30,12 @@ export class PomodoroProcessor {
     message: string;
   } {
     switch (timerType) {
-      case 'work':
+      case 'Work':
         return {
           title: '닭이 지쳤습니다.',
           message: '조금 휴식을 취해주세요.',
         };
-      case 'rest':
+      case 'Rest':
         return { title: '잠에서 깨어났닭!', message: '다시 집중해주세요.' };
       default:
         return { title: '뽀모닭', message: '뽀모닭' };
