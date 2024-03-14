@@ -17,7 +17,7 @@
     "test:e2e:local": "env-cmd -f .env.test jest --config ./apps/timer-app/test/jest-e2e.json",
     "test:e2e": "yarn start:timer-app:test & sleep 10; yarn test:e2e:local; kill -9 $(lsof -ti :4000)",
     "typeorm": "env-cmd -f .env.development ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/init",
+    "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/add-notification-token",
     "migration:create": "yarn typeorm -- migration:create",
     "migration:run": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:run",
     "migration:revert": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:revert",

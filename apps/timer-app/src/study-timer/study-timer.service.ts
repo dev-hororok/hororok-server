@@ -23,10 +23,24 @@ export class StudyTimerService {
       );
 
       if (member.active_record_id) {
-        await this.studyRecordsService.softDelete(
-          member.active_record_id,
-          queryRunner,
-        );
+        try {
+          // 기존 완료되지 않은 테이블이 있다면 재활용
+          await this.studyRecordsService.update(
+            member.active_record_id,
+            {
+              start_time: new Date(),
+            },
+            queryRunner,
+          );
+
+          return null;
+        } catch (e) {
+          // 에러 시 기존 테이블 제거 후 다음 로직 수행
+          await this.studyRecordsService.softDelete(
+            member.active_record_id,
+            queryRunner,
+          );
+        }
       }
 
       const newRecord = await this.studyRecordsService.create(
