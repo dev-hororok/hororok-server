@@ -48,7 +48,7 @@ export class StatisticsService {
       timeZone,
     );
     const records = await this.getRecords(memberId, startDateUTC, endDateUTC);
-    return this.calculateMonthlySummary(records, month, year);
+    return this.calculateMonthlySummary(records, month, year, timeZone);
   }
 
   async getHeatMapData(
@@ -62,13 +62,13 @@ export class StatisticsService {
       end,
       timeZone,
     );
-
     const records = await this.getRecords(memberId, startDateUTC, endDateUTC);
     const result = this.calculateHeatMapData(records, timeZone);
     return result;
   }
 
   // 타임존을 고려하여 날짜 범위를 UTC로 변환하는 공통 로직
+  // Asia/Seoul에서 2024-03-16 데이터 조회 -> 2024-03-15 15:00:00 ~ 2024-03-16 15:00:00
   private getDateRangeInUTC(
     start: Date | string,
     end: Date | string,
@@ -116,12 +116,16 @@ export class StatisticsService {
     records: StudyRecordEntity[],
     month: number,
     year: number,
+    timeZone: string,
   ): MonthlySummary {
     const uniqueDays = new Set<string>();
     const [totalSeconds, totalCompleted] = records.reduce(
       ([totalSeconds, totalCompleted], record) => {
         if (!record.end_time) return [totalSeconds, totalCompleted];
-        const dateKey = format(record.start_time, 'yyyy-MM-dd');
+        const dateKey = format(
+          utcToZonedTime(record.start_time, timeZone),
+          'yyyy-MM-dd',
+        );
         uniqueDays.add(dateKey);
         totalSeconds +=
           (record.end_time.getTime() - record.start_time.getTime()) / 1000;

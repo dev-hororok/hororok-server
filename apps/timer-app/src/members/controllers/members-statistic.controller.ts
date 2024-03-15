@@ -1,8 +1,6 @@
 import { StatisticsService } from './../../statistics/statistics.service';
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 
-@UseGuards(PermissionsGuard)
 @Controller('members/:member_id/statistics')
 export class MemberStatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
@@ -11,8 +9,9 @@ export class MemberStatisticsController {
   getDailyStatistics(
     @Param('member_id') memberId: string,
     @Query('date') date: string,
+    @Query('timezone') timezone?: string,
   ) {
-    return this.statisticsService.getDailyStatistics(memberId, date);
+    return this.statisticsService.getDailyStatistics(memberId, date, timezone);
   }
 
   @Get('/monthly')
@@ -20,8 +19,14 @@ export class MemberStatisticsController {
     @Param('member_id') memberId: string,
     @Query('year') year: number,
     @Query('month') month: number,
+    @Query('timezone') timezone?: string,
   ) {
-    return this.statisticsService.getMonthlyStatistics(memberId, year, month);
+    return this.statisticsService.getMonthlyStatistics(
+      memberId,
+      year,
+      month,
+      timezone,
+    );
   }
 
   @Get('/heat-map')
@@ -29,7 +34,13 @@ export class MemberStatisticsController {
     @Param('member_id') memberId: string,
     @Query('start') start: string,
     @Query('end') end: string,
+    @Query('timezone') timezone?: string,
   ) {
-    return this.statisticsService.getHeatMapData(memberId, start, end);
+    return this.statisticsService.getHeatMapData(
+      memberId,
+      start,
+      end,
+      timezone,
+    );
   }
 }
