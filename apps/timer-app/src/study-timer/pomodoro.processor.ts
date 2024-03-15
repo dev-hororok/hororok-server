@@ -20,6 +20,8 @@ export class PomodoroProcessor {
     try {
       await this.notificationService.sendPush(memberId, title, message);
       await this.studyTimerService.deletePomodoroJobId(memberId);
+
+      console.log(`${memberId}에게 푸시메세지 발송`);
     } catch (error) {
       console.error(`Failed to send notification: ${error.message}`);
     }
