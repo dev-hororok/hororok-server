@@ -9,29 +9,31 @@ import { StudyTimerModule } from './study-timer/study-timer.module';
 import { ItemsModule } from './items/items.module';
 import { ItemInventoryModule } from './item-inventory/item-inventory.module';
 import { StatisticsModule } from './statistics/statistics.module';
-import appConfig from './config/app.config';
-import databaseConfig from './database/config/database-config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import authConfig from './auth/config/auth-config';
 import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { RolesGuard } from './roles/roles.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import { AuthGoogleModule } from './auth-google/auth-google.module';
+import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
+import { AuthNaverModule } from './auth-naver/auth-naver.module';
+import { UploadModule } from './uploads/uploads.module';
+import { BullModule } from '@nestjs/bull';
+
 import { AllConfigType } from './config/config.type';
+import authConfig from './auth/config/auth-config';
+import uploadConfig from './uploads/config/upload-config';
+import appConfig from './config/app.config';
+import databaseConfig from './database/config/database-config';
+import notificationConfig from './notification/config/notification-config';
+import mailConfig from './mail/config/mail-config';
 import redisConfig from './config/redis-config';
 import googleConfig from './auth-google/config/auth-google-config';
 import kakaoConfig from './auth-kakao/config/auth-kakao-config';
 import naverConfig from './auth-naver/config/auth-naver-config';
-import { AuthGoogleModule } from './auth-google/auth-google.module';
-import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
-import { AuthNaverModule } from './auth-naver/auth-naver.module';
-import uploadConfig from './uploads/config/upload-config';
-import { UploadModule } from './uploads/uploads.module';
-import notificationConfig from './notification/config/notification-config';
-import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -47,6 +49,7 @@ import { BullModule } from '@nestjs/bull';
         naverConfig,
         uploadConfig,
         notificationConfig,
+        mailConfig,
       ],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
