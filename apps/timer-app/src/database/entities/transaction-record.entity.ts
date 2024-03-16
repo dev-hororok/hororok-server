@@ -22,7 +22,7 @@ export class TransactionRecordEntity
 
   @Column({ type: 'varchar', length: 20 })
   @IsString()
-  transaction_type: string; // Purchase, Sell, Reward
+  transaction_type: string; // Purchase, Sell, Reward, Acquisition
 
   @Column()
   @IsNumber()

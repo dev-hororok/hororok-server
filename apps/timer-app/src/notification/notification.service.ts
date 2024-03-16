@@ -4,9 +4,6 @@ import { Member } from '../database/domain/member';
 import { CreateNotificationTokenDto } from './dtos/create-notification-token.dto';
 import { UpdateNotificationTokenDto } from './dtos/update-notification-token.dto';
 
-const APP_ICON =
-  'https://d2quahb2ygxiv.cloudfront.net/ebde53456e9aacc4e5601.png';
-
 @Injectable()
 export class NotificationService {
   constructor(
@@ -79,24 +76,6 @@ export class NotificationService {
             token: notificationToken.notification_token,
             android: {
               priority: 'high',
-              notification: {
-                imageUrl: APP_ICON,
-              },
-            },
-            apns: {
-              payload: {
-                aps: {
-                  'mutable-content': 1,
-                },
-              },
-              fcm_options: {
-                image: APP_ICON,
-              },
-            },
-            webpush: {
-              headers: {
-                image: APP_ICON,
-              },
             },
           })
           .catch((error: any) => {
