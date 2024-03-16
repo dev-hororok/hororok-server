@@ -22,6 +22,7 @@ export const STATUS_MESSAGES = {
     PROVIDER_MISMATCH: '간편 로그인 계정이 존재합니다.',
     NO_PASSWORD: '비밀번호가 일치하지 않습니다.',
     PASSWORD_MISMATCH: '비밀번호가 일치하지 않습니다.',
+    EXPIRED_CODE: '인증 코드가 만료되었습니다. 다시 발급해주세요.',
     INVALID_CODE: '인증 코드가 일치하지 않습니다.',
   },
   VALIDATION: {

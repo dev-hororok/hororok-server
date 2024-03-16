@@ -58,7 +58,7 @@ export class AuthService {
       `${checkEmailDto.email}:code`,
       verificationCode,
       'EX',
-      600,
+      300,
     );
     await this.mailService.sendVerificationCode({
       to: checkEmailDto.email,
@@ -165,11 +165,11 @@ export class AuthService {
   async register(dto: AuthEmailRegisterDto): Promise<LoginResponseType> {
     const code = await this.redisClient.get(`${dto.email}:code`);
     if (!code) {
-      throw new BadRequestException(STATUS_MESSAGES.STATUS.BAD_REQUEST);
+      throw new BadRequestException(STATUS_MESSAGES.ACCOUNT.EXPIRED_CODE); // 토큰 만료
     }
 
     if (code !== dto.code) {
-      throw new BadRequestException(STATUS_MESSAGES.ACCOUNT.INVALID_CODE);
+      throw new BadRequestException(STATUS_MESSAGES.ACCOUNT.INVALID_CODE); // 토큰 불일치
     }
 
     await this.redisClient.del(`${dto.email}:code`);
