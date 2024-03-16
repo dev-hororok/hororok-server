@@ -2,12 +2,15 @@
 
 - 인증
 
+  - 이메일 확인 `POST /auth/email/check`
   - 로그인 `POST /auth/email/login`
   - 회원가입 `POST /auth/email/register`
   - 구글 OAuth 로그인 `POST /auth/google/login`
   - 카카오 OAuth 로그인 `POST /auth/kakao/login`
   - 토큰 리프레시 `POST /auth/refresh`
   - 회원 탈퇴 `DELETE /auth/me`
+
+  이메일 가입 흐름: 이메일/패스워드 작성 -> 이메일 확인 API -> 인증코드와 함께 회원가입 API
 
 - 푸시 알림
 
@@ -121,13 +124,11 @@
 - [ ] 통계 테이블로 계산량 최적화
 
   - 배치작업
+
     - 새벽에 전날에 생성된 StudyRecords 집계하여 저장해두기(Daily)
     - 월초에 전달 DailyStudyRecords 집계하여 저장해두기
     - 처리량, 걸린시간, 실패율 로깅 및 알림
     - 자동 재시도(DB문제, 네트워크 문제) & 영구적 오류 처리(버그)
-
-- [ ] 비즈니스 로직 유닛테스트 (auth, study-timer, statistic, category)
-- [ ] web socket 부하테스트 스크립트 작성 (Artillery)
 
   - admin 토큰 하나로 인증하고 member_id를 1씩 증가시켜 넘기는 우회용 게이트웨이 필요할듯(jwtToken으로 유저 판별하여 연결하기 때문)
 

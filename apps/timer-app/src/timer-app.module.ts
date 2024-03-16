@@ -34,6 +34,7 @@ import redisConfig from './config/redis-config';
 import googleConfig from './auth-google/config/auth-google-config';
 import kakaoConfig from './auth-kakao/config/auth-kakao-config';
 import naverConfig from './auth-naver/config/auth-naver-config';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import naverConfig from './auth-naver/config/auth-naver-config';
     ItemInventoryModule,
     StatisticsModule,
     UploadModule,
+    MailModule,
   ],
   providers: [
     {

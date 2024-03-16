@@ -24,6 +24,10 @@ import { SocialInterface } from './types/social.interface';
 import { NullableType } from '../utils/types/nullable.type';
 import { MembersService } from '../members/services/members.service';
 import { TransactionService } from '../common/transaction.service';
+import { CheckEmailDto } from './dtos/check-email-dto';
+import { Redis } from 'ioredis';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +37,34 @@ export class AuthService {
     private membersService: MembersService,
     private configService: ConfigService<AllConfigType>,
     private transactionService: TransactionService,
+    @InjectRedis() private readonly redisClient: Redis,
+    private mailService: MailService,
   ) {}
+
+  // 이메일 확인 메일 발송
+  async checkEmail(checkEmailDto: CheckEmailDto): Promise<void> {
+    const account = await this.accountsService.findOne({
+      email: checkEmailDto.email,
+    });
+    if (account) {
+      throw new BadRequestException(
+        STATUS_MESSAGES.ACCOUNT.EMAIL_ALREADY_EXISTS,
+      );
+    }
+
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+    // redis 저장 후 메일 발송
+    await this.redisClient.set(
+      `${checkEmailDto.email}:code`,
+      verificationCode,
+      'EX',
+      600,
+    );
+    await this.mailService.sendVerificationCode({
+      to: checkEmailDto.email,
+      code: verificationCode,
+    });
+  }
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
     const account = await this.accountsService.findOne({
@@ -130,7 +161,19 @@ export class AuthService {
     };
   }
 
+  // 이메일 가입 (확인 메일로 발송된 인증코드 확인)
   async register(dto: AuthEmailRegisterDto): Promise<LoginResponseType> {
+    const code = await this.redisClient.get(`${dto.email}:code`);
+    if (!code) {
+      throw new BadRequestException(STATUS_MESSAGES.STATUS.BAD_REQUEST);
+    }
+
+    if (code !== dto.code) {
+      throw new BadRequestException(STATUS_MESSAGES.ACCOUNT.INVALID_CODE);
+    }
+
+    await this.redisClient.del(`${dto.email}:code`);
+
     const account = await this.accountsService.create({
       ...dto,
       email: dto.email,

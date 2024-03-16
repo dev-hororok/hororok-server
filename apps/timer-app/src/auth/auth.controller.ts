@@ -13,6 +13,7 @@ import { AuthEmailRegisterDto } from './dtos/auth-email-register.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { CheckEmailDto } from './dtos/check-email-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +39,12 @@ export class AuthController {
     @Body() createUserDto: AuthEmailRegisterDto,
   ): Promise<LoginResponseType> {
     return this.service.register(createUserDto);
+  }
+
+  @Public()
+  @Post('email/check')
+  async checkEmail(@Body() checkEmailDto: CheckEmailDto) {
+    return this.service.checkEmail(checkEmailDto);
   }
 
   @Public()

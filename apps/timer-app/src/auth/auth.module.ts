@@ -8,12 +8,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { MembersModule } from '../members/members.module';
 import { TransactionService } from '../common/transaction.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     AccountsModule,
     MembersModule,
     PassportModule,
+    MailModule,
     JwtModule.register({}),
   ],
   controllers: [AuthController],
