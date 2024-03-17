@@ -1,5 +1,4 @@
 import {
-  IsEmail,
   IsNotEmpty,
   IsString,
   Matches,
@@ -7,10 +6,10 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class AuthEmailRegisterDto {
-  @IsEmail()
+export class ResetPasswordDto {
+  @IsString()
   @IsNotEmpty()
-  email: string;
+  hash: string;
 
   @IsString()
   @MinLength(8, {
@@ -24,8 +23,4 @@ export class AuthEmailRegisterDto {
       'Password must include at least one lowercase letter, one number, and one special character.',
   })
   password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  code: string;
 }

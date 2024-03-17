@@ -2,7 +2,7 @@
 
 - 인증
 
-  - 이메일 확인 `POST /auth/email/check`
+  - 이메일 확인(메일 발송) `POST /auth/email/check`
   - 로그인 `POST /auth/email/login`
   - 회원가입 `POST /auth/email/register`
   - 구글 OAuth 로그인 `POST /auth/google/login`
@@ -10,7 +10,12 @@
   - 토큰 리프레시 `POST /auth/refresh`
   - 회원 탈퇴 `DELETE /auth/me`
 
+  - 패스워드 초기화 코드 발송(메일 발송) `POST /auth/password/forgot`
+  - 패스워드 초기화 코드 확인 `POST /auth/password/check-code`
+  - 패스워드 초기화 `POST /auth/password/reset`
+
   이메일 가입 흐름: 이메일/패스워드 작성 -> 이메일 확인 API -> 인증코드와 함께 회원가입 API
+  패스워드 초기화 흐름: 초기화 코드 발송 -> 초기화 코드 확인 및 jwt 발급 -> jwt 검증 후 패스워드 변경
 
 - 푸시 알림
 

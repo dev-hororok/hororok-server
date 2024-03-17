@@ -13,7 +13,7 @@ export class MailService {
   constructor(private readonly configService: ConfigService<AllConfigType>) {
     this.transporter = nodemailer.createTransport({
       host: configService.get('mail.host', { infer: true }),
-      port: configService.get('mail.port', { infer: true }),
+      port: configService.get('mail.port', { infer: true }), // dev&test: 587,  prod: 465
       ignoreTLS: configService.get('mail.ignoreTLS', { infer: true }),
       secure: configService.get('mail.secure', { infer: true }),
       requireTLS: configService.get('mail.requireTLS', { infer: true }),
@@ -33,31 +33,59 @@ export class MailService {
       { infer: true },
     )}`;
 
-    try {
-      await this.sendMail({
-        to: data.to,
-        subject: title,
-        text: title,
-        templatePath: path.join(
-          this.configService.getOrThrow('app.workingDirectory', {
-            infer: true,
-          }),
-          'apps',
-          'timer-app',
-          'src',
-          'mail',
-          'templates',
-          'verify-code.hbs',
-        ),
-        context: {
-          title: title,
-          app_name: this.configService.get('app.name', { infer: true }),
-          code: data.code,
-        },
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    await this.sendMail({
+      to: data.to,
+      subject: title,
+      text: title,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'apps',
+        'timer-app',
+        'src',
+        'mail',
+        'templates',
+        'verify-code.hbs',
+      ),
+      context: {
+        title: title,
+        app_name: this.configService.get('app.name', { infer: true }),
+        code: data.code,
+      },
+    });
+  }
+
+  async sendResetPasswordCode(data: {
+    to: string;
+    code: string | number;
+  }): Promise<void> {
+    const title = `${this.configService.getOrThrow('app.name', {
+      infer: true,
+    })}'s reset password verification code. `;
+
+    await this.sendMail({
+      to: data.to,
+      subject: title,
+      text: title,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'apps',
+        'timer-app',
+        'src',
+        'mail',
+        'templates',
+        'forgot-password.hbs',
+      ),
+
+      context: {
+        title: title,
+        app_name: this.configService.get('app.name', { infer: true }),
+        code: data.code,
+      },
+    });
   }
 
   async sendMail({
