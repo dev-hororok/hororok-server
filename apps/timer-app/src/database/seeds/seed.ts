@@ -14,15 +14,15 @@ export const RoleSeeds = [
 export const AccountSeeds = [
   {
     email: 'admin@test.com',
-    password: 'qwer1234',
+    password: 'qwer@1234',
     role: RoleEnum.admin,
     member: {
       nickname: 'admin',
     },
-  },
+  }, // 개발용
   {
     email: 'user@test.com',
-    password: 'qwer1234',
+    password: 'qwer@1234',
     role: RoleEnum.user,
     member: {
       nickname: 'user',

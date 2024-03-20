@@ -205,6 +205,9 @@ export class AuthService {
     if (!account) {
       throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.ACCOUNT_NOT_FOUND);
     }
+    if (account.provider !== 'email') {
+      throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.PROVIDER_MISMATCH);
+    }
 
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
     // redis 저장 후 메일 발송
