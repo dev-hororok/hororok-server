@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Post,
   SerializeOptions,
   UseGuards,
@@ -16,6 +17,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { CheckEmailDto } from './dtos/check-email.dto';
 import { CheckResetPasswordCodeDto } from './dtos/check-auth-code.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { Account } from '../database/domain/account';
 
 @Controller('auth')
 export class AuthController {
@@ -79,7 +81,7 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
-  public refresh(
+  async refresh(
     @CurrentUser() user,
   ): Promise<Omit<LoginResponseType, 'account'>> {
     return this.service.refreshToken({
@@ -87,9 +89,17 @@ export class AuthController {
     });
   }
 
+  @SerializeOptions({
+    groups: ['me'],
+  })
+  @Get('me')
+  async getAccount(@CurrentUser() user): Promise<Account> {
+    return this.service.getAccount(user);
+  }
+
   // 계정 삭제
   @Delete('me')
-  public async delete(@CurrentUser() user): Promise<void> {
+  async delete(@CurrentUser() user): Promise<void> {
     return this.service.softDelete(user);
   }
 }

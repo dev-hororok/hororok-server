@@ -287,6 +287,17 @@ export class AuthService {
     await this.accountsService.update(accountId, { password: dto.password });
   }
 
+  async getAccount(token: JwtPayloadType): Promise<Account> {
+    const account = await this.accountsService.findOne({
+      account_id: token.sub,
+    });
+
+    if (!account) {
+      throw new NotFoundException(STATUS_MESSAGES.ACCOUNT.ACCOUNT_NOT_FOUND);
+    }
+    return account;
+  }
+
   async softDelete(token: JwtPayloadType): Promise<void> {
     await this.transactionService.executeInTransaction(async (queryRunner) => {
       const member = await this.membersService.findOneByAccountId(
