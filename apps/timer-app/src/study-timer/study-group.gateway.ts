@@ -11,7 +11,7 @@ import Redis from 'ioredis';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Logger } from '@nestjs/common';
 
 import { AllConfigType } from '../config/config.type';
 import { MembersService } from '../members/services/members.service';
@@ -39,6 +39,8 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
+  private readonly logger = new Logger(StudyGroupGateway.name);
+
   constructor(
     private configService: ConfigService<AllConfigType>,
     private readonly jwtService: JwtService,
@@ -48,6 +50,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
 
   async onApplicationShutdown() {
     await this.redis.quit();
+    this.logger.log('Redis connection closed.');
   }
 
   // 연결이 종료되면 client의 memberId를 조회하여 그룹에서 나가고,
@@ -56,20 +59,20 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     // client.data에서 memberId 추출
     const memberId = client.data.memberId;
     if (!memberId) {
-      console.log(`멤버: ${memberId} 을 찾을 수 없습니다.`);
+      this.logger.warn(`Member: ${memberId} not found.`);
       return;
     }
 
     const groupId = await this.findGroupByMemberId(memberId);
     if (!groupId) {
-      console.log(`멤버: ${memberId} 가 속한 그룹이 없습니다.`);
+      this.logger.warn(`Member: ${memberId} does not belong to any group.`);
       return;
     }
 
     await this.removeMemberFromGroup(memberId, groupId);
     await this.redis.del(`member:${memberId}`);
 
-    console.log(`member ${memberId}가 ${groupId}방에서 퇴장`);
+    this.logger.log(`Member ${memberId} left group ${groupId}.`);
   }
 
   @SubscribeMessage('removeAllData')
@@ -77,33 +80,34 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { jwtToken: string },
   ) {
-    const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
-      secret: this.configService.get('auth.secret', { infer: true }),
-    });
-    if (decoded.role?.role_id !== RoleEnum.admin) {
-      throw new ForbiddenException();
-    }
-    const groupCounts = await this.redis.keys('group:*:count');
-    for (const groupKey of groupCounts) {
-      await this.redis.del(groupKey);
-    }
-    const groupMembers = await this.redis.keys('group:*:members');
-    for (const groupMemberKey of groupMembers) {
-      await this.redis.del(groupMemberKey);
-    }
-    const memberGroups = await this.redis.keys('member:*:group');
-    for (const memberGroupKey of memberGroups) {
-      await this.redis.del(memberGroupKey);
-    }
-    const members = await this.redis.keys('member:*');
-    for (const member of members) {
-      await this.redis.del(member);
-    }
+    try {
+      const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
+        secret: this.configService.get('auth.secret', { infer: true }),
+      });
+      if (decoded.role?.role_id !== RoleEnum.admin) {
+        throw new ForbiddenException();
+      }
+      const groupCounts = await this.redis.keys('group:*:count');
+      for (const groupKey of groupCounts) {
+        await this.redis.del(groupKey);
+      }
+      const groupMembers = await this.redis.keys('group:*:members');
+      for (const groupMemberKey of groupMembers) {
+        await this.redis.del(groupMemberKey);
+      }
+      const memberGroups = await this.redis.keys('member:*:group');
+      for (const memberGroupKey of memberGroups) {
+        await this.redis.del(memberGroupKey);
+      }
+      const members = await this.redis.keys('member:*');
+      for (const member of members) {
+        await this.redis.del(member);
+      }
 
-    console.log('모든 studyGroup 데이터 제거완료');
-    console.log(
-      `groupCounts: [${groupCounts}]\ngroupMembers: [${groupMembers}]\nmemberGroups: [${memberGroups}]\nmembers: [${members}]`,
-    );
+      this.logger.log('All study group data removed.');
+    } catch (e) {
+      this.handleError(client, e);
+    }
   }
 
   // jwtToken으로 멤버를 조회하여 MAX_GROUP_MEMBERS명 미만인 그룹에 참여
@@ -137,7 +141,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         joinedAtUTC,
       });
 
-      console.log(`member ${member.member_id}가 ${groupId}방에 입장`);
+      this.logger.log(`Member ${member.member_id} joined group ${groupId}.`);
 
       // 새 멤버 정보를 그룹의 모든 기존 멤버들에게 방송
       this.server.to(groupId).emit('newMember', {
@@ -155,8 +159,8 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         groupId,
         members: membersInfo,
       });
-    } catch (error) {
-      client.disconnect();
+    } catch (e) {
+      this.handleError(client, e);
     }
   }
 
@@ -175,7 +179,9 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
   // 새 그룹 생성(uuid) 및 멤버 추가
   private async createGroupWithFirstMember(memberId: string): Promise<string> {
     const groupId = uuidv4();
-    console.log(`${groupId}방이 새로 생성`);
+    this.logger.log(
+      `New Group Created: ID=${groupId}, triggered by Member=${memberId} at ${new Date().toISOString()}`,
+    );
     await this.addMemberToGroup(memberId, groupId);
 
     return groupId;
@@ -235,5 +241,12 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         };
       }),
     );
+  }
+
+  // 에러 핸들링
+  private handleError(client: Socket, error: Error) {
+    this.logger.error(error.message);
+    client.emit('error', { message: error.message });
+    client.disconnect();
   }
 }
