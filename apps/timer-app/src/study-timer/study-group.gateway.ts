@@ -19,7 +19,7 @@ import { StudyGroupRedisService } from './study-group-redis';
 
 const MAX_GROUP_MEMBERS = 9;
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: 'user/study-group' })
 export class StudyGroupGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -122,7 +122,6 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         );
       }
       client.join(groupId);
-
       const joinedAtUTC = new Date().toISOString();
       await this.studyGroupRedisService.saveMemberInfo(member.member_id, {
         ...member,

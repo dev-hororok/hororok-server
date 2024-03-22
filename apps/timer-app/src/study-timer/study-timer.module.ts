@@ -31,5 +31,6 @@ import { StudyGroupRedisService } from './study-group-redis';
     PomodoroProcessor,
     StudyGroupRedisService,
   ],
+  exports: [StudyGroupRedisService],
 })
 export class StudyTimerModule {}

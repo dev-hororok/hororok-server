@@ -55,11 +55,11 @@ export class StudyGroupRedisService {
   }
 
   // 특정 그룹의 모든 멤버 정보 조회
-  async getMembersInfo(groupId: string): Promise<MemberInfo[]> {
+  async getMembersInfo(groupId: string) {
     const memberIds = await this.redis.smembers(`group:${groupId}:members`);
     const membersInfoPromises = memberIds.map(async (memberId) => {
-      const info = await this.redis.hget(`member:${memberId}`, 'info');
-      return info ? (JSON.parse(info) as MemberInfo) : null;
+      const info = await this.redis.hgetall(`member:${memberId}`);
+      return info;
     });
 
     const membersInfo = await Promise.all(membersInfoPromises);
@@ -91,6 +91,19 @@ export class StudyGroupRedisService {
   }
 
   // ** 어드민 기능 **
+
+  async getAllGroups(): Promise<{ id: string; memberIds: string[] }[]> {
+    const groupKeys = await this.redis.keys('group:*:members');
+
+    const allGroups: { id: string; memberIds: string[] }[] = [];
+    for (const countKey of groupKeys) {
+      const members = await this.redis.smembers(countKey);
+      const groupId = countKey.split(':')[1];
+      allGroups.push({ id: groupId, memberIds: members });
+    }
+
+    return allGroups;
+  }
 
   // 스터디 그룹과 관련된 모든 데이터 제거
   async removeAllGroupsData(): Promise<void> {
