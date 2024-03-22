@@ -32,6 +32,8 @@ interface MemberInfo {
 // (string)  member:{memberId}:group   - 해당 멤버가 참여중인 그룹
 // (hash)    member:{memberId}          - 멤버정보(MemberInfo)
 
+const MAX_GROUP_MEMBERS = 9;
+
 @WebSocketGateway()
 export class StudyGroupGateway implements OnGatewayDisconnect {
   @WebSocketServer()
@@ -104,7 +106,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     );
   }
 
-  // jwtToken으로 멤버를 조회하여 8명 미만인 그룹에 참여
+  // jwtToken으로 멤버를 조회하여 MAX_GROUP_MEMBERS명 미만인 그룹에 참여
   @SubscribeMessage('joinGroup')
   async handleJoinGroup(
     @ConnectedSocket() client: Socket,
@@ -158,12 +160,12 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     }
   }
 
-  // 8명 미만인 그룹 찾기
+  // MAX_GROUP_MEMBERS명 미만인 그룹 찾기
   private async findAvailableGroup(): Promise<string | null> {
     const groupCounts = await this.redis.keys('group:*:count');
     for (const countKey of groupCounts) {
       const membersCount = (await this.redis.get(countKey)) || '0';
-      if (parseInt(membersCount, 10) < 8) {
+      if (parseInt(membersCount, 10) < MAX_GROUP_MEMBERS) {
         return countKey.split(':')[1];
       }
     }
