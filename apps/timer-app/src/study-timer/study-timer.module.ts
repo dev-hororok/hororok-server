@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { BullModule } from '@nestjs/bull';
 import { NotificationModule } from '../notification/notification.module';
 import { PomodoroProcessor } from './pomodoro.processor';
+import { StudyGroupRedisService } from './study-group-redis';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PomodoroProcessor } from './pomodoro.processor';
     TransactionService,
     StudyGroupGateway,
     PomodoroProcessor,
+    StudyGroupRedisService,
   ],
 })
 export class StudyTimerModule {}

@@ -16,7 +16,6 @@ import { AuthModule } from './auth/auth.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { RolesGuard } from './roles/roles.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { RedisModule } from '@nestjs-modules/ioredis';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthKakaoModule } from './auth-kakao/auth-kakao.module';
 import { AuthNaverModule } from './auth-naver/auth-naver.module';
@@ -30,11 +29,12 @@ import appConfig from './config/app.config';
 import databaseConfig from './database/config/database-config';
 import notificationConfig from './notification/config/notification-config';
 import mailConfig from './mail/config/mail-config';
-import redisConfig from './config/redis-config';
+import redisConfig from './redis/config/redis-config';
 import googleConfig from './auth-google/config/auth-google-config';
 import kakaoConfig from './auth-kakao/config/auth-kakao-config';
 import naverConfig from './auth-naver/config/auth-naver-config';
 import { MailModule } from './mail/mail.module';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
@@ -54,21 +54,21 @@ import { MailModule } from './mail/mail.module';
       ],
       envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
+    RedisModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'single',
+        url: `redis://${configService.get('redis.host')}:${configService.get(
+          'redis.port',
+        )}`,
+      }),
+    }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options: DataSourceOptions) => {
         const dataSource = new DataSource(options).initialize();
         return dataSource;
       },
-    }),
-    RedisModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService<AllConfigType>) => ({
-        type: 'single',
-        url: `redis://${configService.get('redis').host}:${
-          configService.get('redis').port
-        }`,
-      }),
     }),
     BullModule.forRootAsync({
       inject: [ConfigService],

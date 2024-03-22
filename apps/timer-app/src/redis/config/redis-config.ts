@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';
-import { validateConfig } from '../utils/validate-config';
+import { validateConfig } from '../../utils/validate-config';
 import { RedisConfig } from './redis-config.type';
 
 export class RedisEnvironmentVariablesValidator {

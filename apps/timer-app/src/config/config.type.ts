@@ -7,7 +7,7 @@ import { MailConfig } from '../mail/config/mail-config.type';
 import { NotificationConfig } from '../notification/config/notification-config.type';
 import { UploadConfig } from '../uploads/config/upload-config.type';
 import { AppConfig } from './app-config.type';
-import { RedisConfig } from './redis-config.type';
+import { RedisConfig } from '../redis/config/redis-config.type';
 
 export type AllConfigType = {
   app: AppConfig;

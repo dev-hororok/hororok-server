@@ -4,7 +4,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient, RedisClientOptions } from 'redis';
 import { INestApplication, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from './config.type';
+import { AllConfigType } from '../config/config.type';
 
 export class RedisIoAdapter extends IoAdapter {
   private logger = new Logger(RedisIoAdapter.name);

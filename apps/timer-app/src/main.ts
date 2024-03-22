@@ -3,7 +3,7 @@ import { TimerAppModule } from './timer-app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './config/config.type';
-import { RedisIoAdapter } from './config/redis-io.adapter';
+import { RedisIoAdapter } from './redis/redis-io.adapter';
 import { CustomSuccessInterceptor } from './config/custom-success-interceptor';
 import { CustomExceptionFilter } from './config/custom-exception-filter';
 
