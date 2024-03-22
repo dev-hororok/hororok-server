@@ -12,7 +12,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<AllConfigType>);
 
-  const redisIoAdapter = new RedisIoAdapter(app);
+  const redisIoAdapter = new RedisIoAdapter(app, configService);
   await redisIoAdapter.connectToRedis();
 
   app.useWebSocketAdapter(redisIoAdapter);

@@ -1,23 +1,40 @@
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ServerOptions } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { createClient } from 'redis';
-import { validateConfig } from '../utils/validate-config';
-import { RedisEnvironmentVariablesValidator } from './redis-config';
+import { createClient, RedisClientOptions } from 'redis';
+import { INestApplication, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from './config.type';
 
 export class RedisIoAdapter extends IoAdapter {
+  private logger = new Logger(RedisIoAdapter.name);
   private adapterConstructor: ReturnType<typeof createAdapter>;
 
-  async connectToRedis(): Promise<void> {
-    const validatedEnv = validateConfig(
-      process.env,
-      RedisEnvironmentVariablesValidator,
-    );
+  constructor(
+    private app: INestApplication,
+    private configService: ConfigService,
+  ) {
+    super(app);
+  }
 
-    const pubClient = createClient({
-      url: `redis://${validatedEnv.REDIS_HOST}:${validatedEnv.REDIS_PORT}`,
+  async connectToRedis(): Promise<void> {
+    const redisEnv = this.configService.get<AllConfigType>('redis', {
+      infer: true,
     });
+
+    const redisOptions: RedisClientOptions = {
+      url: `redis://${redisEnv.host}:${redisEnv.port}`,
+    };
+
+    const pubClient = createClient(redisOptions);
     const subClient = pubClient.duplicate();
+
+    pubClient.on('error', (err) =>
+      this.logger.error(`Redis pubClient Error: ${err.message}`),
+    );
+    subClient.on('error', (err) =>
+      this.logger.error(`Redis subClient Error: ${err.message}`),
+    );
 
     await Promise.all([pubClient.connect(), subClient.connect()]);
 
