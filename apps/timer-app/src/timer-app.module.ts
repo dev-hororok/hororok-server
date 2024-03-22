@@ -35,7 +35,6 @@ import kakaoConfig from './auth-kakao/config/auth-kakao-config';
 import naverConfig from './auth-naver/config/auth-naver-config';
 import { MailModule } from './mail/mail.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -100,7 +99,6 @@ import { AdminModule } from './admin/admin.module';
     StatisticsModule,
     UploadModule,
     MailModule,
-    AdminModule,
   ],
   providers: [
     {

@@ -19,7 +19,7 @@ import { StudyGroupRedisService } from './study-group-redis';
 
 const MAX_GROUP_MEMBERS = 9;
 
-@WebSocketGateway({ namespace: 'user/study-group' })
+@WebSocketGateway({ namespace: 'study-group' })
 export class StudyGroupGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -136,6 +136,77 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     } catch (e) {
       this.handleError(client, e);
     }
+  }
+
+  @SubscribeMessage('adminLogin')
+  async handleAdminLogin(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { jwtToken: string },
+  ) {
+    try {
+      const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
+        secret: this.configService.get('auth.secret', { infer: true }),
+      });
+      if (decoded.role?.role_id !== RoleEnum.admin) {
+        throw new ForbiddenException();
+      }
+
+      const initalState = await this.loadInitalState();
+
+      this.logger.log('All study group data removed.');
+      client.emit('initalState', initalState);
+    } catch (e) {
+      this.handleError(client, e);
+    }
+  }
+
+  @SubscribeMessage('adminRemoveAllData')
+  async handleRemoveAllGroup(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { jwtToken: string },
+  ) {
+    try {
+      const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
+        secret: this.configService.get('auth.secret', { infer: true }),
+      });
+      if (decoded.role?.role_id !== RoleEnum.admin) {
+        throw new ForbiddenException();
+      }
+
+      await this.studyGroupRedisService.removeAllGroupsData();
+      this.logger.log('All study group data removed.');
+    } catch (e) {
+      this.handleError(client, e);
+    }
+  }
+
+  @SubscribeMessage('adminRemoveGroup')
+  async handleRemoveGroupById(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { jwtToken: string; groupId: string },
+  ) {
+    try {
+      const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
+        secret: this.configService.get('auth.secret', { infer: true }),
+      });
+      if (decoded.role?.role_id !== RoleEnum.admin) {
+        throw new ForbiddenException();
+      }
+
+      await this.studyGroupRedisService.removeGroupById(data.groupId);
+      this.server.to(data.groupId).emit('explodeGroup', 'explode group');
+      this.logger.log(`Remove studyGroup: ${data.groupId}`);
+    } catch (e) {
+      this.handleError(client, e);
+    }
+  }
+
+  private async loadInitalState() {
+    const groups = await this.studyGroupRedisService.getAllGroups(); // 모든 그룹 리스트 (groupId - count)
+
+    return {
+      groups,
+    };
   }
 
   // 에러 핸들링

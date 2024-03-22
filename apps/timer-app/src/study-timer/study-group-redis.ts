@@ -114,4 +114,18 @@ export class StudyGroupRedisService {
       [...groupKeys, ...memberKeys].map((key) => this.redis.del(key)),
     );
   }
+
+  async removeGroupById(id: string): Promise<void> {
+    const memberIds = await this.redis.smembers(`group:${id}:members`);
+
+    await Promise.all(
+      memberIds.map((memberId) => this.redis.del(`members:${memberId}:group`)),
+    );
+    await Promise.all(
+      memberIds.map((memberId) => this.redis.del(`members:${memberId}`)),
+    );
+
+    await this.redis.del(`group:${id}:members`);
+    await this.redis.del(`group:${id}:count`);
+  }
 }
