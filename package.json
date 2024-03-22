@@ -6,7 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start:timer-app:local": "env-cmd -f .env.development nest start timer-app --debug --watch",
+    "start:docker": "docker-compose --env-file .env.development -f docker-compose.local.yml up --scale timer-app=1",
+    "start:redis": "docker-compose -f docker-compose.redis.yml up -d",
+    "stop:redis": "docker-compose -f docker-compose.redis.yml down",
+    "start:timer-app:dev": "env-cmd -f .env.development nest start timer-app --debug --watch",
     "start:timer-app:test": "env-cmd -f .env.test nest start timer-app",
     "start:timer-app:prod": "env-cmd -f .env.prod node dist/apps/timer-app/main",
     "build:timer-app": "env-cmd -f .env.prod nest build timer-app",
@@ -15,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e:local": "env-cmd -f .env.test jest --config ./apps/timer-app/test/jest-e2e.json",
-    "test:e2e": "yarn start:timer-app:test & sleep 10; yarn test:e2e:local; kill -9 $(lsof -ti :4000)",
+    "test:e2e": "yarn start:timer-app:test & sleep 10; yarn test:e2e:local",
     "typeorm": "env-cmd -f .env.development ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:generate apps/timer-app/src/database/migrations/init",
     "migration:create": "yarn typeorm -- migration:create",
@@ -23,8 +26,7 @@
     "migration:revert": "yarn typeorm -- -d apps/timer-app/src/database/data-source.ts migration:revert",
     "seed:run": "ts-node -r tsconfig-paths/register ./apps/timer-app/src/database/seeds/run-seed.ts",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "start:redis": "docker-compose -f docker-compose.redis.yml up -d"
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
     "@admin-bro/express": "^3.1.0",

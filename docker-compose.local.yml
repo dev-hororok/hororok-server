@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  timer-app:
+    build:
+      context: .
+      dockerfile: DockerFile.timer-app.local
+    restart: always
+    depends_on:
+      - redis
+
+  redis:
+    container_name: cache
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+
+  nginx:
+    image: nginx:1.25.3-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.local.conf:/etc/nginx/nginx.conf
+    container_name: web.server.com
+    depends_on:
+      - timer-app
+    restart: always
+
+volumes:
+  redis:
+    driver: local

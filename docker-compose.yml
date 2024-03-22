@@ -1,35 +1,10 @@
 version: '3.8'
 services:
-  # mysql:
-  #   image: mysql:8.0.34
-  #   container_name: mysql.service.com
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-  #     MYSQL_DATABASE: ${DB_NAME}
-  #   ports:
-  #     - '3306:3306'
-
   timer-app:
     image: changwoot/timer-app:latest
     build:
       context: .
       dockerfile: DockerFile.timer-app
-    environment:
-      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
-      AUTH_JWT_TOKEN_EXPIRES_IN: ${AUTH_JWT_TOKEN_EXPIRES_IN}
-      AUTH_REFRESH_SECRET: ${AUTH_REFRESH_SECRET}
-      AUTH_REFRESH_TOKEN_EXPIRES_IN: ${AUTH_REFRESH_TOKEN_EXPIRES_IN}
-      NODE_ENV: ${NODE_ENV}
-      API_PREFIX: ${API_PREFIX}
-      DB_TYPE: ${DB_TYPE}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_PORT: ${DB_PORT}
-      SERVER_PORT: ${SERVER_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
     restart: always
 
   nginx:
