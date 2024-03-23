@@ -22,6 +22,7 @@ export class StudyGroupRedisService {
 
   // 그룹에 멤버 추가
   async addMemberToGroup(memberId: string, groupId: string): Promise<void> {
+    await this.redis.set(`member:${memberId}:group`, groupId);
     await this.redis.sadd(`group:${groupId}:members`, memberId);
     await this.redis.incr(`group:${groupId}:count`); // incr은 해당 키가 없으면 자동으로 0을 할당 후 1을 증가시킴
   }
@@ -72,8 +73,6 @@ export class StudyGroupRedisService {
   async createGroupWithFirstMember(memberId: string): Promise<string> {
     const groupId = uuidv4(); // 새로운 그룹 ID 생성
     await this.addMemberToGroup(memberId, groupId);
-    // 멤버가 속한 그룹 ID 저장
-    await this.redis.set(`member:${memberId}:group`, groupId);
     return groupId;
   }
 
