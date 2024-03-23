@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { BullModule } from '@nestjs/bull';
 import { NotificationModule } from '../notification/notification.module';
 import { PomodoroProcessor } from './pomodoro.processor';
-import { StudyGroupRedisService } from './study-group-redis';
+import { StudyGroupRedisService } from './study-group-redis.service';
 
 @Module({
   imports: [

@@ -15,7 +15,7 @@ import { AllConfigType } from '../config/config.type';
 import { MembersService } from '../members/services/members.service';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload';
 import { RoleEnum } from '../roles/roles.enum';
-import { StudyGroupRedisService } from './study-group-redis';
+import { StudyGroupRedisService } from './study-group-redis.service';
 
 const MAX_GROUP_MEMBERS = 9;
 
@@ -74,26 +74,6 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('removeAllData')
-  async removeAllGroup(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { jwtToken: string },
-  ) {
-    try {
-      const decoded = this.jwtService.verify<JwtPayloadType>(data.jwtToken, {
-        secret: this.configService.get('auth.secret', { infer: true }),
-      });
-      if (decoded.role?.role_id !== RoleEnum.admin) {
-        throw new ForbiddenException();
-      }
-
-      await this.studyGroupRedisService.removeAllGroupsData();
-      this.logger.log('All study group data removed.');
-    } catch (e) {
-      this.handleError(client, e);
-    }
-  }
-
   // jwtToken으로 멤버를 조회하여 MAX_GROUP_MEMBERS명 미만인 그룹에 참여
   @SubscribeMessage('joinGroup')
   async handleJoinGroup(
@@ -127,7 +107,13 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
         ...member,
         joinedAtUTC,
       });
-
+      // 해당 그룹 내 새 멤버 입장 이벤트 발송
+      this.server.to(groupId).emit('newMember', {
+        member_id: member.member_id,
+        image_url: member.image_url,
+        nickname: member.nickname,
+        joinedAtUTC,
+      });
       this.logger.log(`Member ${member.member_id} joined group ${groupId}.`);
 
       const membersInfo =
@@ -138,6 +124,9 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     }
   }
 
+  // ** 어드민 기능 **
+
+  // 어드민 접속
   @SubscribeMessage('adminLogin')
   async handleAdminLogin(
     @ConnectedSocket() client: Socket,
@@ -160,6 +149,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     }
   }
 
+  // 모든 그룹 폭파
   @SubscribeMessage('adminRemoveAllData')
   async handleRemoveAllGroup(
     @ConnectedSocket() client: Socket,
@@ -172,7 +162,12 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
       if (decoded.role?.role_id !== RoleEnum.admin) {
         throw new ForbiddenException();
       }
-
+      // 전체 방에 폭파 이벤트 발송
+      const groups = await this.studyGroupRedisService.getAllGroups();
+      groups.map((group) =>
+        this.server.to(group.id).emit('explodeGroup', 'explode group'),
+      );
+      // 모든 그룹 데이터 삭제
       await this.studyGroupRedisService.removeAllGroupsData();
       this.logger.log('All study group data removed.');
     } catch (e) {
@@ -180,6 +175,7 @@ export class StudyGroupGateway implements OnGatewayDisconnect {
     }
   }
 
+  // 특정 그룹 폭파
   @SubscribeMessage('adminRemoveGroup')
   async handleRemoveGroupById(
     @ConnectedSocket() client: Socket,
