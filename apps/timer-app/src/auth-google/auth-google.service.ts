@@ -27,11 +27,15 @@ export class AuthGoogleService {
         STATUS_MESSAGES.ERROR.OPERATION_FAILED,
       );
     }
+    return this.getProfileByIdToken(tokens.id_token);
+  }
+
+  async getProfileByIdToken(idToken: string): Promise<SocialInterface> {
     const ticket = await this.google.verifyIdToken({
-      idToken: tokens.id_token,
-      audience: [
-        this.configService.getOrThrow('google.clientId', { infer: true }),
-      ],
+      idToken,
+      audience: this.configService.getOrThrow('google.clientId', {
+        infer: true,
+      }),
     });
     const data = ticket.getPayload();
 
