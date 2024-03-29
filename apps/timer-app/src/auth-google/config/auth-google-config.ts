@@ -12,6 +12,12 @@ class EnvironmentVariablesValidator {
 
   @IsString()
   GOOGLE_CALLBACK_URI: string;
+
+  @IsString()
+  ANDROID_GOOGLE_CLIENT_ID: string;
+
+  @IsString()
+  IOS_GOOGLE_CLIENT_ID: string;
 }
 
 export default registerAs<GoogleConfig>('google', () => {
@@ -21,5 +27,7 @@ export default registerAs<GoogleConfig>('google', () => {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackUri: process.env.GOOGLE_CALLBACK_URI,
+    androidClientId: process.env.ANDROID_GOOGLE_CLIENT_ID,
+    iosClientId: process.env.IOS_GOOGLE_CLIENT_ID,
   };
 });
