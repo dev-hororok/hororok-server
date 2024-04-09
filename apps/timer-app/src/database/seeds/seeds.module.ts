@@ -8,12 +8,14 @@ import appConfig from '../../config/app.config';
 import { RoleSeedModule } from './roles/roles.seed.module';
 import { AccountSeedModule } from './accounts/accounts.seed.module';
 import { MemberSeedModule } from './members/members.seed.module';
+import { MemberCharacterCollectionMigrateModule } from './temp/member-character-collection-migrate.module';
 
 @Module({
   imports: [
     RoleSeedModule,
     AccountSeedModule,
     MemberSeedModule,
+    MemberCharacterCollectionMigrateModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
