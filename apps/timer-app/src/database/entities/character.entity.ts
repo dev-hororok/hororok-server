@@ -19,6 +19,9 @@ export class CharacterEntity extends CommonEntity implements Character {
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string | null;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  acquisition_source: string | null;
+
   @Column({
     type: 'varchar',
     length: 20,
