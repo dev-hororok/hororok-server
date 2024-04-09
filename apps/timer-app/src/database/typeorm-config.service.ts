@@ -14,6 +14,7 @@ import { StudyStreakEntity } from './entities/study-streak.entity';
 import { TransactionRecordEntity } from './entities/transaction-record.entity';
 import { RoleEntity } from './entities/role.entity';
 import { NotificationTokenEntity } from './entities/notification-token.entity';
+import { MemberCharacterCollectionEntity } from './entities/member-character-collection.entity';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -48,6 +49,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         StudyStreakEntity,
         TransactionRecordEntity,
         NotificationTokenEntity,
+        MemberCharacterCollectionEntity,
       ],
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     } as TypeOrmModuleOptions;
