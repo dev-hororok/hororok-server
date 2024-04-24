@@ -8,6 +8,7 @@ export class Character {
   grade: string;
   image_url: string;
   sell_price: number;
+  acquisition_source: string | null;
   character_inventories?: CharacterInventory[];
 
   @Expose({ groups: ['admin'] })
